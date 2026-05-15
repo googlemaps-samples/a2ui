@@ -1,0 +1,220 @@
+.app-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.main-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-panel {
+  width: 540px;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -10px 0 15px -10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.chat-panel.closed {
+  margin-right: -540px;
+  transform: translateX(100%);
+}
+
+.main-panel-content {
+  text-align: center;
+}
+
+.chat-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-h);
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: var(--social-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: var(--accent);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 16px 16px 0 16px;
+  margin-bottom: 12px;
+  max-width: 85%;
+  word-wrap: break-word;
+  box-shadow: 0 2px 8px var(--accent-bg);
+}
+
+.bot-message {
+  align-self: flex-start;
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 12px 16px;
+  border-radius: 16px 16px 16px 0;
+  margin-bottom: 12px;
+  max-width: 85%;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.action-message {
+  align-self: flex-end;
+  background: var(--code-bg);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  max-width: 90%;
+  font-size: 0.85rem;
+  border: 1px dashed var(--border);
+  opacity: 0.8;
+}
+
+.action-message pre {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 8px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.surface-message {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 12px;
+  opacity: 0.6;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.chat-input-area {
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg);
+}
+
+.chat-textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-size: 16px;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+}
+
+.chat-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.send-button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px var(--accent-bg);
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--accent-bg);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.toggle-chat-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: var(--social-bg);
+  border: 1px solid var(--border);
+  color: var(--text-h);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+}
+
+.close-chat-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--social-bg);
+    color: var(--text-h);
+  }
+}

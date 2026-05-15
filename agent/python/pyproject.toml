@@ -1,0 +1,22 @@
+[project]
+name = "a2ui-sample-agent"
+version = "0.1.0"
+description = "Sample agent consuming MAUI packages"
+requires-python = ">=3.13"
+dependencies = [
+    "maui-a2ui-python",
+    "google-adk[a2a,extensions]>=1.28.0",
+    "a2a-sdk[http-server]>=0.3.0",
+    "google-genai>=1.64.0",
+    "jsonschema>=4.0.0"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+maui-a2ui-python = { path = "../../../a2ui/agent/python-agent", editable = true}
