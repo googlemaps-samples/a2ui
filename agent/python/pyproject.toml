@@ -18,5 +18,11 @@ packages = ["."]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "pyright>=1.1.391",
+    "ruff>=0.9.1",
+]
+
 [tool.uv.sources]
-maui-a2ui-python = { path = "../../../a2ui/agent/python-agent", editable = true}
+maui-a2ui-python = { path = "$MAUI_PATH", editable = true}
