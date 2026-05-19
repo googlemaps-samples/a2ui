@@ -1,4 +1,4 @@
-# Google Maps Agentic UI Toolkit Samples
+# Maps Agentic UI Toolkit Samples
 
 ![Alpha](https://img.shields.io/badge/release-alpha-orange)
 [![Python CI](https://github.com/googlemaps/a2ui/actions/workflows/python-ci.yml/badge.svg)](https://github.com/googlemaps/a2ui/actions/workflows/python-ci.yml)
@@ -9,7 +9,7 @@
 
 Welcome to the **Google Maps Agentic UI Toolkit Samples**! 🎉 
 
-This repository (`a2ui-samples`) contains reference samples for the Google Maps Agentic UI Toolkit. It provides a fully working, interactive sample application implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly in your web browser.
+This repository (`a2ui-samples`) contains reference samples for the Maps Agentic UI Toolkit. It provides a fully working, interactive sample application implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly in your web browser.
 
 This project is intended for demonstration purposes to help you get up and running quickly!
 
