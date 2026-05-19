@@ -25,4 +25,4 @@ dev = [
 ]
 
 [tool.uv.sources]
-maui-a2ui-python = { path = "$MAUI_PATH", editable = true}
+# maui-a2ui-python = { path = "$MAUI_PATH", editable = true}
