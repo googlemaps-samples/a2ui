@@ -4,6 +4,7 @@
 [![Python CI](https://github.com/googlemaps-samples/a2ui/actions/workflows/python-ci.yml/badge.svg)](https://github.com/googlemaps-samples/a2ui/actions/workflows/python-ci.yml)
 [![Web CI](https://github.com/googlemaps-samples/a2ui/actions/workflows/web-ci.yml/badge.svg)](https://github.com/googlemaps-samples/a2ui/actions/workflows/web-ci.yml)
 [![GitHub License](https://img.shields.io/github/license/googlemaps-samples/a2ui?color=blue)]((https://github.com/googlemaps-samples/a2ui/LICENSE))
+[![npm](https://img.shields.io/npm/v/@googlemaps/a2ui)](https://npmjs.com/package/@googlemaps/a2ui)
 
 > **Note:** The toolkit is in **Experimental** status.
 
