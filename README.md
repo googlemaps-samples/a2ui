@@ -109,26 +109,13 @@ The backend server is powered by Python and runs our sample agent.
 
 The frontend is a React web application that communicates with the backend agent and renders the interactive UI.
 
-1.  **Build and link the core @googlemaps/a2ui library:**
-    First, we need to compile the core web components in the `a2ui` repository and make them available locally via `npm link`. From your main parent folder, navigate to the core client directory:
-    ```bash
-    cd a2ui/client/web
-    npm run build-and-link
-    ```
-
-2.  **Navigate to the sample React client directory:**
-    ```bash
-    cd ../../../a2ui-samples/client/web/react
-    ```
-
-3.  **Install dependencies, link the core library, and start the development server:**
+1.  **Install dependencies and start the development server:**
     ```bash
     npm install
-    npm link @googlemaps/a2ui
     npm run dev
     ```
 
-4.  **See the demo working live!** 🌟
+2.  **See the demo working live!** 🌟
     Open [http://localhost:5173](http://localhost:5173) in your web browser to interact with your fully functioning Agentic UI demo!
 
 ## Google API Keys
