@@ -9,7 +9,7 @@
 
 Welcome to the **Google Maps Agentic UI Toolkit Samples**! 🎉 
 
-This repository (`a2ui-samples`) contains the reference demonstration for the Google Maps Agentic UI Toolkit. It provides a fully working, interactive sample application implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly in your web browser.
+This repository (`a2ui-samples`) contains reference samples for the Google Maps Agentic UI Toolkit. It provides a fully working, interactive sample application implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly in your web browser.
 
 This project is intended for demonstration purposes to help you get up and running quickly!
 
@@ -173,6 +173,85 @@ If you are using Gemini as your LLM, you will also need a Google Cloud API Key w
 To create a new Google Cloud API Key, follow the instructions here in the [Google Cloud docs](https://docs.cloud.google.com/docs/authentication/api-keys#create).
 
 This key must be exported or contained within a `.env` file as `GEMINI_API_KEY`
+
+## Google API Keys
+
+### Google Maps API Key
+
+Agentic UI Toolkit requires an API Key to use Google Maps Platform products. To create a Google Maps API Key, follow the instructions in the [Google Maps Platform documentation](https://developers.google.com/maps/documentation/javascript/get-api-key).
+
+Your API Key must have the following APIs enabled in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+
+* Geocoding API  
+* Maps JavaScript API  
+* Places UI Kit  
+* Routes API
+
+To use Grounding Lite MCP, you must also enable:
+
+* Maps Grounding Lite API
+
+To support the use of Grounding Lite within the Python ADK backend, this API Key must be exported or contained within a `.env` file as `GOOGLE_MAPS_API_KEY`.
+
+**Loading the Google Maps JavaScript API**
+
+Your API Key must also be included when loading the Google Maps JavaScript API code. See the [Google Maps Platform Documentation](https://developers.google.com/maps/documentation/javascript/load-maps-js-api) for instructions on how to load the API, including configuring the API Key.
+
+Agentic UI Toolkit requires features available in the Alpha channel. You must use `v=alpha` when loading the Maps JavaScript API. Learn more about versions in the [Google Maps Platform Documentation](https://developers.google.com/maps/documentation/javascript/versions).
+
+Use of Agentic UI Toolkit requires several [Maps JavaScript API libraries](https://developers.google.com/maps/documentation/javascript/libraries). When loading the Google Maps JavaScript API, you must include the following libraries:
+
+* maps  
+* maps3d  
+* marker  
+* places  
+* routes
+
+### Gemini API Key
+
+*Note: This API is variously referred to in Google Cloud as the* Gemini API *and the* Generative Language API.
+
+If you are using Gemini as your LLM, you will also need a Google Cloud API Key with the *Generative Language API* enabled. In order to enable this API for your API Key, the *Gemini API* must be enabled for your Google Cloud project. You can enable this API in the [API Library](https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com).
+
+To create a new Google Cloud API Key, follow the instructions here in the [Google Cloud docs](https://docs.cloud.google.com/docs/authentication/api-keys#create).
+
+This key must be exported or contained within a `.env` file as `GEMINI_API_KEY`
+
+## Accessing Google Maps grounding data
+
+Your agent can access Google Maps grounding data in two ways, depending on your project setup and needs: 
+
+1. [Grounding Lite MCP](https://developers.google.com/maps/ai/grounding-lite)
+2. [Grounding with Google Maps](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/grounding-with-google-maps)
+
+### Grounding Lite MCP
+
+To use Grounding Lite MCP, you must first enable the Maps Grounding Lite API and create or update an API Key to support the required APIs following the [documentation](https://developers.google.com/maps/ai/grounding-lite#configure_llms_to_use_the_mcp_server).
+
+### Grounding with Google Maps
+
+To use Grounding with Google Maps, there are additional steps you must take to configure your environment:
+
+1. Ensure you have the latest version of the genai python package.
+```bash
+pip install --upgrade google-genai
+```
+
+2. Configure additional environment variables to connect to your project.
+```bash
+## Replace the `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION` values
+## with appropriate values for your project.
+export GOOGLE_CLOUD_PROJECT=GOOGLE_CLOUD_PROJECT
+export GOOGLE_CLOUD_LOCATION=global
+export GOOGLE_GENAI_USE_VERTEXAI=True
+```
+
+3. Ensure you are authenticated to Google Cloud.
+```bash
+gcloud auth application-default login
+```
+
+See the [documentation](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/grounding-with-google-maps#googlegenaisdk_tools_google_maps_with_txt-python_genai_sdk) for more information.
 
 ## Contributing
 
