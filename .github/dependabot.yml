@@ -12,6 +12,3 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-permissions:
-  security-events: write
-  contents: read
