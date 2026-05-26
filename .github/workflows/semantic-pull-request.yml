@@ -52,3 +52,6 @@ jobs:
           # mimicking the helpful feedback seen in other googlemaps repos
           headerPattern: '^(\w*)(?:\(([\w$.\-*/ ]*)\))?!?: (.*)$'
           headerPatternCorrespondence: type, scope, subject
+          # If the PR only contains a single commit, the action will validate that
+          # it matches the configured pattern.
+          validateSingleCommit: true
