@@ -1,0 +1,68 @@
+{
+  "result": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "edgewater",
+        "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "edgewater",
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "intro-text",
+              "map-container",
+              "hotel-card"
+            ]
+          },
+          {
+            "id": "intro-text",
+            "component": "Text",
+            "variant": "body",
+            "text": "The **Edgewater Hotel** is widely considered an excellent choice in Seattle. It is uniquely situated directly over the water, offering panoramic views of Elliott Bay and the Olympic Mountains.\n\nReviewers frequently highlight the exceptional staff and cozy lodge-style interiors. Its history includes hosting famous bands like The Beatles. It is also noted as being good for children and allowing dogs."
+          },
+          {
+            "id": "map-container",
+            "component": "Card",
+            "child": "hotel-map"
+          },
+          {
+            "id": "hotel-map",
+            "component": "GoogleMap",
+            "center": {
+              "lat": 47.612359,
+              "lng": -122.352237
+            },
+            "zoom": 17,
+            "markers": [
+              {
+                "lat": 47.612359,
+                "lng": -122.352237,
+                "label": "The Edgewater Hotel"
+              }
+            ]
+          },
+          {
+            "id": "hotel-card",
+            "component": "PlaceCard",
+            "placeId": "places/ChIJhdZMaVIVkFQR2USwWqzU5bA"
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "edgewater",
+        "path": "/",
+        "value": {}
+      }
+    }
+  ]
+}

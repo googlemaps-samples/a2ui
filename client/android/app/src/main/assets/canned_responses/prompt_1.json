@@ -1,0 +1,115 @@
+{
+  "result": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "coffee-shops",
+        "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "coffee-shops",
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "intro-text",
+              "map",
+              "places-list"
+            ]
+          },
+          {
+            "id": "intro-text",
+            "component": "Text",
+            "variant": "body",
+            "text": "Here are 5 highly-rated coffee shops near South Lake Union in Seattle. You can view their details on the map below."
+          },
+          {
+            "id": "map",
+            "component": "GoogleMap",
+            "center": {
+              "lat": 47.6205,
+              "lng": -122.335
+            },
+            "zoom": 14,
+            "markers": [
+              {
+                "lat": {
+                  "path": "/coffeeshops/0/lat"
+                },
+                "lng": {
+                  "path": "/coffeeshops/0/lng"
+                },
+                "label": "Matcha Magic"
+              },
+              {
+                "lat": {
+                  "path": "/coffeeshops/1/lat"
+                },
+                "lng": {
+                  "path": "/coffeeshops/1/lng"
+                },
+                "label": "Evoke Cafe Bar"
+              }
+            ]
+          },
+          {
+            "id": "places-list",
+            "component": "List",
+            "direction": "vertical",
+            "children": {
+              "componentId": "place-card",
+              "path": "/coffeeshops"
+            }
+          },
+          {
+            "id": "place-card",
+            "component": "PlaceCard",
+            "placeId": {
+              "path": "placeId"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "coffee-shops",
+        "path": "/",
+        "value": {
+          "coffeeshops": [
+            {
+              "placeId": "places/ChIJMesSl2YVkFQR9cjxPkeMS_g",
+              "lat": 47.6233,
+              "lng": -122.334
+            },
+            {
+              "placeId": "places/ChIJq8K12DcVkFQRdPGoNaBvVUQ",
+              "lat": 47.6205,
+              "lng": -122.3395
+            },
+            {
+              "placeId": "places/ChIJjS-CKQ8VkFQRy_oDiA11YVE",
+              "lat": 47.6251,
+              "lng": -122.3369
+            },
+            {
+              "placeId": "places/ChIJdxfOMSYVkFQRT283uS_dls4",
+              "lat": 47.6189,
+              "lng": -122.3485
+            },
+            {
+              "placeId": "places/ChIJ9-eiZRIVkFQRCWD_--tX6BI",
+              "lat": 47.621,
+              "lng": -122.334
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

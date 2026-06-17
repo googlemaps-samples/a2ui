@@ -10,7 +10,7 @@
 
 Welcome to the **Maps Agentic UI Toolkit Samples**! 🎉 
 
-This repository (`a2ui-samples`) contains reference samples for the Maps Agentic UI Toolkit. It provides a fully working, interactive sample application implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly in your web browser.
+This repository (`a2ui-samples`) contains reference samples for the Maps Agentic UI Toolkit. It provides fully working, interactive sample applications implementing the Agent-to-User Interface (A2UI) standard, allowing AI agents to present rich, dynamic map interfaces directly across Web, Android, and iOS platforms.
 
 This project is intended for demonstration purposes to help you get up and running quickly!
 
@@ -24,12 +24,19 @@ Here is an overview of how the directory structure looks when set up correctly:
 parent-folder/
 ├── a2ui/                           <-- SIBLING REPOSITORY (Core Toolkit)
 │   ├── agent/python-agent/         <-- Core Python agent libraries (maui-a2ui-python)
-│   └── client/web/                 <-- Core web UI component library (@googlemaps/a2ui)
+│   └── client/                     <-- Core client UI libraries
+│       ├── web/                    <-- Core Web UI component library (@googlemaps/a2ui)
+│       ├── android/                <-- Android View component library (GoogleMapsA2UI)
+│       └── ios/                    <-- iOS SwiftUI component library (GoogleMapsA2UI)
 │
 └── a2ui-samples/                   <-- THIS REPOSITORY (Quickstart & Demos)
     ├── agent/python/               <-- Sample backend Python agent server
-    └── client/web/react/           <-- Sample frontend React web application
+    └── client/                     <-- Sample client applications
+        ├── web/react/              <-- Sample frontend React web application
+        ├── android/                <-- Sample Android application
+        └── ios/                    <-- Sample iOS application
 ```
+
 
 Understanding this layout ensures you will feel entirely comfortable linking the backend and frontend components in the quickstart steps below!
 
@@ -77,6 +84,10 @@ For more information about the environment variables, see the **Google API Key C
 `npm` is the standard package manager for JavaScript and TypeScript web applications, used to download frontend libraries and run development servers.
 *   **Installation:** Download and install Node.js (which includes `npm`) from [https://nodejs.org/](https://nodejs.org/).
 
+#### 4. Mobile Development Tools (Optional for mobile samples)
+*   **Android**: [Android Studio](https://developer.android.com/studio) to build and run the native Android sample app.
+*   **iOS**: macOS with [Xcode](https://developer.apple.com/xcode/) to build and run the native iOS sample app.
+
 ---
 
 ### Step 1: Run the Backend (Python Agent)
@@ -106,7 +117,11 @@ The backend server is powered by Python and runs our sample agent.
 
 ---
 
-### Step 2: Run the Frontend (React Client)
+### Step 2: Run a Client Application
+
+Once your backend agent is up and running, you can connect to it using any of our sample client platforms.
+
+#### Option A: Web Client (React)
 
 The frontend is a React web application that communicates with the backend agent and renders the interactive UI.
 
@@ -118,6 +133,25 @@ The frontend is a React web application that communicates with the backend agent
 
 2.  **See the demo working live!** 🌟
     Open [http://localhost:5173](http://localhost:5173) in your web browser to interact with your fully functioning Agentic UI demo!
+
+
+#### Option B: Android Client
+
+The Android sample is a native app utilizing Android Views and [GoogleMapsA2UI(Android)](https://github.com/googlemaps/a2ui/tree/main/client/android) to render agent-driven UI.
+
+1.  **Open Project**: Open the `client/android` directory in Android Studio.
+2.  **Run**: Build and run the application. It will automatically connect to your running Python agent at `http://10.0.2.2:10002` (for an emulator) or `http://127.0.0.1:10002` (for a physical device).
+
+For more server configration and other detailed setup, refer to the [Android Sample README](client/android/README.md).
+
+#### Option C: iOS Client
+
+The iOS sample is a native app utilizing SwiftUI and the [GoogleMapsA2UI(iOS)](https://github.com/googlemaps/a2ui/tree/main/client/ios) to render agent-driven UI.
+
+1.  **Setup**: Open the `.xcodeproj` file in the `client/ios` directory in Xcode (use a `.xcworkspace` file instead if your project uses one).
+2.  **Run**: Build and run the app in the simulator. It will automatically connect to your running Python agent at `http://localhost:10002`.
+
+For more server configration and other detailed setup, refer to the [iOS Sample README](client/ios/README.md).
 
 ## Google API Keys
 

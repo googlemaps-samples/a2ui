@@ -1,0 +1,203 @@
+{
+  "result": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "london",
+        "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "london",
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "intro-text",
+              "london-map",
+              "day1-title",
+              "day1-list",
+              "day2-title",
+              "day2-list",
+              "day3-title",
+              "day3-list"
+            ]
+          },
+          {
+            "id": "intro-text",
+            "component": "Text",
+            "variant": "body",
+            "text": "Here is a great 3-day itinerary for a family of 3 traveling to London. It perfectly balances historical sights with family-friendly activities!\n\n**Day 1: History & Views**\nStart your morning exploring the incredible artifacts at The British Museum. In the afternoon, head over to the Tower of London to see the Crown Jewels.\n\n**Day 2: City Landmarks**\nTake a ride on the London Eye for spectacular views of the city, followed by a relaxing stroll through Hyde Park.\n\n**Day 3: Science & Nature**\nSpend the day marveling at the dinosaur skeletons and interactive exhibits at the Natural History Museum."
+          },
+          {
+            "id": "london-map",
+            "component": "GoogleMap",
+            "center": {
+              "lat": 51.5074,
+              "lng": -0.1278
+            },
+            "zoom": 12,
+            "mode": "roadmap",
+            "markers": [
+              {
+                "lat": {
+                  "path": "/day1/0/lat"
+                },
+                "lng": {
+                  "path": "/day1/0/lng"
+                },
+                "label": "Tower of London",
+                "placeId": {
+                  "path": "/day1/0/placeId"
+                }
+              },
+              {
+                "lat": {
+                  "path": "/day1/1/lat"
+                },
+                "lng": {
+                  "path": "/day1/1/lng"
+                },
+                "label": "London Eye",
+                "placeId": {
+                  "path": "/day1/1/placeId"
+                }
+              },
+              {
+                "lat": {
+                  "path": "/day2/0/lat"
+                },
+                "lng": {
+                  "path": "/day2/0/lng"
+                },
+                "label": "British Museum",
+                "placeId": {
+                  "path": "/day2/0/placeId"
+                }
+              },
+              {
+                "lat": {
+                  "path": "/day2/1/lat"
+                },
+                "lng": {
+                  "path": "/day2/1/lng"
+                },
+                "label": "Buckingham Palace",
+                "placeId": {
+                  "path": "/day2/1/placeId"
+                }
+              },
+              {
+                "lat": {
+                  "path": "/day3/0/lat"
+                },
+                "lng": {
+                  "path": "/day3/0/lng"
+                },
+                "label": "Natural History Museum",
+                "placeId": {
+                  "path": "/day3/0/placeId"
+                }
+              }
+            ]
+          },
+          {
+            "id": "day1-title",
+            "component": "Text",
+            "variant": "title",
+            "text": "Day 1: History & Views"
+          },
+          {
+            "id": "day1-list",
+            "component": "List",
+            "direction": "vertical",
+            "children": {
+              "componentId": "place-card",
+              "path": "/day1"
+            }
+          },
+          {
+            "id": "day2-title",
+            "component": "Text",
+            "variant": "title",
+            "text": "Day 2: Culture & Royalty"
+          },
+          {
+            "id": "day2-list",
+            "component": "List",
+            "direction": "vertical",
+            "children": {
+              "componentId": "place-card",
+              "path": "/day2"
+            }
+          },
+          {
+            "id": "day3-title",
+            "component": "Text",
+            "variant": "title",
+            "text": "Day 3: Science & Nature"
+          },
+          {
+            "id": "day3-list",
+            "component": "List",
+            "direction": "vertical",
+            "children": {
+              "componentId": "place-card",
+              "path": "/day3"
+            }
+          },
+          {
+            "id": "place-card",
+            "component": "PlaceCard",
+            "placeId": {
+              "path": "placeId"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "london",
+        "path": "/",
+        "value": {
+          "day1": [
+            {
+              "placeId": "places/ChIJc2nSALkEdkgRkuoJJBfzkUI",
+              "lat": 51.5081,
+              "lng": -0.0759
+            },
+            {
+              "placeId": "places/ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g",
+              "lat": 51.5033,
+              "lng": -0.1195
+            }
+          ],
+          "day2": [
+            {
+              "placeId": "places/ChIJB9OTMDIbdkgRp0JWbQGZsS8",
+              "lat": 51.5194,
+              "lng": -0.1269
+            },
+            {
+              "placeId": "places/ChIJtV5bzSAFdkgRpwLZFPWrJgo",
+              "lat": 51.5014,
+              "lng": -0.1419
+            }
+          ],
+          "day3": [
+            {
+              "placeId": "places/ChIJPy8Y5kIFdkgRxGSXw4Xjt3s",
+              "lat": 51.4967,
+              "lng": -0.1764
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
