@@ -1,0 +1,98 @@
+{
+  "result": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "restaurants",
+        "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "restaurants",
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "intro-text",
+              "directions-map",
+              "restaurant-list"
+            ]
+          },
+          {
+            "id": "intro-text",
+            "component": "Text",
+            "variant": "body",
+            "text": "Here are 5 lunch restaurants with salads in South Lake Union. Below the list, I have provided directions to **Mendocino Farms** (the second restaurant on the list) from the Google South Lake Union WLK building."
+          },
+          {
+            "id": "directions-map",
+            "component": "GoogleMap",
+            "center": {
+              "lat": 47.619089,
+              "lng": -122.337998
+            },
+            "zoom": 14,
+            "mode": "roadmap",
+            "routes": [
+              {
+                "origin": {
+                  "lat": 47.6288,
+                  "lng": -122.3392
+                },
+                "destination": {
+                  "lat": 47.6191,
+                  "lng": -122.338
+                }
+              }
+            ]
+          },
+          {
+            "id": "restaurant-list",
+            "component": "List",
+            "direction": "vertical",
+            "children": {
+              "componentId": "restaurant-card-template",
+              "path": "/restaurants"
+            }
+          },
+          {
+            "id": "restaurant-card-template",
+            "component": "PlaceCard",
+            "placeId": {
+              "path": "placeId"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "restaurants",
+        "path": "/",
+        "value": {
+          "restaurants": [
+            {
+              "placeId": "places/ChIJMazWCAsVkFQRvYTJ_UtIlSY"
+            },
+            {
+              "placeId": "places/ChIJdVWO3S8VkFQRZZ3dtq-NkeQ"
+            },
+            {
+              "placeId": "places/ChIJIzdKUjYVkFQRzOvdlIPhQ8I"
+            },
+            {
+              "placeId": "places/ChIJKdsds2RrkFQRGNt_WeM6qUo"
+            },
+            {
+              "placeId": "places/ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

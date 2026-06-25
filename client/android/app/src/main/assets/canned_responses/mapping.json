@@ -1,0 +1,7 @@
+{
+  "Show me 5 coffee shops near South Lake Union in Seattle": "prompt_1.json",
+  "Is the Edgewater Hotel in Seattle a good hotel?": "prompt_2.json",
+  "How long will it take to commute to Google Kirkland office from downtown Redmond during my morning rush hour commute?": "prompt_3.json",
+  "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the 2nd one (starting from the Google South Lake Union WLK building)": "prompt_4.json",
+  "Give me a 3 day itinerary for a family of 3 traveling to London": "prompt_5.json"
+}

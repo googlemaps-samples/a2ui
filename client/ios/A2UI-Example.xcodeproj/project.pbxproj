@@ -1,0 +1,502 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06250BF72FC7D25D009091F1 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */; };
+		FDC9C4E32F5B9D7000ABA773 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4E22F5B9D7000ABA773 /* Models.swift */; };
+		FDC9C4E42F5B9D7000ABA773 /* ChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4DF2F5B9D7000ABA773 /* ChatApp.swift */; };
+		FDC9C4E52F5B9D7000ABA773 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4E12F5B9D7000ABA773 /* ChatViewModel.swift */; };
+		FDC9C4E72F5B9D7000ABA773 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4E02F5B9D7000ABA773 /* ChatView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FD3276E12F7B9B3B007E25E3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FDC9C4C82F5B9CB800ABA773 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FDC9C4CF2F5B9CB800ABA773;
+			remoteInfo = "A2UI-Example";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "A2UI-ExampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD8193352F749D4A001C0D09 /* A2UI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "A2UI-Example-Info.plist"; sourceTree = "<group>"; };
+		FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "A2UI-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDC9C4DF2F5B9D7000ABA773 /* ChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatApp.swift; sourceTree = "<group>"; };
+		FDC9C4E02F5B9D7000ABA773 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		FDC9C4E12F5B9D7000ABA773 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		FDC9C4E22F5B9D7000ABA773 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		FD3276DC2F7B9B3B007E25E3 /* A2UI-ExampleUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "A2UI-ExampleUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FD3276D82F7B9B3B007E25E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FDC9C4CD2F5B9CB800ABA773 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06250BF72FC7D25D009091F1 /* GoogleMapsA2UI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FDC9C4C72F5B9CB800ABA773 = {
+			isa = PBXGroup;
+			children = (
+				FD8193352F749D4A001C0D09 /* A2UI-Example-Info.plist */,
+				FDC9C4E82F5B9DE300ABA773 /* Resources */,
+				FDC9C4DF2F5B9D7000ABA773 /* ChatApp.swift */,
+				FDC9C4E02F5B9D7000ABA773 /* ChatView.swift */,
+				FDC9C4E12F5B9D7000ABA773 /* ChatViewModel.swift */,
+				FDC9C4E22F5B9D7000ABA773 /* Models.swift */,
+				FD3276DC2F7B9B3B007E25E3 /* A2UI-ExampleUITests */,
+				FDC9C4D12F5B9CB800ABA773 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FDC9C4D12F5B9CB800ABA773 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */,
+				FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FDC9C4E82F5B9DE300ABA773 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FD3276DA2F7B9B3B007E25E3 /* A2UI-ExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD3276E52F7B9B3B007E25E3 /* Build configuration list for PBXNativeTarget "A2UI-ExampleUITests" */;
+			buildPhases = (
+				FD3276D72F7B9B3B007E25E3 /* Sources */,
+				FD3276D82F7B9B3B007E25E3 /* Frameworks */,
+				FD3276D92F7B9B3B007E25E3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FD3276E22F7B9B3B007E25E3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				FD3276DC2F7B9B3B007E25E3 /* A2UI-ExampleUITests */,
+			);
+			name = "A2UI-ExampleUITests";
+			packageProductDependencies = (
+			);
+			productName = "A2UI-ExampleUITests";
+			productReference = FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FDC9C4DB2F5B9CBB00ABA773 /* Build configuration list for PBXNativeTarget "A2UI-Example" */;
+			buildPhases = (
+				FDC9C4CC2F5B9CB800ABA773 /* Sources */,
+				FDC9C4CD2F5B9CB800ABA773 /* Frameworks */,
+				FDC9C4CE2F5B9CB800ABA773 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "A2UI-Example";
+			packageProductDependencies = (
+				06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */,
+			);
+			productName = "A2UI-Example";
+			productReference = FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FDC9C4C82F5B9CB800ABA773 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					FD3276DA2F7B9B3B007E25E3 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = FDC9C4CF2F5B9CB800ABA773;
+					};
+					FDC9C4CF2F5B9CB800ABA773 = {
+						CreatedOnToolsVersion = 26.0.1;
+						LastSwiftMigration = 2600;
+					};
+				};
+			};
+			buildConfigurationList = FDC9C4CB2F5B9CB800ABA773 /* Build configuration list for PBXProject "A2UI-Example" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FDC9C4C72F5B9CB800ABA773;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = FDC9C4D12F5B9CB800ABA773 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */,
+				FD3276DA2F7B9B3B007E25E3 /* A2UI-ExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FD3276D92F7B9B3B007E25E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FDC9C4CE2F5B9CB800ABA773 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FD3276D72F7B9B3B007E25E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FDC9C4CC2F5B9CB800ABA773 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FDC9C4E32F5B9D7000ABA773 /* Models.swift in Sources */,
+				FDC9C4E42F5B9D7000ABA773 /* ChatApp.swift in Sources */,
+				FDC9C4E52F5B9D7000ABA773 /* ChatViewModel.swift in Sources */,
+				FDC9C4E72F5B9D7000ABA773 /* ChatView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FD3276E22F7B9B3B007E25E3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */;
+			targetProxy = FD3276E12F7B9B3B007E25E3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		FD3276E32F7B9B3B007E25E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "A2UI-Example";
+			};
+			name = Debug;
+		};
+		FD3276E42F7B9B3B007E25E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "A2UI-Example";
+			};
+			name = Release;
+		};
+		FDC9C4D92F5B9CBB00ABA773 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FDC9C4DA2F5B9CBB00ABA773 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FDC9C4DC2F5B9CBB00ABA773 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "A2UI-Example-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FDC9C4DD2F5B9CBB00ABA773 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "A2UI-Example-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FD3276E52F7B9B3B007E25E3 /* Build configuration list for PBXNativeTarget "A2UI-ExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD3276E32F7B9B3B007E25E3 /* Debug */,
+				FD3276E42F7B9B3B007E25E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FDC9C4CB2F5B9CB800ABA773 /* Build configuration list for PBXProject "A2UI-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FDC9C4D92F5B9CBB00ABA773 /* Debug */,
+				FDC9C4DA2F5B9CBB00ABA773 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FDC9C4DB2F5B9CBB00ABA773 /* Build configuration list for PBXNativeTarget "A2UI-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FDC9C4DC2F5B9CBB00ABA773 /* Debug */,
+				FDC9C4DD2F5B9CBB00ABA773 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../a2ui/client/ios/GoogleMapsA2UI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
+			productName = GoogleMapsA2UI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = FDC9C4C82F5B9CB800ABA773 /* Project object */;
+}

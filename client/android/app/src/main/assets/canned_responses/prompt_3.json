@@ -1,0 +1,69 @@
+{
+  "result": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "commute",
+        "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "commute",
+        "components": [
+          {
+            "id": "root",
+            "component": "Column",
+            "children": [
+              "intro-text",
+              "commute-map",
+              "place_card_1"
+            ]
+          },
+          {
+            "id": "intro-text",
+            "component": "Text",
+            "variant": "body",
+            "text": "To commute from downtown Redmond to Google Kirkland (425 Urban Plz Suite#223) during morning rush hour, you can expect the drive to take approximately 20-30 minutes depending on traffic conditions.\n\nPlease note that actual travel times can vary based on real-time traffic incidents."
+          },
+          {
+            "id": "commute-map",
+            "component": "GoogleMap",
+            "center": {
+              "lat": 47.6769,
+              "lng": -122.192
+            },
+            "zoom": 12,
+            "mode": "roadmap",
+            "routes": [
+              {
+                "origin": {
+                  "lat": 47.673988,
+                  "lng": -122.121513
+                },
+                "destination": {
+                  "lat": 47.6769,
+                  "lng": -122.192
+                }
+              }
+            ]
+          },
+          {
+            "id": "place_card_1",
+            "component": "PlaceCard",
+            "placeId": "places/ChIJF0JJdpgTkFQR2xjapNaR-as"
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "commute",
+        "path": "/",
+        "value": {}
+      }
+    }
+  ]
+}
