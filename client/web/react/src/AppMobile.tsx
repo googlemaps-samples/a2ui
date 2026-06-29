@@ -104,7 +104,27 @@ function AppMobile() {
                                 // Ensure 'root' Column exists for the A2UI Renderer
                                 let hasRoot = comps.some((c: any) => c.id === 'root');
                                 if (!hasRoot && comps.length > 0) {
-                                    let rootChildren = comps.map((c: any) => c.id).filter((id: any) => id);
+                                  // If no "root" exists, generating a new "root" container.
+                                  let referencedChildIds = new Set<string>();
+                                  comps.forEach((c: any) => {
+                                    if (typeof c.child === 'string') referencedChildIds.add(c.child);
+                                    if (c.children) {
+                                      if (Array.isArray(c.children)) {
+                                        c.children.forEach((child: any) => {
+                                          if (typeof child === 'string') referencedChildIds.add(child);
+                                          else if (child && typeof child === 'object' && child.id) referencedChildIds.add(child.id);
+                                        });
+                                      } else if (typeof c.children === 'object' && c.children.componentId) {
+                                        referencedChildIds.add(c.children.componentId);
+                                      }
+                                    }
+                                  });
+
+                                  // Filter the components that are not claimed as a child by anyone
+                                  let rootChildren = comps
+                                    .filter((c: any) => c.id && !referencedChildIds.has(c.id))
+                                    .map((c: any) => c.id);
+
                                     comps.unshift({
                                         id: 'root',
                                         component: 'Column',
