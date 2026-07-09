@@ -66,16 +66,16 @@ Once the app is running:
 
 ## Running UI Tests
 
-We provide an automated script to spin up a local backend server and execute the Xcode UI tests using the iOS Simulator. 
+You can execute the UI tests directly from Xcode:
 
-To run the full test suite from the terminal:
-```bash
-cd /client/ios
-./run_xcode_ui_tests.sh
-```
-> **Note:** The test script automatically starts the backend server by looking for `run_aikit_demo.sh` at `../../../a2ui`. If you cloned the `a2ui` repository to a different location, you must open `run_xcode_ui_tests.sh` and update that path before running the tests.
+1. Open the project in Xcode.
+2. Open `client/ios/A2UI-ExampleUITests/A2UI_ExampleUITests.swift`.
+3. Run the tests by pressing `Cmd + U` or clicking the play button next to the test class (`A2UIExampleUITests`) or individual test methods.
 
-**Note:** This script requires the `iPhone 17 Pro` simulator to be installed on your system. It automatically launches the backend server and safely shuts it down once the UI tests finish. Additionally, ensure the `GoogleMapsA2UI` Swift Package has been successfully compiled in Xcode before running this script.
+> **Note:** The UI tests rely on a backend server to process the test prompts, and agent responses can sometimes take more than 30 seconds. If your tests are failing due to a timeout, you can increase the timeout value on line 96 of `A2UI_ExampleUITests.swift`:
+> ```
+> waitForExpectations(timeout: 30, handler: nil) // Increase this value if the server is slow
+> ```
 
 ## Customizing the Web Components
 

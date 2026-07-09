@@ -1,6 +1,0 @@
-node_modules
-.DS_STORE
-.wireit
-dist
-.venv
-__pycache__

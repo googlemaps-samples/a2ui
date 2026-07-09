@@ -25,7 +25,7 @@ class ChatViewModel: ObservableObject {
   @Published var isLoading: Bool = false
   @Published var webViewToScrollID: UUID?
   @Published var selectedGroundingType: GroundingType = .lite
-  private let googleMapsApiKey = "YOUR_API_KEY"
+  private let googleMapsApiKey = "$GOOGLE_MAPS_API_KEY"
 
   init() {
     A2UIServices.provideApiKey(googleMapsApiKey)

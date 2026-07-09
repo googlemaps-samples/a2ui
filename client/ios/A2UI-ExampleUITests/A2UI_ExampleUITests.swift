@@ -93,7 +93,7 @@ final class A2UIExampleUITests: XCTestCase {
     expectation(for: exists, evaluatedWith: webView, handler: nil)
 
     // Use a longer timeout as agent responses can take time
-    waitForExpectations(timeout: 30, handler: nil)
+    waitForExpectations(timeout: 120, handler: nil)
 
     XCTAssertTrue(webView.exists, "Web view should exist for test case: \(testCaseName)")
 

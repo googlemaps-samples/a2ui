@@ -1,0 +1,5 @@
+# Template for local properties. Do not commit actual keys.
+# Copy this file to local.properties (if not already present) and fill in your keys.
+MAPS_API_KEY=YOUR_MAPS_API_KEY
+GATEWAY_API_KEY=YOUR_GATEWAY_API_KEY
+GATEWAY_URL=http://localhost:10002
