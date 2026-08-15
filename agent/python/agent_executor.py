@@ -31,9 +31,10 @@ from a2a.utils import (
     new_task,
 )
 from a2a.utils.errors import ServerError
+
 from a2ui.a2a.extension import try_activate_a2ui_extension
-from agent import MAUIAgent
-from agent_with_grounding import MAUIAgentWithGrounding
+from python_agent.agent import MAUIAgent
+from python_agent.agent_with_grounding import MAUIAgentWithGrounding
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,9 @@ logger = logging.getLogger(__name__)
 class MAUIAgentExecutor(AgentExecutor):
   """MAUI AgentExecutor Example."""
 
-  def __init__(self, default_agent: MAUIAgent, grounding_agent: MAUIAgentWithGrounding):
+  def __init__(
+      self, default_agent: MAUIAgent, grounding_agent: MAUIAgentWithGrounding
+  ):
     self._default_agent = default_agent
     self._grounding_agent = grounding_agent
 
@@ -75,10 +78,10 @@ class MAUIAgentExecutor(AgentExecutor):
       logger.info(f"Received a2ui ClientEvent: {ui_event_part}")
       action = ui_event_part.get("actionName")
       ctx = ui_event_part.get("context", {})
-      
+
       # Use switch statement to route to the appropriate action handler
       query = f"User submitted an event: {action} with data: {ctx}"
-      
+
     else:
       logger.info("No a2ui UI event part found. Falling back to text input.")
       query = context.get_user_input()
@@ -86,23 +89,35 @@ class MAUIAgentExecutor(AgentExecutor):
     # Interpret prefix and choose agent
     agent_to_use = self._default_agent
     if query.startswith("[GROUNDING]"):
-        logger.info("--- AGENT_EXECUTOR: Prefix [GROUNDING] detected. Using Grounding Agent. ---")
-        agent_to_use = self._grounding_agent
-        query = query[len("[GROUNDING]"):].strip()
+      logger.info(
+          "--- AGENT_EXECUTOR: Prefix [GROUNDING] detected. Using Grounding"
+          " Agent. ---"
+      )
+      agent_to_use = self._grounding_agent
+      query = query[len("[GROUNDING]") :].strip()
     else:
-        logger.info("--- AGENT_EXECUTOR: No prefix detected. Using Default Agent. ---")
+      logger.info(
+          "--- AGENT_EXECUTOR: No prefix detected. Using Default Agent. ---"
+      )
 
     logger.info(f"--- AGENT_EXECUTOR: Final query for LLM: '{query}' ---")
 
-    logger.info(f"--- Client requested extensions: {context.requested_extensions} ---")
-    active_ui_version = try_activate_a2ui_extension(context, agent_to_use.agent_card)
+    logger.info(
+        f"--- Client requested extensions: {context.requested_extensions} ---"
+    )
+    active_ui_version = try_activate_a2ui_extension(
+        context, agent_to_use.agent_card
+    )
 
     # Determine which agent to use based on whether the a2ui extension is active.
     if active_ui_version:
-      logger.info("--- AGENT_EXECUTOR: A2UI extension is active. Using UI agent. ---")
+      logger.info(
+          "--- AGENT_EXECUTOR: A2UI extension is active. Using UI agent. ---"
+      )
     else:
       logger.info(
-          "--- AGENT_EXECUTOR: A2UI extension is not active. Using text agent. ---"
+          "--- AGENT_EXECUTOR: A2UI extension is not active. Using text"
+          " agent. ---"
       )
 
     task = context.current_task
@@ -112,14 +127,20 @@ class MAUIAgentExecutor(AgentExecutor):
       await event_queue.enqueue_event(task)
     updater = TaskUpdater(event_queue, task.id, task.context_id)
 
-    async for item in agent_to_use.stream(query, task.context_id, active_ui_version):
+    async for item in agent_to_use.stream(
+        query, task.context_id, active_ui_version
+    ):
       is_task_complete = item["is_task_complete"]
       if not is_task_complete:
         message = None
         if "parts" in item:
-          message = new_agent_parts_message(item["parts"], task.context_id, task.id)
+          message = new_agent_parts_message(
+              item["parts"], task.context_id, task.id
+          )
         elif "updates" in item:
-          message = new_agent_text_message(item["updates"], task.context_id, task.id)
+          message = new_agent_text_message(
+              item["updates"], task.context_id, task.id
+          )
 
         if message:
           await updater.update_status(TaskState.working, message)

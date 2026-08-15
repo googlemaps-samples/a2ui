@@ -1,5 +1,5 @@
 //
-// Copyright 2026 Google Inc.
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 package com.example.maui
 
 sealed class ChatMessage {
-    data class Text(val text: String, val isUser: Boolean) : ChatMessage()
-    data class GmpA2UIView(val a2uiJsonString: String, val startTime: Long? = null) : ChatMessage()
-    object Loading : ChatMessage()
+  data class Text(val text: String, val isUser: Boolean) : ChatMessage()
+
+  data class GmpA2UIView(val a2uiJsonString: String, val startTime: Long? = null) : ChatMessage()
+
+  object Loading : ChatMessage()
 }

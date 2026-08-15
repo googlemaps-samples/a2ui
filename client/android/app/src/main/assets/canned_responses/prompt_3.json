@@ -18,7 +18,7 @@
             "children": [
               "intro-text",
               "commute-map",
-              "place_card_1"
+              "place_details_compact_1"
             ]
           },
           {
@@ -50,8 +50,8 @@
             ]
           },
           {
-            "id": "place_card_1",
-            "component": "PlaceCard",
+            "id": "place_details_compact_1",
+            "component": "PlaceDetailsCompact",
             "placeId": "places/ChIJF0JJdpgTkFQR2xjapNaR-as"
           }
         ]

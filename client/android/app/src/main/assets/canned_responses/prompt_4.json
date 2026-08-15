@@ -60,7 +60,7 @@
           },
           {
             "id": "restaurant-card-template",
-            "component": "PlaceCard",
+            "component": "PlaceDetailsCompact",
             "placeId": {
               "path": "placeId"
             }

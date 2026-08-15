@@ -1,0 +1,262 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+    "history": [
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "8C64BA94-5137-4037-AE92-3907D5634E14",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Is the Edgewater Hotel in Seattle a good hotel?"
+          }
+        ],
+        "role": "user",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "6456e8b4-a2a6-420b-8702-890bfb884275",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "edgewater-hotel-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "0c3955fb-6180-42a9-aeb2-8aa94f3ecb98",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "edgewater-hotel-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "edgewater-text",
+                      "edgewater-map",
+                      "edgewater-card"
+                    ]
+                  },
+                  {
+                    "id": "edgewater-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Yes, **The Edgewater Hotel** is widely considered an excellent choice, particularly if you are looking for a unique and historic experience. It is famously the only over-water hotel in Seattle, situated directly on **Pier 67**. \n\n### Why it’s well-regarded:\n*   **Unrivaled Views:** Many rooms offer panoramic views of **Elliott Bay** and the **Olympic Mountains**. Even if you don't have a water-view room, the hotel's common areas and restaurant, **Six Seven**, provide stunning vistas.\n*   **Historical Significance:** The hotel is legendary for hosting **The Beatles** during their 1964 world tour (you can even book the Beatles Suite). Other rock legends like Led Zeppelin and Neil Young have also stayed there.\n*   **Pacific Northwest Vibe:** The interior features a cozy, rustic-luxe 'lodge' feel with stone fireplaces and pine furniture, making it feel distinct from standard corporate hotels.\n*   **Prime Location:** It's within walking distance of the **Olympic Sculpture Park**, **Pike Place Market**, and the **Seattle Aquarium**.\n\nWith a **4.4-star rating**, guests frequently praise the service and the serene atmosphere of being right on the water."
+                  },
+                  {
+                    "id": "edgewater-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372
+                    },
+                    "zoom": 17,
+                    "tilt": 45,
+                    "mode": "satellite",
+                    "anchorMarker": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372,
+                      "label": "The Edgewater Hotel"
+                    }
+                  },
+                  {
+                    "id": "edgewater-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJhdZMaVIVkFQR2USwWqzU5bA"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "49ce4cbe-1202-44fa-adf0-9d0a64e3f865",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "edgewater-hotel-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "f7175474-2c10-42e6-9138-ac0019413fd2",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "edgewater-hotel-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "edgewater-text",
+                      "edgewater-map",
+                      "edgewater-card"
+                    ]
+                  },
+                  {
+                    "id": "edgewater-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Yes, **The Edgewater Hotel** is widely considered an excellent choice, particularly if you are looking for a unique and historic experience. It is famously the only over-water hotel in Seattle, situated directly on **Pier 67**. \n\n### Why it’s well-regarded:\n*   **Unrivaled Views:** Many rooms offer panoramic views of **Elliott Bay** and the **Olympic Mountains**. Even if you don't have a water-view room, the hotel's common areas and restaurant, **Six Seven**, provide stunning vistas.\n*   **Historical Significance:** The hotel is legendary for hosting **The Beatles** during their 1964 world tour (you can even book the Beatles Suite). Other rock legends like Led Zeppelin and Neil Young have also stayed there.\n*   **Pacific Northwest Vibe:** The interior features a cozy, rustic-luxe 'lodge' feel with stone fireplaces and pine furniture, making it feel distinct from standard corporate hotels.\n*   **Prime Location:** It's within walking distance of the **Olympic Sculpture Park**, **Pike Place Market**, and the **Seattle Aquarium**.\n\nWith a **4.4-star rating**, guests frequently praise the service and the serene atmosphere of being right on the water."
+                  },
+                  {
+                    "id": "edgewater-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372
+                    },
+                    "zoom": 17,
+                    "tilt": 45,
+                    "mode": "satellite",
+                    "anchorMarker": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372,
+                      "label": "The Edgewater Hotel"
+                    }
+                  },
+                  {
+                    "id": "edgewater-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJhdZMaVIVkFQR2USwWqzU5bA"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      }
+    ],
+    "id": "80e7ec8a-cf85-43d2-b013-3e813ced6b06",
+    "kind": "task",
+    "status": {
+      "message": {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "f7cf2355-3dd7-4b50-8a7d-34b97809aaee",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "edgewater-hotel-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "edgewater-hotel-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "edgewater-text",
+                      "edgewater-map",
+                      "edgewater-card"
+                    ]
+                  },
+                  {
+                    "id": "edgewater-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Yes, **The Edgewater Hotel** is widely considered an excellent choice, particularly if you are looking for a unique and historic experience. It is famously the only over-water hotel in Seattle, situated directly on **Pier 67**. \n\n### Why it's well-regarded:\n*   **Unrivaled Views:** Many rooms offer panoramic views of **Elliott Bay** and the **Olympic Mountains**. Even if you don't have a water-view room, the hotel's common areas and restaurant, **Six Seven**, provide stunning vistas.\n*   **Historical Significance:** The hotel is legendary for hosting **The Beatles** during their 1964 world tour (you can even book the Beatles Suite). Other rock legends like Led Zeppelin and Neil Young have also stayed there.\n*   **Pacific Northwest Vibe:** The interior features a cozy, rustic-luxe 'lodge' feel with stone fireplaces and pine furniture, making it feel distinct from standard corporate hotels.\n*   **Prime Location:** It's within walking distance of the **Olympic Sculpture Park**, **Pike Place Market**, and the **Seattle Aquarium**.\n\nWith a **4.4-star rating**, guests frequently praise the service and the serene atmosphere of being right on the water."
+                  },
+                  {
+                    "id": "edgewater-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372
+                    },
+                    "zoom": 17,
+                    "tilt": 45,
+                    "mode": "satellite",
+                    "anchorMarker": {
+                      "lat": 47.6123593,
+                      "lng": -122.3522372,
+                      "label": "The Edgewater Hotel"
+                    }
+                  },
+                  {
+                    "id": "edgewater-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJhdZMaVIVkFQR2USwWqzU5bA"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "80e7ec8a-cf85-43d2-b013-3e813ced6b06"
+      },
+      "state": "input-required",
+      "timestamp": "2026-07-13T22:06:58.036155+00:00"
+    }
+  }
+}

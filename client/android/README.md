@@ -9,16 +9,16 @@ This directory contains the Android sample application for the Google Maps Agent
 
 ### 1. Build and Publish the A2UI SDK Locally
 
-Before building the sample app, you must build the underlying **GoogleMapsA2UI** library (the core A2UI SDK) and publish it to your local Maven repository. 
+Before building the sample app, you must build the underlying **GoogleMapsA2UI** library (the core A2UI SDK) and publish it to your local Maven repository.
 
 For instructions on how to build and publish the library, please refer to the [A2UI Android README](https://github.com/googlemaps/a2ui/tree/main/client/android/README.md).
 
 ### 2. Set API Keys and Gateway URL
 
-Add your API keys and server connection settings to the `local.properties` file in the root `android` directory (e.g., `ai-kit/a2ui-samples/client/android/local.properties`):
+Add your API keys and server connection settings to the `local.properties` file in this directory:
 
 ```properties
-sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk 
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
 MAPS_API_KEY=your_actual_google_maps_api_key_here
 GATEWAY_API_KEY=your_actual_gateway_api_key_here
 GATEWAY_URL=your_actual_gateway_url_here
@@ -27,7 +27,7 @@ GATEWAY_URL=your_actual_gateway_url_here
 The build system uses the `secrets-gradle-plugin` to securely inject these values into the app at runtime.
 
 *   **`MAPS_API_KEY`**: Obtain a Google Maps API Key from the Google Cloud Console.
-*   **`GATEWAY_URL`** and **`GATEWAY_API_KEY`**: 
+*   **`GATEWAY_URL`** and **`GATEWAY_API_KEY`**:
     *   **For Remote Server:** If you have deployed a Remote Server to Google Cloud, set `GATEWAY_URL` to your Cloud Run or API Gateway endpoint. Optionally, set `GATEWAY_API_KEY` if your server uses API key-based authentication.
     *   **For Local Server:** Set `GATEWAY_URL` to `http://127.0.0.1:10002` (physical device) or `http://10.0.2.2:10002` (emulator).
 
@@ -47,16 +47,12 @@ In `app/src/main/java/com/example/maui/MainActivity.kt`, verify the flags match 
 
 ### 4. Build and Run the App
 
-1. Navigate to the Android sample app directory:
-   ```bash
-   cd ~/ai-kit/a2ui-samples/client/android
-   ```
-2. Build and install the app (Debug version):
+1. Build and install the app (Debug version):
    ```bash
    ./gradlew :app:installDebug
    ```
    *(For release builds, use `./gradlew :app:installRelease`)*
-3. Launch the app on your emulator or connected device:
+2. Launch the app on your emulator or connected device:
    ```bash
    adb shell am start -n com.example.maui/.MainActivity
    ```

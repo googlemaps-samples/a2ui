@@ -1,0 +1,511 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+    "history": [
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "4BA170B1-DC39-4832-B76C-AA9EF3EF31DC",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Show me 5 lunch restaurants with Salads in South Lake Union. (Inject 'click' to get directions on the 2nd option)"
+          }
+        ],
+        "role": "user",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "6737b932-d949-4ace-b41b-93a721594005",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-restaurants-slu",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "5f0662c9-ea86-4615-aeff-fe6129e7bae9",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-restaurants-slu",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "restaurants-map",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union has some fantastic options for a fresh lunch salad. Here are 5 highly-rated spots where you can find delicious and healthy bowls:\n\n1.  **Portage Bay Cafe**: A local favorite known for its seasonal, organic, and sustainable ingredients. Their lunch menu features hearty salads like the Cobb and the Beet & Goat Cheese.\n2.  **Bounty Kitchen**: A modern health-focused eatery specializing in high-quality organic ingredients. They are famous for their 'Big Bowls' and diverse salad options like the Flagship Kale Bowl.\n3.  **Sizzle&Crunch SLU**: If you're looking for a Vietnamese twist, their fresh bowls allow you to customize with plenty of greens, pickled veggies, and flavorful proteins.\n4.  **Duke's Seafood**: While known for seafood, Duke's offers premium salads like their 'Award Winning' Chowder and salad combos or the Wild Child Grilled Salmon Salad.\n5.  **Bleuwiches**: A great casual spot that offers fresh sandwiches and a variety of healthy, fresh salads perfect for a quick workday lunch."
+                  },
+                  {
+                    "id": "restaurants-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.625,
+                      "lng": -122.338
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 47.621843,
+                        "lng": -122.3374189,
+                        "label": "Portage Bay Cafe",
+                        "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                      },
+                      {
+                        "lat": 47.6382214,
+                        "lng": -122.3565406,
+                        "label": "Bounty Kitchen",
+                        "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                      },
+                      {
+                        "lat": 47.6239414,
+                        "lng": -122.3391927,
+                        "label": "Sizzle&Crunch SLU",
+                        "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                      },
+                      {
+                        "lat": 47.6297136,
+                        "lng": -122.3304263,
+                        "label": "Duke's Seafood",
+                        "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                      },
+                      {
+                        "lat": 47.6227313,
+                        "lng": -122.3339013,
+                        "label": "Bleuwiches",
+                        "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2-container",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2-container",
+                    "component": "Column",
+                    "children": [
+                      "card-2",
+                      "directions-button-2"
+                    ]
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "directions-button-2",
+                    "component": "Button",
+                    "variant": "primary",
+                    "child": "button-text-2",
+                    "action": {
+                      "functionCall": {
+                        "call": "openUrl",
+                        "args": {
+                          "url": "https://www.google.com/maps/dir/?api=1&destination_place_id=ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "button-text-2",
+                    "component": "Text",
+                    "text": "Get Directions to Bounty Kitchen"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "524524b0-1963-4311-b0cd-c93df9814092",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-restaurants-slu",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "45684101-1fd2-4ec1-9d27-1454edad1a0b",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-restaurants-slu",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "restaurants-map",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union has some fantastic options for a fresh lunch salad. Here are 5 highly-rated spots where you can find delicious and healthy bowls:\n\n1.  **Portage Bay Cafe**: A local favorite known for its seasonal, organic, and sustainable ingredients. Their lunch menu features hearty salads like the Cobb and the Beet & Goat Cheese.\n2.  **Bounty Kitchen**: A modern health-focused eatery specializing in high-quality organic ingredients. They are famous for their 'Big Bowls' and diverse salad options like the Flagship Kale Bowl.\n3.  **Sizzle&Crunch SLU**: If you're looking for a Vietnamese twist, their fresh bowls allow you to customize with plenty of greens, pickled veggies, and flavorful proteins.\n4.  **Duke's Seafood**: While known for seafood, Duke's offers premium salads like their 'Award Winning' Chowder and salad combos or the Wild Child Grilled Salmon Salad.\n5.  **Bleuwiches**: A great casual spot that offers fresh sandwiches and a variety of healthy, fresh salads perfect for a quick workday lunch."
+                  },
+                  {
+                    "id": "restaurants-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.625,
+                      "lng": -122.338
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 47.621843,
+                        "lng": -122.3374189,
+                        "label": "Portage Bay Cafe",
+                        "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                      },
+                      {
+                        "lat": 47.6382214,
+                        "lng": -122.3565406,
+                        "label": "Bounty Kitchen",
+                        "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                      },
+                      {
+                        "lat": 47.6239414,
+                        "lng": -122.3391927,
+                        "label": "Sizzle&Crunch SLU",
+                        "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                      },
+                      {
+                        "lat": 47.6297136,
+                        "lng": -122.3304263,
+                        "label": "Duke's Seafood",
+                        "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                      },
+                      {
+                        "lat": 47.6227313,
+                        "lng": -122.3339013,
+                        "label": "Bleuwiches",
+                        "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2-container",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2-container",
+                    "component": "Column",
+                    "children": [
+                      "card-2",
+                      "directions-button-2"
+                    ]
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "directions-button-2",
+                    "component": "Button",
+                    "variant": "primary",
+                    "child": "button-text-2",
+                    "action": {
+                      "functionCall": {
+                        "call": "openUrl",
+                        "args": {
+                          "url": "https://www.google.com/maps/dir/?api=1&destination_place_id=ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "button-text-2",
+                    "component": "Text",
+                    "text": "Get Directions to Bounty Kitchen"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      }
+    ],
+    "id": "920ede36-d18b-4a5d-b572-35ca0a3e4159",
+    "kind": "task",
+    "status": {
+      "message": {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "8104d2cb-c3d6-467f-8c87-ff6683e1d230",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-restaurants-slu",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-restaurants-slu",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "restaurants-map",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union has some fantastic options for a fresh lunch salad. Here are 5 highly-rated spots where you can find delicious and healthy bowls:\n\n1.  **Portage Bay Cafe**: A local favorite known for its seasonal, organic, and sustainable ingredients. Their lunch menu features hearty salads like the Cobb and the Beet & Goat Cheese.\n2.  **Bounty Kitchen**: A modern health-focused eatery specializing in high-quality organic ingredients. They are famous for their 'Big Bowls' and diverse salad options like the Flagship Kale Bowl.\n3.  **Sizzle&Crunch SLU**: If you're looking for a Vietnamese twist, their fresh bowls allow you to customize with plenty of greens, pickled veggies, and flavorful proteins.\n4.  **Duke's Seafood**: While known for seafood, Duke's offers premium salads like their 'Award Winning' Chowder and salad combos or the Wild Child Grilled Salmon Salad.\n5.  **Bleuwiches**: A great casual spot that offers fresh sandwiches and a variety of healthy, fresh salads perfect for a quick workday lunch."
+                  },
+                  {
+                    "id": "restaurants-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.625,
+                      "lng": -122.338
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 47.621843,
+                        "lng": -122.3374189,
+                        "label": "Portage Bay Cafe",
+                        "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                      },
+                      {
+                        "lat": 47.6382214,
+                        "lng": -122.3565406,
+                        "label": "Bounty Kitchen",
+                        "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                      },
+                      {
+                        "lat": 47.6239414,
+                        "lng": -122.3391927,
+                        "label": "Sizzle&Crunch SLU",
+                        "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                      },
+                      {
+                        "lat": 47.6297136,
+                        "lng": -122.3304263,
+                        "label": "Duke's Seafood",
+                        "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                      },
+                      {
+                        "lat": 47.6227313,
+                        "lng": -122.3339013,
+                        "label": "Bleuwiches",
+                        "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2-container",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2-container",
+                    "component": "Column",
+                    "children": [
+                      "card-2",
+                      "directions-button-2"
+                    ]
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "directions-button-2",
+                    "component": "Button",
+                    "variant": "primary",
+                    "child": "button-text-2",
+                    "action": {
+                      "functionCall": {
+                        "call": "openUrl",
+                        "args": {
+                          "url": "https://www.google.com/maps/dir/?api=1&destination_place_id=ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "button-text-2",
+                    "component": "Text",
+                    "text": "Get Directions to Bounty Kitchen"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "920ede36-d18b-4a5d-b572-35ca0a3e4159"
+      },
+      "state": "input-required",
+      "timestamp": "2026-07-13T22:08:21.231824+00:00"
+    }
+  }
+}

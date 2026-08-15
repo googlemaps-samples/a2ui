@@ -67,7 +67,7 @@
           },
           {
             "id": "place-card",
-            "component": "PlaceCard",
+            "component": "PlaceDetailsCompact",
             "placeId": {
               "path": "placeId"
             }
