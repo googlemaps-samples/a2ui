@@ -35,6 +35,7 @@
           {
             "id": "hotel-map",
             "component": "GoogleMap",
+            "mode": "satellite",
             "center": {
               "lat": 47.612359,
               "lng": -122.352237
@@ -50,7 +51,7 @@
           },
           {
             "id": "hotel-card",
-            "component": "PlaceCard",
+            "component": "PlaceDetailsCompact",
             "placeId": "places/ChIJhdZMaVIVkFQR2USwWqzU5bA"
           }
         ]

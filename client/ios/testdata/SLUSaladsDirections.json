@@ -1,0 +1,406 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+    "history": [
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "D3AB7413-173F-434C-938D-38FAD67F4E82",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the 2nd one (starting from the Google South Lake Union WLK building)"
+          }
+        ],
+        "role": "user",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "75376eaf-0e1e-4afa-9bcf-3da1d7bbe97c",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-slu-directions",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "29d5e3c4-70e4-4a12-8f51-25b44d9492bb",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-slu-directions",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "route-map",
+                      "restaurants-header",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Here are 5 great lunch spots with salad options in the South Lake Union area. Per your request, I've also provided directions from the **Google SLU WLK building** to the second option, **Bounty Kitchen**.\n\n### Directions to Bounty Kitchen\nIt's about a **7-8 minute drive** (3.9 km) from the Google WLK building. You'll head north around the lake towards the Queen Anne/Westlake area. \n\n1.  **Portage Bay Cafe**: Famous for local, seasonal ingredients and hearty salads.\n2.  **Bounty Kitchen**: A health-focused spot featuring organic 'Big Bowls' and unique salads like the Flagship Kale.\n3.  **Sizzle&Crunch SLU**: Fresh Vietnamese bowls where you can load up on greens and fresh veggies.\n4.  **Duke's Seafood**: Offers premium seafood salads in a relaxed waterfront setting.\n5.  **Bleuwiches**: A casual spot known for fresh ingredients and a variety of workday salads."
+                  },
+                  {
+                    "id": "route-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6318,
+                      "lng": -122.3465
+                    },
+                    "zoom": 14,
+                    "routes": [
+                      {
+                        "origin": {
+                          "lat": 47.6254907,
+                          "lng": -122.3365714,
+                          "label": "Google SLU WLK",
+                          "placeId": "ChIJjVDM7PkVkFQRqngDY4vfla8"
+                        },
+                        "destination": {
+                          "lat": 47.6382214,
+                          "lng": -122.3565406,
+                          "label": "Bounty Kitchen",
+                          "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    ],
+                    "travelMode": "driving"
+                  },
+                  {
+                    "id": "restaurants-header",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Restaurant Details"
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "304f801f-281e-4689-8dac-f5f7e6ef7cf3",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-slu-directions",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "1dd1ccd8-42c9-4750-b328-5989e3c52f35",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-slu-directions",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "route-map",
+                      "restaurants-header",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Here are 5 great lunch spots with salad options in the South Lake Union area. Per your request, I've also provided directions from the **Google SLU WLK building** to the second option, **Bounty Kitchen**.\n\n### Directions to Bounty Kitchen\nIt's about a **7-8 minute drive** (3.9 km) from the Google WLK building. You'll head north around the lake towards the Queen Anne/Westlake area. \n\n1.  **Portage Bay Cafe**: Famous for local, seasonal ingredients and hearty salads.\n2.  **Bounty Kitchen**: A health-focused spot featuring organic 'Big Bowls' and unique salads like the Flagship Kale.\n3.  **Sizzle&Crunch SLU**: Fresh Vietnamese bowls where you can load up on greens and fresh veggies.\n4.  **Duke's Seafood**: Offers premium seafood salads in a relaxed waterfront setting.\n5.  **Bleuwiches**: A casual spot known for fresh ingredients and a variety of workday salads."
+                  },
+                  {
+                    "id": "route-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6318,
+                      "lng": -122.3465
+                    },
+                    "zoom": 14,
+                    "routes": [
+                      {
+                        "origin": {
+                          "lat": 47.6254907,
+                          "lng": -122.3365714,
+                          "label": "Google SLU WLK",
+                          "placeId": "ChIJjVDM7PkVkFQRqngDY4vfla8"
+                        },
+                        "destination": {
+                          "lat": 47.6382214,
+                          "lng": -122.3565406,
+                          "label": "Bounty Kitchen",
+                          "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    ],
+                    "travelMode": "driving"
+                  },
+                  {
+                    "id": "restaurants-header",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Restaurant Details"
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      }
+    ],
+    "id": "083bbb9a-8c25-4100-a2c3-651ef64a2f09",
+    "kind": "task",
+    "status": {
+      "message": {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "d3b43810-f991-4aff-b9ea-7dfbbce1e037",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "salad-slu-directions",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "salad-slu-directions",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "route-map",
+                      "restaurants-header",
+                      "restaurants-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "Here are 5 great lunch spots with salad options in the South Lake Union area. Per your request, I've also provided directions from the **Google SLU WLK building** to the second option, **Bounty Kitchen**.\n\n### Directions to Bounty Kitchen\nIt's about a **7-8 minute drive** (3.9 km) from the Google WLK building. You'll head north around the lake towards the Queen Anne/Westlake area. \n\n1.  **Portage Bay Cafe**: Famous for local, seasonal ingredients and hearty salads.\n2.  **Bounty Kitchen**: A health-focused spot featuring organic 'Big Bowls' and unique salads like the Flagship Kale.\n3.  **Sizzle&Crunch SLU**: Fresh Vietnamese bowls where you can load up on greens and fresh veggies.\n4.  **Duke's Seafood**: Offers premium seafood salads in a relaxed waterfront setting.\n5.  **Bleuwiches**: A casual spot known for fresh ingredients and a variety of workday salads."
+                  },
+                  {
+                    "id": "route-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6318,
+                      "lng": -122.3465
+                    },
+                    "zoom": 14,
+                    "routes": [
+                      {
+                        "origin": {
+                          "lat": 47.6254907,
+                          "lng": -122.3365714,
+                          "label": "Google SLU WLK",
+                          "placeId": "ChIJjVDM7PkVkFQRqngDY4vfla8"
+                        },
+                        "destination": {
+                          "lat": 47.6382214,
+                          "lng": -122.3565406,
+                          "label": "Bounty Kitchen",
+                          "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                        }
+                      }
+                    ],
+                    "travelMode": "driving"
+                  },
+                  {
+                    "id": "restaurants-header",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Restaurant Details"
+                  },
+                  {
+                    "id": "restaurants-list",
+                    "component": "Column",
+                    "children": [
+                      "card-1",
+                      "card-2",
+                      "card-3",
+                      "card-4",
+                      "card-5"
+                    ]
+                  },
+                  {
+                    "id": "card-1",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7ZC5oTcVkFQR4tJqYR-hWbU"
+                  },
+                  {
+                    "id": "card-2",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ9-eiZRIVkFQRCWD_--tX6BI"
+                  },
+                  {
+                    "id": "card-3",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJR64lnCAVkFQRqGLApG7WTqw"
+                  },
+                  {
+                    "id": "card-4",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJMY6CBjsVkFQRFGfv6bY3WV0"
+                  },
+                  {
+                    "id": "card-5",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJr2oKXrwVkFQRpds-Wob59rM"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "083bbb9a-8c25-4100-a2c3-651ef64a2f09"
+      },
+      "state": "input-required",
+      "timestamp": "2026-07-13T22:10:17.992542+00:00"
+    }
+  }
+}

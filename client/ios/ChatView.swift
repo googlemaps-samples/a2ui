@@ -1,5 +1,5 @@
 //
-// Copyright 2026 Google Inc.
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
 // limitations under the License.
 //
 
-import SwiftUI
-
 import GoogleMapsA2UI
+import SwiftUI
 
 struct ChatView: View {
   private enum Constants {
@@ -92,92 +91,7 @@ struct ChatView: View {
 
       // The Input Bar
       HStack {
-        Menu {
-          Section("TestCases") {
-            Button("Seattle Coffee Shops") {
-              inputText = "Show me 5 coffee shops near South Lake Union in Seattle"
-            }
-            Button("MV Google Gyms") {
-              inputText = "Show me Google Office Buildings in the Mountain View area which have a gym"
-            }
-            Button("Edgewater Hotel") {
-              inputText = "Is the Edgewater Hotel in Seattle a good hotel?"
-            }
-            Button("Gas Works Park") {
-              inputText = "How do I get to Gas Works Park in Fremont from my location (the Edgewater Hotel in Seattle)?"
-            }
-            Button("Kirkland Commute") {
-              inputText = "How long will it take to commute to Google Kirkland office from downtown Redmond during my morning rush hour commute?"
-            }
-            Button("Le Petite Academy") {
-              inputText = "How long will it take to go to Le Petite Academy of Kirkland and the Google Kirkland office starting from downtown Redmond during my morning rush hour commute?"
-            }
-            Button("NYC Attractions") {
-              inputText = "How far away are the top 5 major NYC tourist attractions from the Waldorf Astoria New York hotel? Show me all the routes to each of these locations from the Waldorf Astoria Hotel in New York."
-            }
-            Button("SLU Salads (Vegan)") {
-              inputText = "Show me 5 lunch restaurants with Salads in South Lake Union. Which ones of these have vegan friendly options?"
-            }
-            Button("SLU Salads (Click)") {
-              inputText = "Show me 5 lunch restaurants with Salads in South Lake Union. (Inject 'click' to get directions on the 2nd option)"
-            }
-            Button("SLU Salads (Directions)") {
-              inputText = "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the 2nd one (starting from the Google South Lake Union WLK building)"
-            }
-            Button("London Itinerary") {
-              inputText = "Give me a 3 day itinerary for a family of 3 traveling to London"
-            }
-          }
-        } label: {
-          Image(systemName: "flask.fill")
-            .font(.title2)
-            .foregroundColor(.orange)
-        }
-
-        Menu {
-          Section("Restaurant Finder") {
-            Button("Seattle Indian") {
-              inputText = "Show 3 Indian Restaurants in Seattle"
-            }
-            Button("NYC Chinese") {
-              inputText = "Show top Chinese restaurants in New York"
-            }
-            Button("San Jose Ethiopian") {
-              inputText = "Show 2 Ethiopian Restaurants in San Jose, CA"
-            }
-            Button("Seattle Sushi") {
-              inputText = "Show me some good sushi in Seattle"
-            }
-          }
-          Section("Place Details") {
-            Button("Parking at Milstead") {
-              inputText = "Is there parking near Milstead Coffee?"
-            }
-            Button("Vegan at Pablo y Pablo") {
-              inputText = "Are there vegan options at Pablo y Pablo?"
-            }
-          }
-          Section("Routes") {
-            Button("Seattle to LA") {
-              inputText = "I am going from Seattle to LA by car. I want to make stops to get food and rest. Can you show me route options, including stop points? I am also sensitive to air quality, if you could tell me the forecast along the route, thanks!"
-            }
-            Button("Vegetarian House to Din Tai Fung") {
-              inputText = "How to get from Vegetarian House to Din Tai Fung in San Jose CA"
-            }
-            Button("Directions to Hadilao") {
-              inputText = "Get me directions to Hadilao Hot Pot Cupertino"
-            }
-          }
-          Section("Location Analysis") {
-            Button("New Home Location") {
-              inputText = "I'm considering buying a new home at <2200 N 56th St, Seattle, WA 98103> Do you think this a good location to get to my work at Google Fremont in Seattle? Can I easily get my morning latte at Milstead on my way to work? Are there any public tennis courts nearby? Most importantly, am I close enough to a Din Tai Fung for sunday dinner?"
-            }
-          }
-        } label: {
-          Image(systemName: "list.bullet.circle.fill")
-            .font(.title2)
-            .foregroundColor(.blue)
-        }
+        TestCasesMenuView(inputText: $inputText)
 
         TextField("Message...", text: $inputText, axis: .vertical)
           .textFieldStyle(RoundedBorderTextFieldStyle())

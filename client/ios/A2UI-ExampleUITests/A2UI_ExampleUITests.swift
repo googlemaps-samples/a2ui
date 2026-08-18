@@ -1,5 +1,5 @@
 //
-// Copyright 2026 Google Inc.
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,9 +22,6 @@ final class A2UIExampleUITests: XCTestCase {
 
   override func setUpWithError() throws {
     continueAfterFailure = false
-    // The application is relaunched for each testcase. This precludes us from having to clean
-    // up application state each time.
-    app.launch()
   }
 
   func testSeattleCoffeeShops() throws {
@@ -78,6 +75,14 @@ final class A2UIExampleUITests: XCTestCase {
   /// - Parameter testCaseName: The name of the test case to run, matching the button label.
   /// - Throws: An error if an expectation times out or fails.
   private func runTestCase(named testCaseName: String) throws {
+    let mockFileName = try XCTUnwrap(
+      MockScenarioRegistry.scenarios.first(where: { $0.buttonName == testCaseName })?.fileName,
+      "Error: '\(testCaseName)' is missing from MockScenarioRegistry."
+    )
+
+    app.launchEnvironment["UI_TEST_MOCK_SCENARIO"] = mockFileName
+    app.launch()
+
     // Tap the flask icon to open the TestCases menu
     app.buttons["flask.fill"].tap()
 
@@ -89,19 +94,27 @@ final class A2UIExampleUITests: XCTestCase {
 
     // Wait for the web view to appear, indicating an A2UI response
     let webView = app.webViews.element
-    let exists = NSPredicate(format: "exists == true")
-    expectation(for: exists, evaluatedWith: webView, handler: nil)
+    // With hermetic mocking, responses are fast, but WebView initialization may take a few seconds.
+    let webViewAppeared = webView.waitForExistence(timeout: 15)
 
-    // Use a longer timeout as agent responses can take time
-    waitForExpectations(timeout: 30, handler: nil)
-
-    XCTAssertTrue(webView.exists, "Web view should exist for test case: \(testCaseName)")
+    if !webViewAppeared {
+      let allTexts = app.staticTexts.allElementsBoundByIndex.map { $0.label }
+      XCTFail(
+        "Web view should exist for test case: \(testCaseName). Current texts on screen: \(allTexts)"
+      )
+    }
 
     // Ensure the web view contains some text content
     let webViewHasContent = NSPredicate(format: "staticTexts.count > 0")
     expectation(for: webViewHasContent, evaluatedWith: webView, handler: nil)
     waitForExpectations(timeout: 10, handler: nil)
 
-    XCTAssertGreaterThan(webView.staticTexts.count, 0, "Web view should contain text content for test case: \(testCaseName)")
+    XCTAssertGreaterThan(
+      webView.staticTexts.count, 0,
+      "Web view should contain text content for test case: \(testCaseName)")
+
+    // Scroll down so the WebView is fully visible on screen
+    app.swipeUp()
+
   }
 }
