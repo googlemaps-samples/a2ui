@@ -17,9 +17,10 @@
 import Foundation
 import SwiftUI
 
-enum GroundingType: String, CaseIterable, Identifiable {
+enum AgentType: String, CaseIterable, Identifiable {
   case lite = "Grounding Lite (MCP)"
   case vertex = "Grounding with Google Maps (Vertex)"
+  case template = "Template Agent"
 
   var id: Self { self }
 }
