@@ -18,9 +18,10 @@ import Foundation
 import GoogleMapsA2UI
 
 protocol ChatServiceProtocol {
-  func sendMessage(text: String, isVertex: Bool) async throws -> AsyncThrowingStream<
-    ParsedA2AEvent, Swift.Error
-  >
+  func sendMessage(text: String, agentType: AgentType) async throws
+    -> AsyncThrowingStream<
+      ParsedA2AEvent, Swift.Error
+    >
   func sendAction(jsonString: String) async throws -> AsyncThrowingStream<
     ParsedA2AEvent, Swift.Error
   >
@@ -67,12 +68,19 @@ actor ChatService: ChatServiceProtocol {
   private var useSSEProtocol = false
   private let contextID = UUID().uuidString
 
-  func sendMessage(text: String, isVertex: Bool) async throws -> AsyncThrowingStream<
-    ParsedA2AEvent, Swift.Error
-  > {
+  func sendMessage(text: String, agentType: AgentType) async throws
+    -> AsyncThrowingStream<
+      ParsedA2AEvent, Swift.Error
+    >
+  {
     var serverText = text
-    if isVertex {
+    switch agentType {
+    case .vertex:
       serverText = "[GROUNDING] \(text)"
+    case .template:
+      serverText = "[TEMPLATE] \(text)"
+    case .lite:
+      break
     }
     let payload: [String: Any] = ["text": serverText]
     return try await callPythonServer(userMessage: payload)

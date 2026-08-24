@@ -24,7 +24,7 @@ class ChatViewModel: ObservableObject {
   @Published private(set) var messages: [ChatMessage] = []
   @Published private(set) var isLoading: Bool = false
   @Published var webViewToScrollID: UUID?
-  @Published var selectedGroundingType: GroundingType = .lite
+  @Published var selectedAgentType: AgentType = .lite
 
   private let chatService: ChatServiceProtocol
   private let googleMapsApiKey = "$GOOGLE_MAPS_API_KEY"
@@ -39,13 +39,14 @@ class ChatViewModel: ObservableObject {
 
   /// Sends a text message to the server.
   func sendMessage(text: String) {
-    let isVertex = (selectedGroundingType == .vertex)
+    let agentType = selectedAgentType
     addMessage(.text(content: text, isUser: true))
 
     Task {
       isLoading = true
       do {
-        let stream = try await chatService.sendMessage(text: text, isVertex: isVertex)
+        let stream = try await chatService.sendMessage(
+          text: text, agentType: agentType)
         for try await part in stream {
           handleParsedEvent(part)
         }
