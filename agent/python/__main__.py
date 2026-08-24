@@ -25,10 +25,10 @@ from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 import uvicorn
 
-from python_agent.agent import MAUIAgent
-from python_agent.agent_config import AgentConfig, FallbackMode
-from python_agent.agent_with_grounding import MAUIAgentWithGrounding
-from python_agent.agent_with_templates import MAUIAgentWithTemplates
+from agent import MAUIAgent
+from agent_config import AgentConfig, FallbackMode
+from agent_with_grounding import MAUIAgentWithGrounding
+from agent_with_templates import MAUIAgentWithTemplates
 from agent_executor import MAUIAgentExecutor
 
 dotenv.load_dotenv()

@@ -34,9 +34,9 @@ from a2a.utils import (
 from a2a.utils.errors import ServerError
 
 from a2ui.a2a.extension import try_activate_a2ui_extension
-from python_agent.agent import MAUIAgent
-from python_agent.agent_with_grounding import MAUIAgentWithGrounding
-from python_agent.agent_with_templates import MAUIAgentWithTemplates
+from agent import MAUIAgent
+from agent_with_grounding import MAUIAgentWithGrounding
+from agent_with_templates import MAUIAgentWithTemplates
 
 logger = logging.getLogger(__name__)
 
