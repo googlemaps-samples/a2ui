@@ -34,7 +34,7 @@
         android:id="@+id/promptsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/groundingRadioGroup"
+        android:layout_above="@+id/agentRadioGroup"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="8dp">
@@ -53,7 +53,7 @@
     </LinearLayout>
 
     <RadioGroup
-        android:id="@+id/groundingRadioGroup"
+        android:id="@+id/agentRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/inputLayout"
@@ -63,17 +63,23 @@
         android:background="?android:attr/windowBackground">
 
         <RadioButton
-            android:id="@+id/radioGroundingLite"
+            android:id="@+id/radioAgentLite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Grounding Lite (MCP)"
             android:checked="true" />
 
         <RadioButton
-            android:id="@+id/radioGroundingVertex"
+            android:id="@+id/radioAgentVertex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Grounding with Google Maps (Vertex)" />
+
+        <RadioButton
+            android:id="@+id/radioAgentTemplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Template Agent" />
     </RadioGroup>
 
     <LinearLayout

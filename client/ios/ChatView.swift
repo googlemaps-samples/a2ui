@@ -85,7 +85,7 @@ struct ChatView: View {
         }
       }
 
-      GroundingSelector(selection: $viewModel.selectedGroundingType)
+      AgentSelector(selection: $viewModel.selectedAgentType)
 
       Divider()
 
@@ -212,12 +212,12 @@ struct LoadingBubble: View {
   }
 }
 
-struct GroundingSelector: View {
-  @Binding var selection: GroundingType
+struct AgentSelector: View {
+  @Binding var selection: AgentType
 
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
-      ForEach(GroundingType.allCases) { type in
+      ForEach(AgentType.allCases) { type in
         Button(action: {
           withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             selection = type

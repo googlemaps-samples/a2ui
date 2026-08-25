@@ -7,7 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06250BF72FC7D25D009091F1 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */; };
+		06D7D379303CF72A005E2E6E /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */; };
+		06D7D39E303CFB03005E2E6E /* LatencyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D380303CFB03005E2E6E /* LatencyLogger.swift */; };
+		06D7D39F303CFB03005E2E6E /* ResourceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D383303CFB03005E2E6E /* ResourceLogger.swift */; };
+		06D7D3A0303CFB03005E2E6E /* MockScenarioRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */; };
+		06D7D3A1303CFB03005E2E6E /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D37E303CFB03005E2E6E /* ChatService.swift */; };
+		06D7D3A2303CFB03005E2E6E /* TestCasesMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D384303CFB03005E2E6E /* TestCasesMenuView.swift */; };
+		06D7D3A3303D019F005E2E6E /* SLUSaladsVegan.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38F303CFB03005E2E6E /* SLUSaladsVegan.json */; };
+		06D7D3A4303D019F005E2E6E /* SLUSaladsDirections.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38E303CFB03005E2E6E /* SLUSaladsDirections.json */; };
+		06D7D3A5303D019F005E2E6E /* NYCAttractions.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38B303CFB03005E2E6E /* NYCAttractions.json */; };
+		06D7D3A6303D019F005E2E6E /* GasWorksPark.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D386303CFB03005E2E6E /* GasWorksPark.json */; };
+		06D7D3A7303D019F005E2E6E /* SLUSaladsClick.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38D303CFB03005E2E6E /* SLUSaladsClick.json */; };
+		06D7D3A8303D019F005E2E6E /* LondonItinerary.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D389303CFB03005E2E6E /* LondonItinerary.json */; };
+		06D7D3A9303D019F005E2E6E /* MVGoogleGyms.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38A303CFB03005E2E6E /* MVGoogleGyms.json */; };
+		06D7D3AA303D019F005E2E6E /* KirklandCommute.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D387303CFB03005E2E6E /* KirklandCommute.json */; };
+		06D7D3AB303D019F005E2E6E /* EdgewaterHotel.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D385303CFB03005E2E6E /* EdgewaterHotel.json */; };
+		06D7D3AC303D019F005E2E6E /* SeattleCoffeeShops.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38C303CFB03005E2E6E /* SeattleCoffeeShops.json */; };
+		06D7D3AD303D019F005E2E6E /* LePetiteAcademy.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D388303CFB03005E2E6E /* LePetiteAcademy.json */; };
+		06D7D3AE303D29EA005E2E6E /* LePetiteAcademy.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D388303CFB03005E2E6E /* LePetiteAcademy.json */; };
+		06D7D3AF303D29EA005E2E6E /* SLUSaladsVegan.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38F303CFB03005E2E6E /* SLUSaladsVegan.json */; };
+		06D7D3B0303D29EA005E2E6E /* NYCAttractions.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38B303CFB03005E2E6E /* NYCAttractions.json */; };
+		06D7D3B1303D29EA005E2E6E /* GasWorksPark.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D386303CFB03005E2E6E /* GasWorksPark.json */; };
+		06D7D3B2303D29EA005E2E6E /* EdgewaterHotel.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D385303CFB03005E2E6E /* EdgewaterHotel.json */; };
+		06D7D3B3303D29EA005E2E6E /* KirklandCommute.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D387303CFB03005E2E6E /* KirklandCommute.json */; };
+		06D7D3B4303D29EA005E2E6E /* SeattleCoffeeShops.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38C303CFB03005E2E6E /* SeattleCoffeeShops.json */; };
+		06D7D3B5303D29EA005E2E6E /* SLUSaladsDirections.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38E303CFB03005E2E6E /* SLUSaladsDirections.json */; };
+		06D7D3B6303D29EA005E2E6E /* LondonItinerary.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D389303CFB03005E2E6E /* LondonItinerary.json */; };
+		06D7D3B7303D29EA005E2E6E /* MVGoogleGyms.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38A303CFB03005E2E6E /* MVGoogleGyms.json */; };
+		06D7D3B8303D29EA005E2E6E /* SLUSaladsClick.json in Resources */ = {isa = PBXBuildFile; fileRef = 06D7D38D303CFB03005E2E6E /* SLUSaladsClick.json */; };
 		FDC9C4E32F5B9D7000ABA773 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4E22F5B9D7000ABA773 /* Models.swift */; };
 		FDC9C4E42F5B9D7000ABA773 /* ChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4DF2F5B9D7000ABA773 /* ChatApp.swift */; };
 		FDC9C4E52F5B9D7000ABA773 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC9C4E12F5B9D7000ABA773 /* ChatViewModel.swift */; };
@@ -25,6 +52,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		06D7D37E303CFB03005E2E6E /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
+		06D7D380303CFB03005E2E6E /* LatencyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatencyLogger.swift; sourceTree = "<group>"; };
+		06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockScenarioRegistry.swift; sourceTree = "<group>"; };
+		06D7D383303CFB03005E2E6E /* ResourceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceLogger.swift; sourceTree = "<group>"; };
+		06D7D384303CFB03005E2E6E /* TestCasesMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCasesMenuView.swift; sourceTree = "<group>"; };
+		06D7D385303CFB03005E2E6E /* EdgewaterHotel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EdgewaterHotel.json; sourceTree = "<group>"; };
+		06D7D386303CFB03005E2E6E /* GasWorksPark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = GasWorksPark.json; sourceTree = "<group>"; };
+		06D7D387303CFB03005E2E6E /* KirklandCommute.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = KirklandCommute.json; sourceTree = "<group>"; };
+		06D7D388303CFB03005E2E6E /* LePetiteAcademy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LePetiteAcademy.json; sourceTree = "<group>"; };
+		06D7D389303CFB03005E2E6E /* LondonItinerary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LondonItinerary.json; sourceTree = "<group>"; };
+		06D7D38A303CFB03005E2E6E /* MVGoogleGyms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MVGoogleGyms.json; sourceTree = "<group>"; };
+		06D7D38B303CFB03005E2E6E /* NYCAttractions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NYCAttractions.json; sourceTree = "<group>"; };
+		06D7D38C303CFB03005E2E6E /* SeattleCoffeeShops.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SeattleCoffeeShops.json; sourceTree = "<group>"; };
+		06D7D38D303CFB03005E2E6E /* SLUSaladsClick.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SLUSaladsClick.json; sourceTree = "<group>"; };
+		06D7D38E303CFB03005E2E6E /* SLUSaladsDirections.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SLUSaladsDirections.json; sourceTree = "<group>"; };
+		06D7D38F303CFB03005E2E6E /* SLUSaladsVegan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SLUSaladsVegan.json; sourceTree = "<group>"; };
 		FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "A2UI-ExampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD8193352F749D4A001C0D09 /* A2UI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "A2UI-Example-Info.plist"; sourceTree = "<group>"; };
 		FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "A2UI-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,23 +97,54 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06250BF72FC7D25D009091F1 /* GoogleMapsA2UI in Frameworks */,
+				06D7D379303CF72A005E2E6E /* GoogleMapsA2UI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06D7D377303CF72A005E2E6E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		06D7D390303CFB03005E2E6E /* testdata */ = {
+			isa = PBXGroup;
+			children = (
+				06D7D385303CFB03005E2E6E /* EdgewaterHotel.json */,
+				06D7D386303CFB03005E2E6E /* GasWorksPark.json */,
+				06D7D387303CFB03005E2E6E /* KirklandCommute.json */,
+				06D7D388303CFB03005E2E6E /* LePetiteAcademy.json */,
+				06D7D389303CFB03005E2E6E /* LondonItinerary.json */,
+				06D7D38A303CFB03005E2E6E /* MVGoogleGyms.json */,
+				06D7D38B303CFB03005E2E6E /* NYCAttractions.json */,
+				06D7D38C303CFB03005E2E6E /* SeattleCoffeeShops.json */,
+				06D7D38D303CFB03005E2E6E /* SLUSaladsClick.json */,
+				06D7D38E303CFB03005E2E6E /* SLUSaladsDirections.json */,
+				06D7D38F303CFB03005E2E6E /* SLUSaladsVegan.json */,
+			);
+			path = testdata;
+			sourceTree = "<group>";
+		};
 		FDC9C4C72F5B9CB800ABA773 = {
 			isa = PBXGroup;
 			children = (
+				06D7D37E303CFB03005E2E6E /* ChatService.swift */,
+				06D7D380303CFB03005E2E6E /* LatencyLogger.swift */,
+				06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */,
+				06D7D383303CFB03005E2E6E /* ResourceLogger.swift */,
+				06D7D384303CFB03005E2E6E /* TestCasesMenuView.swift */,
+				06D7D390303CFB03005E2E6E /* testdata */,
 				FD8193352F749D4A001C0D09 /* A2UI-Example-Info.plist */,
-				FDC9C4E82F5B9DE300ABA773 /* Resources */,
 				FDC9C4DF2F5B9D7000ABA773 /* ChatApp.swift */,
 				FDC9C4E02F5B9D7000ABA773 /* ChatView.swift */,
 				FDC9C4E12F5B9D7000ABA773 /* ChatViewModel.swift */,
 				FDC9C4E22F5B9D7000ABA773 /* Models.swift */,
 				FD3276DC2F7B9B3B007E25E3 /* A2UI-ExampleUITests */,
+				06D7D377303CF72A005E2E6E /* Frameworks */,
 				FDC9C4D12F5B9CB800ABA773 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,13 +156,6 @@
 				FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		FDC9C4E82F5B9DE300ABA773 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -131,7 +198,7 @@
 			);
 			name = "A2UI-Example";
 			packageProductDependencies = (
-				06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */,
+				06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */,
 			);
 			productName = "A2UI-Example";
 			productReference = FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */;
@@ -167,7 +234,7 @@
 			mainGroup = FDC9C4C72F5B9CB800ABA773;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
+				06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDC9C4D12F5B9CB800ABA773 /* Products */;
@@ -185,6 +252,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06D7D3A3303D019F005E2E6E /* SLUSaladsVegan.json in Resources */,
+				06D7D3A4303D019F005E2E6E /* SLUSaladsDirections.json in Resources */,
+				06D7D3A5303D019F005E2E6E /* NYCAttractions.json in Resources */,
+				06D7D3A6303D019F005E2E6E /* GasWorksPark.json in Resources */,
+				06D7D3A7303D019F005E2E6E /* SLUSaladsClick.json in Resources */,
+				06D7D3A8303D019F005E2E6E /* LondonItinerary.json in Resources */,
+				06D7D3A9303D019F005E2E6E /* MVGoogleGyms.json in Resources */,
+				06D7D3AA303D019F005E2E6E /* KirklandCommute.json in Resources */,
+				06D7D3AB303D019F005E2E6E /* EdgewaterHotel.json in Resources */,
+				06D7D3AC303D019F005E2E6E /* SeattleCoffeeShops.json in Resources */,
+				06D7D3AD303D019F005E2E6E /* LePetiteAcademy.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +270,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06D7D3AE303D29EA005E2E6E /* LePetiteAcademy.json in Resources */,
+				06D7D3AF303D29EA005E2E6E /* SLUSaladsVegan.json in Resources */,
+				06D7D3B0303D29EA005E2E6E /* NYCAttractions.json in Resources */,
+				06D7D3B1303D29EA005E2E6E /* GasWorksPark.json in Resources */,
+				06D7D3B2303D29EA005E2E6E /* EdgewaterHotel.json in Resources */,
+				06D7D3B3303D29EA005E2E6E /* KirklandCommute.json in Resources */,
+				06D7D3B4303D29EA005E2E6E /* SeattleCoffeeShops.json in Resources */,
+				06D7D3B5303D29EA005E2E6E /* SLUSaladsDirections.json in Resources */,
+				06D7D3B6303D29EA005E2E6E /* LondonItinerary.json in Resources */,
+				06D7D3B7303D29EA005E2E6E /* MVGoogleGyms.json in Resources */,
+				06D7D3B8303D29EA005E2E6E /* SLUSaladsClick.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +300,11 @@
 			files = (
 				FDC9C4E32F5B9D7000ABA773 /* Models.swift in Sources */,
 				FDC9C4E42F5B9D7000ABA773 /* ChatApp.swift in Sources */,
+				06D7D39E303CFB03005E2E6E /* LatencyLogger.swift in Sources */,
+				06D7D39F303CFB03005E2E6E /* ResourceLogger.swift in Sources */,
+				06D7D3A0303CFB03005E2E6E /* MockScenarioRegistry.swift in Sources */,
+				06D7D3A1303CFB03005E2E6E /* ChatService.swift in Sources */,
+				06D7D3A2303CFB03005E2E6E /* TestCasesMenuView.swift in Sources */,
 				FDC9C4E52F5B9D7000ABA773 /* ChatViewModel.swift in Sources */,
 				FDC9C4E72F5B9D7000ABA773 /* ChatView.swift in Sources */,
 			);
@@ -484,16 +578,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
+		06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../a2ui/client/ios/GoogleMapsA2UI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		06250BF62FC7D25D009091F1 /* GoogleMapsA2UI */ = {
+		06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 06250BF52FC7D25D009091F1 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
+			package = 06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
 			productName = GoogleMapsA2UI;
 		};
 /* End XCSwiftPackageProductDependency section */
