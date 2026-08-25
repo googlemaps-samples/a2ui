@@ -128,13 +128,19 @@ class MainActivity : AppCompatActivity() {
     buttonSend.setOnClickListener {
       val messageText = editTextMessage.text.toString().trim()
       if (messageText.isNotEmpty()) {
-        val radioGroundingVertex =
-          findViewById<android.widget.RadioButton>(R.id.radioGroundingVertex)
-        viewModel.sendMessage(
-          messageText,
-          radioGroundingVertex.isChecked,
-          switchCannedServer.isChecked,
-        )
+        val radioAgentVertex = findViewById<android.widget.RadioButton>(R.id.radioAgentVertex)
+        val radioAgentTemplate = findViewById<android.widget.RadioButton>(R.id.radioAgentTemplate)
+
+        val agentType =
+          if (radioAgentVertex.isChecked) {
+            com.example.maui.AgentType.VERTEX
+          } else if (radioAgentTemplate.isChecked) {
+            com.example.maui.AgentType.TEMPLATE
+          } else {
+            com.example.maui.AgentType.LITE
+          }
+
+        viewModel.sendMessage(messageText, agentType, switchCannedServer.isChecked)
         editTextMessage.text.clear()
       }
     }

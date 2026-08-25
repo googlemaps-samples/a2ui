@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+from typing import Optional
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
@@ -33,8 +34,9 @@ from a2a.utils import (
 from a2a.utils.errors import ServerError
 
 from a2ui.a2a.extension import try_activate_a2ui_extension
-from python_agent.agent import MAUIAgent
-from python_agent.agent_with_grounding import MAUIAgentWithGrounding
+from agent import MAUIAgent
+from agent_with_grounding import MAUIAgentWithGrounding
+from agent_with_templates import MAUIAgentWithTemplates
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +45,14 @@ class MAUIAgentExecutor(AgentExecutor):
   """MAUI AgentExecutor Example."""
 
   def __init__(
-      self, default_agent: MAUIAgent, grounding_agent: MAUIAgentWithGrounding
+      self,
+      default_agent: MAUIAgent,
+      grounding_agent: MAUIAgentWithGrounding,
+      template_agent: Optional[MAUIAgentWithTemplates] = None,
   ):
     self._default_agent = default_agent
     self._grounding_agent = grounding_agent
+    self._template_agent = template_agent
 
   async def execute(
       self,
@@ -95,6 +101,15 @@ class MAUIAgentExecutor(AgentExecutor):
       )
       agent_to_use = self._grounding_agent
       query = query[len("[GROUNDING]") :].strip()
+    elif query.startswith("[TEMPLATE]"):
+      if not self._template_agent:
+        raise UnsupportedOperationError("Template Agent is not configured.")
+      logger.info(
+          "--- AGENT_EXECUTOR: Prefix [TEMPLATE] detected. Using Template"
+          " Agent. ---"
+      )
+      agent_to_use = self._template_agent
+      query = query[len("[TEMPLATE]") :].strip()
     else:
       logger.info(
           "--- AGENT_EXECUTOR: No prefix detected. Using Default Agent. ---"

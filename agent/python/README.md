@@ -45,6 +45,47 @@ variables to be set:
     This will automatically resolve dependencies, install them in a local
     virtual environment, and start the A2A server on port 10002.
 
+## Agent Modes & Configuration
+
+The sample server supports 3 agent backends configured via `--agent` or the
+`A2UI_DEFAULT_AGENT` environment variable:
+
+Agent Mode                       | CLI Flag / Env Option                                 | Description
+:------------------------------- | :---------------------------------------------------- | :----------
+**Template Agent (Recommended)** | `--agent TEMPLATE`<br>`A2UI_DEFAULT_AGENT=TEMPLATE`   | Low-latency template agent with fast intent classification (`LOCAL_SEARCH`, `DIRECTIONS`) and structured parameter merging.
+**Base Agent**                   | `--agent BASE`<br>`A2UI_DEFAULT_AGENT=BASE`           | Standard dynamic UI agent generating unconstrained A2UI component trees.
+**Grounding Agent**              | `--agent GROUNDING`<br>`A2UI_DEFAULT_AGENT=GROUNDING` | Vertex AI Maps Grounding agent.
+
+### Running with Template Agent
+
+```bash
+A2UI_DEFAULT_AGENT=TEMPLATE \
+GEMINI_API_KEY="<YOUR_KEY>" \
+GOOGLE_MAPS_API_KEY="<YOUR_KEY>" \
+uv run python __main__.py --host 127.0.0.1 --port 10002
+```
+
+### Multi-Agent Query Prefixes
+
+You can test specific agent implementations against a running server using
+prompt prefixes:
+
+*   `[TEMPLATE] <query>` ➔ Routes directly to `MAUIAgentWithTemplates` (e.g.
+    `[TEMPLATE] Coffee shops near Pike Place`).
+*   `[GROUNDING] <query>` ➔ Routes directly to `MAUIAgentWithGrounding` (e.g.
+    `[GROUNDING] Hotels in Bellevue`).
+*   `<query>` (no prefix) ➔ Routes to the configured default agent.
+
+### Fallback Modes
+
+Set `A2UI_FALLBACK_MODE` to control behavior when a query cannot be fulfilled by
+a static template:
+
+*   `A2UI_FALLBACK_MODE=TEXT` (Default) ➔ Fast grounded plain text / markdown
+    response with Grounding Lite tool assistance.
+*   `A2UI_FALLBACK_MODE=DYNAMIC` ➔ Falls back to full dynamic multi-turn A2UI
+    component generation.
+
 To run the frontend, follow the instructions in
 [../../client/web/react/README.md](../../client/web/react/README.md)
 

@@ -46,11 +46,21 @@ class ChatViewModel(
     resourceLogger.startLogging(viewModelScope)
   }
 
-  fun sendMessage(text: String, isGrounding: Boolean = false, bypassCanned: Boolean = false) {
+  fun sendMessage(
+    text: String,
+    agentType: com.example.maui.AgentType = com.example.maui.AgentType.LITE,
+    bypassCanned: Boolean = false,
+  ) {
     currentRequestJob?.cancel()
     currentAgentTextIndex = null
     currentAgentA2UIIndex = null
-    val serverMessageText = if (isGrounding) "[GROUNDING] $text" else text
+    val serverMessageText =
+      when (agentType) {
+        com.example.maui.AgentType.VERTEX -> "[GROUNDING] $text"
+        com.example.maui.AgentType.TEMPLATE -> "[TEMPLATE] $text"
+        com.example.maui.AgentType.LITE -> text
+      }
+
     addMessage(ChatMessage.Text(text, true))
     val jsonObject =
       JSONObject().apply {
