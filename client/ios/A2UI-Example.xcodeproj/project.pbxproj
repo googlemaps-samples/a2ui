@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06D7D379303CF72A005E2E6E /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */; };
+		0686BC60303E3D7200D716B2 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */; };
+		0686BC61303E3F8D00D716B2 /* MockScenarioRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */; };
 		06D7D39E303CFB03005E2E6E /* LatencyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D380303CFB03005E2E6E /* LatencyLogger.swift */; };
 		06D7D39F303CFB03005E2E6E /* ResourceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D383303CFB03005E2E6E /* ResourceLogger.swift */; };
 		06D7D3A0303CFB03005E2E6E /* MockScenarioRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */; };
@@ -97,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06D7D379303CF72A005E2E6E /* GoogleMapsA2UI in Frameworks */,
+				0686BC60303E3D7200D716B2 /* GoogleMapsA2UI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +199,7 @@
 			);
 			name = "A2UI-Example";
 			packageProductDependencies = (
-				06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */,
+				0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */,
 			);
 			productName = "A2UI-Example";
 			productReference = FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */;
@@ -234,7 +235,7 @@
 			mainGroup = FDC9C4C72F5B9CB800ABA773;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
+				0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDC9C4D12F5B9CB800ABA773 /* Products */;
@@ -291,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0686BC61303E3F8D00D716B2 /* MockScenarioRegistry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,16 +580,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
+		0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../a2ui/client/ios/GoogleMapsA2UI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		06D7D378303CF72A005E2E6E /* GoogleMapsA2UI */ = {
+		0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 06D7D376303CF70D005E2E6E /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
+			package = 0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
 			productName = GoogleMapsA2UI;
 		};
 /* End XCSwiftPackageProductDependency section */
