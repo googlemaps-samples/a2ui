@@ -16,8 +16,11 @@
 
 package com.example.maui.data
 
+import com.example.maui.GroundingSource
+
 data class AgentResponse(
   val conversationalText: String,
   val a2uiJson: String,
   val isCanned: Boolean = false,
+  val sources: List<GroundingSource> = emptyList(),
 )

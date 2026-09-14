@@ -140,16 +140,13 @@ class ChatRepository(private val context: Context) {
           it.readText()
         }
       val mapObj = JSONObject(mappingJson)
-      for (key in mapObj.keys()) {
-        if (key == text) {
-          val value = mapObj.getString(key)
-          val correctValue =
-            if (value.startsWith("prompt_")) "canned_responses/$value"
-            else value.replace("canned_prompts", "canned_responses")
-          val jsonString =
-            applicationContext.assets.open(correctValue).bufferedReader().use { it.readText() }
-          return JSONObject(jsonString)
-        }
+      if (mapObj.has(text)) {
+        val filename = mapObj.getString(text)
+        val jsonString =
+          applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
+            it.readText()
+          }
+        return JSONObject(jsonString)
       }
     } catch (e: Exception) {
       Log.e(TAG, "Error loading mapping.json or canned response", e)
@@ -227,6 +224,54 @@ class ChatRepository(private val context: Context) {
     return textDelta
   }
 
+  fun parseSourcesFromJsonString(jsonString: String): List<com.example.maui.GroundingSource> {
+    val sources = mutableListOf<com.example.maui.GroundingSource>()
+    try {
+      val root = JSONObject(jsonString)
+      root.optJSONArray("groundingSources")?.let { parseSourcesArray(it, sources) }
+      root.optJSONObject("data")?.optJSONArray("groundingSources")?.let {
+        parseSourcesArray(it, sources)
+      }
+      root.optJSONArray("parts")?.let { parts ->
+        for (i in 0 until parts.length()) {
+          val p = parts.optJSONObject(i) ?: continue
+          p.optJSONObject("data")?.optJSONArray("groundingSources")?.let {
+            parseSourcesArray(it, sources)
+          }
+          p.optJSONArray("groundingSources")?.let { parseSourcesArray(it, sources) }
+        }
+      }
+      root.optJSONObject("status")?.optJSONObject("message")?.optJSONArray("parts")?.let { parts ->
+        for (i in 0 until parts.length()) {
+          val p = parts.optJSONObject(i) ?: continue
+          p.optJSONObject("data")?.optJSONArray("groundingSources")?.let {
+            parseSourcesArray(it, sources)
+          }
+          p.optJSONArray("groundingSources")?.let { parseSourcesArray(it, sources) }
+        }
+      }
+    } catch (e: Exception) {
+      Log.d(TAG, "Error parsing sources: ${e.message}")
+    }
+    return sources
+  }
+
+  private fun parseSourcesArray(
+    arr: JSONArray,
+    out: MutableList<com.example.maui.GroundingSource>,
+  ) {
+    for (i in 0 until arr.length()) {
+      val item = arr.optJSONObject(i) ?: continue
+      val title = item.optString("title")
+      val url = item.optString("url")
+      if (title.isNotEmpty() && url.isNotEmpty()) {
+        val type = item.optString("type", "place")
+        val placeId = if (item.has("placeId")) item.optString("placeId") else null
+        out.add(com.example.maui.GroundingSource(title, url, type, placeId))
+      }
+    }
+  }
+
   fun callPythonServer(userMessage: JSONObject): Flow<Result<AgentResponse>> =
     flow {
         val textStr = userMessage.optString("text")
@@ -235,7 +280,12 @@ class ChatRepository(private val context: Context) {
 
         if (cannedResponse != null) {
           delay(2000) // Simulate network delay
-          emit(Result.success(AgentResponse("", cannedResponse.toString(), isCanned = true)))
+          val cannedSources = parseSourcesFromJsonString(cannedResponse.toString())
+          emit(
+            Result.success(
+              AgentResponse("", cannedResponse.toString(), isCanned = true, sources = cannedSources)
+            )
+          )
           return@flow
         }
 
@@ -272,7 +322,12 @@ class ChatRepository(private val context: Context) {
                     if (textDelta.isNotEmpty()) {
                       globalSseAccumulator.append(textDelta)
                     }
-                    emit(Result.success(AgentResponse(globalSseAccumulator.toString(), data)))
+                    val sources = parseSourcesFromJsonString(data)
+                    emit(
+                      Result.success(
+                        AgentResponse(globalSseAccumulator.toString(), data, sources = sources)
+                      )
+                    )
                   }
                 }
               }
@@ -284,7 +339,8 @@ class ChatRepository(private val context: Context) {
                 val finalJson =
                   if (resultObj is JSONObject) resultObj.toString()
                   else if (resultObj is String) resultObj else jsonResponse.toString()
-                emit(Result.success(AgentResponse("", finalJson)))
+                val sources = parseSourcesFromJsonString(finalJson)
+                emit(Result.success(AgentResponse("", finalJson, sources = sources)))
               } catch (e: Exception) {
                 emit(Result.failure(Exception("Error parsing JSON: ${e.message}")))
               }

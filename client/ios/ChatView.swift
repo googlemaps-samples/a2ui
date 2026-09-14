@@ -151,21 +151,35 @@ struct MessageRow: View {
   let message: ChatMessage
 
   var body: some View {
-    HStack {
-      switch message.kind {
-      case .text(let content, let isUser):
-        if isUser { Spacer() }
+    VStack(alignment: .leading, spacing: 6) {
+      HStack {
+        switch message.kind {
+        case .text(let content, let isUser):
+          if isUser {
+            Spacer()
 
-        Text(content)
-          .padding(12)
-          .background(isUser ? Color.blue : Color(UIColor.systemGray5))
-          .foregroundColor(isUser ? .white : .primary)
-          .clipShape(ChatBubbleShape(isUser: isUser))
+            Text(content)
+              .padding(12)
+              .background(Color.blue)
+              .foregroundColor(.white)
+              .clipShape(ChatBubbleShape(isUser: true))
+          } else {
+            Text(content)
+              .font(.body)
+              .foregroundColor(.primary)
+              .padding(.horizontal, 4)
+              .padding(.vertical, 8)
 
-        if !isUser { Spacer() }
+            Spacer()
+          }
 
-      case .a2uiView(_, let view):
-        view
+        case .a2uiView(_, let view):
+          view
+        }
+      }
+
+      if !message.sources.isEmpty {
+        GroundingSourcesView(sources: message.sources)
       }
     }
   }
