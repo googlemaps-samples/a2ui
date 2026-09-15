@@ -87,8 +87,14 @@ class ChatViewModel(
         result
           .onSuccess { agentResponse ->
             removeLastLoadingMessage()
+            val sources =
+              if (agentResponse.sources.isNotEmpty()) {
+                agentResponse.sources
+              } else {
+                repository.parseSourcesFromJsonString(agentResponse.a2uiJson)
+              }
             if (agentResponse.isCanned) {
-              processJsonResponse(JSONObject(agentResponse.a2uiJson))
+              processJsonResponse(JSONObject(agentResponse.a2uiJson), sources)
             } else {
               if (agentResponse.conversationalText.isNotEmpty()) {
                 val textUpdate =
@@ -97,10 +103,10 @@ class ChatViewModel(
                       "parts",
                       JSONArray().put(JSONObject().put("text", agentResponse.conversationalText)),
                     )
-                processJsonResponse(textUpdate)
+                processJsonResponse(textUpdate, sources)
               }
               if (agentResponse.a2uiJson.isNotEmpty()) {
-                processJsonResponse(JSONObject(agentResponse.a2uiJson))
+                processJsonResponse(JSONObject(agentResponse.a2uiJson), sources)
               }
             }
           }
@@ -126,7 +132,11 @@ class ChatViewModel(
     }
   }
 
-  private fun processJsonResponse(json: JSONObject) {
+  private fun processJsonResponse(
+    rawJson: JSONObject,
+    sources: List<com.example.maui.GroundingSource> = emptyList(),
+  ) {
+    val json = rawJson.optJSONObject("result") ?: rawJson
     if (json.has("error")) {
       val error = json.opt("error")
       val errorMsg =
@@ -174,11 +184,20 @@ class ChatViewModel(
         if (finalConversationalText.isNotEmpty()) {
           currentAgentTextIndex?.let { idx ->
             if (idx < mutableList.size) {
-              mutableList[idx] = ChatMessage.Text(finalConversationalText, false)
+              val oldMsg = mutableList[idx] as? ChatMessage.Text
+              val currentSources =
+                if (sources.isNotEmpty()) sources else (oldMsg?.sources ?: emptyList())
+              mutableList[idx] =
+                ChatMessage.Text(
+                  text = finalConversationalText,
+                  isUser = false,
+                  sources = currentSources,
+                  id = oldMsg?.id ?: java.util.UUID.randomUUID().toString(),
+                )
             }
           }
             ?: run {
-              mutableList.add(ChatMessage.Text(finalConversationalText, false))
+              mutableList.add(ChatMessage.Text(finalConversationalText, false, sources = sources))
               currentAgentTextIndex = mutableList.size - 1
             }
         }
@@ -186,19 +205,46 @@ class ChatViewModel(
           currentAgentA2UIIndex?.let { idx ->
             if (idx < mutableList.size) {
               val oldMsg = mutableList[idx] as? ChatMessage.GmpA2UIView
+              val currentSources =
+                if (sources.isNotEmpty()) sources else (oldMsg?.sources ?: emptyList())
               mutableList[idx] =
                 ChatMessage.GmpA2UIView(
-                  finalA2uiJson,
-                  oldMsg?.startTime ?: System.currentTimeMillis(),
+                  a2uiJsonString = finalA2uiJson,
+                  startTime = oldMsg?.startTime ?: System.currentTimeMillis(),
+                  sources = currentSources,
+                  id = oldMsg?.id ?: java.util.UUID.randomUUID().toString(),
                 )
             }
           }
             ?: run {
               val gmpViewStartTime = System.currentTimeMillis()
-              mutableList.add(ChatMessage.GmpA2UIView(finalA2uiJson, gmpViewStartTime))
+              mutableList.add(
+                ChatMessage.GmpA2UIView(finalA2uiJson, gmpViewStartTime, sources = sources)
+              )
               currentAgentA2UIIndex = mutableList.size - 1
             }
         }
+        mutableList.toList()
+      }
+    } else if (sources.isNotEmpty()) {
+      _uiState.update { currentList ->
+        val mutableList = currentList.toMutableList()
+        currentAgentA2UIIndex?.let { idx ->
+          if (idx < mutableList.size) {
+            val oldMsg = mutableList[idx] as? ChatMessage.GmpA2UIView
+            if (oldMsg != null) {
+              mutableList[idx] = oldMsg.copy(sources = sources)
+            }
+          }
+        }
+          ?: currentAgentTextIndex?.let { idx ->
+            if (idx < mutableList.size) {
+              val oldMsg = mutableList[idx] as? ChatMessage.Text
+              if (oldMsg != null) {
+                mutableList[idx] = oldMsg.copy(sources = sources)
+              }
+            }
+          }
         mutableList.toList()
       }
     }
