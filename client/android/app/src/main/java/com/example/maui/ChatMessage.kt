@@ -16,10 +16,33 @@
 
 package com.example.maui
 
+import java.util.UUID
+
+data class GroundingSource(
+  val title: String,
+  val url: String,
+  val type: String = "place",
+  val placeId: String? = null,
+)
+
 sealed class ChatMessage {
-  data class Text(val text: String, val isUser: Boolean) : ChatMessage()
+  abstract val id: String
 
-  data class GmpA2UIView(val a2uiJsonString: String, val startTime: Long? = null) : ChatMessage()
+  data class Text(
+    val text: String,
+    val isUser: Boolean,
+    val sources: List<GroundingSource> = emptyList(),
+    override val id: String = UUID.randomUUID().toString(),
+  ) : ChatMessage()
 
-  object Loading : ChatMessage()
+  data class GmpA2UIView(
+    val a2uiJsonString: String,
+    val startTime: Long? = null,
+    val sources: List<GroundingSource> = emptyList(),
+    override val id: String = UUID.randomUUID().toString(),
+  ) : ChatMessage()
+
+  object Loading : ChatMessage() {
+    override val id: String = "loading"
+  }
 }

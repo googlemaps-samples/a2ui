@@ -25,6 +25,14 @@ enum AgentType: String, CaseIterable, Identifiable {
   var id: Self { self }
 }
 
+struct GroundingSource: Identifiable, Codable, Hashable {
+  var id: String { url }
+  var title: String
+  var url: String
+  var type: String? = "place"
+  var placeId: String? = nil
+}
+
 struct ChatMessage: Identifiable {
   var id = UUID()
 
@@ -34,15 +42,17 @@ struct ChatMessage: Identifiable {
   }
 
   var kind: Kind
+  var sources: [GroundingSource] = []
 
   /// Creates a text-based chat message.
   ///
   /// - Parameters:
   ///   - content: The text content of the message.
   ///   - isUser: A boolean indicating whether the message is from the user (`true`) or the agent (`false`).
+  ///   - sources: Optional list of grounding sources associated with this response.
   /// - Returns: A new `ChatMessage` instance.
-  static func text(content: String, isUser: Bool) -> ChatMessage {
-    return ChatMessage(kind: .text(content: content, isUser: isUser))
+  static func text(content: String, isUser: Bool, sources: [GroundingSource] = []) -> ChatMessage {
+    return ChatMessage(kind: .text(content: content, isUser: isUser), sources: sources)
   }
 
   /// Creates an A2UI view-based chat message.
@@ -50,8 +60,11 @@ struct ChatMessage: Identifiable {
   /// - Parameters:
   ///   - type: A string identifier for the A2UI type.
   ///   - view: The underlying SwiftUI `AnyView` representing the rendered A2UI.
+  ///   - sources: Optional list of grounding sources associated with this response.
   /// - Returns: A new `ChatMessage` instance.
-  static func a2uiView(type: String, _ view: AnyView) -> ChatMessage {
-    return ChatMessage(kind: .a2uiView(type: type, view: view))
+  static func a2uiView(type: String, _ view: AnyView, sources: [GroundingSource] = [])
+    -> ChatMessage
+  {
+    return ChatMessage(kind: .a2uiView(type: type, view: view), sources: sources)
   }
 }
