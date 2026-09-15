@@ -65,7 +65,6 @@ actor ChatService: ChatServiceProtocol {
   private let appName = "restaurant_finder"
 
   private var activeSessionID: String?
-  private var useSSEProtocol = false
   private let contextID = UUID().uuidString
 
   func sendMessage(text: String, agentType: AgentType) async throws
@@ -104,13 +103,13 @@ actor ChatService: ChatServiceProtocol {
     return try await callPythonServer(userMessage: payload)
   }
 
-  private func discoverProtocol() async throws {
+  private func initializeSession() async throws {
     #if DEBUG
       if ProcessInfo.processInfo.environment["UI_TEST_MOCK_SCENARIO"] != nil { return }
       if UserDefaults.standard.bool(forKey: MockScenarioRegistry.useCannedResponsesKey) { return }
     #endif
 
-    if activeSessionID != nil || (!useSSEProtocol && activeSessionID != nil) {
+    if activeSessionID != nil {
       return
     }
 
@@ -138,16 +137,13 @@ actor ChatService: ChatServiceProtocol {
       let id = json["id"] as? String
     {
       self.activeSessionID = id
-      self.useSSEProtocol = true
-    } else {
-      self.useSSEProtocol = false
     }
   }
 
   private func callPythonServer(userMessage: [String: Any]) async throws -> AsyncThrowingStream<
     ParsedA2AEvent, Swift.Error
   > {
-    try await discoverProtocol()
+    try await initializeSession()
 
     var parts: [[String: Any]] = []
     if let text = userMessage["text"] as? String {
@@ -157,47 +153,28 @@ actor ChatService: ChatServiceProtocol {
     }
 
     var request: URLRequest
-    if self.useSSEProtocol {
-      let body: [String: Any] = [
-        "appName": self.appName,
-        "userId": "user",
-        "sessionId": self.activeSessionID ?? "",
-        "newMessage": [
+    let body: [String: Any] = [
+      "jsonrpc": "2.0",
+      "method": "message/stream",
+      "id": 1,
+      "sessionId": self.activeSessionID ?? "",
+      "params": [
+        "message": [
           "role": "user",
+          "messageId": UUID().uuidString,
+          "contextId": self.contextID,
           "parts": parts,
-        ],
-      ]
-      var urlString = "\(self.baseUrl)/run_sse"
-      if self.activeServer == .remote {
-        urlString += "?key=\(self.apiKey)"
-      }
-      guard let url = URL(string: urlString) else { throw URLError(.badURL) }
-      request = URLRequest(url: url)
-      request.timeoutInterval = 120
-      request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-    } else {
-      let body: [String: Any] = [
-        "jsonrpc": "2.0",
-        "method": "message/send",
-        "id": 1,
-        "params": [
-          "message": [
-            "role": "user",
-            "messageId": UUID().uuidString,
-            "contextId": self.contextID,
-            "parts": parts,
-          ]
-        ],
-      ]
-      var urlString = self.baseUrl
-      if self.activeServer == .remote {
-        urlString += "?key=\(self.apiKey)"
-      }
-      guard let url = URL(string: urlString) else { throw URLError(.badURL) }
-      request = URLRequest(url: url)
-      request.timeoutInterval = 120
-      request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        ]
+      ],
+    ]
+    var urlString = self.baseUrl
+    if self.activeServer == .remote {
+      urlString += "?key=\(self.apiKey)"
     }
+    guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+    request = URLRequest(url: url)
+    request.timeoutInterval = 120
+    request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -247,64 +224,89 @@ actor ChatService: ChatServiceProtocol {
       #endif
 
       let startTime = Date()
-      let isSSE = self.useSSEProtocol
-      let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-        let latencyMs = Int(Date().timeIntervalSince(startTime) * 1000)
-        guard let self = self else { return }
+      let fetchTask = Task {
+        do {
+          let (bytes, response) = try await URLSession.shared.bytes(for: request)
+          let latencyMs = Int(Date().timeIntervalSince(startTime) * 1000)
 
-        if let error = error {
-          LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "ERROR")
-          continuation.finish(throwing: error)
-          return
-        }
-
-        guard let data = data else {
-          LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "ERROR")
-          continuation.finish(throwing: Error.noData)
-          return
-        }
-
-        LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "SUCCESS")
-
-        let responseString = String(data: data, encoding: .utf8) ?? ""
-        if isSSE || responseString.contains("data: ") {
-          let events = responseString.components(separatedBy: "\n")
-            .filter { $0.hasPrefix("data: ") }
-            .map { $0.replacingOccurrences(of: "data: ", with: "") }
-
-          for event in events {
-            if let eventData = event.data(using: .utf8),
-              let rawJson = try? JSONSerialization.jsonObject(with: eventData) as? [String: Any]
-            {
-
-              do {
-                try self.processParsedJSON(rawJson, continuation: continuation)
-              } catch {
-                continuation.finish(throwing: error)
-                return
-              }
-            }
+          guard let httpResponse = response as? HTTPURLResponse else {
+            LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "ERROR")
+            continuation.finish(throwing: Error.custom("Invalid HTTP response"))
+            return
           }
-        } else {
-          if let rawJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            let payload = (rawJson["result"] as? [String: Any]) ?? rawJson
 
+          guard (200...299).contains(httpResponse.statusCode) else {
+            LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "ERROR")
+            continuation.finish(
+              throwing: Error.custom("HTTP Error: status code \(httpResponse.statusCode)"))
+            return
+          }
+
+          LatencyLogger.shared.logLatency(type: .server, latencyMs: latencyMs, status: "SUCCESS")
+
+          for try await line in bytes.lines {
             do {
-              try self.processParsedJSON(payload, continuation: continuation)
+              if let parsedParts = try Self.parseSSELine(line) {
+                for part in parsedParts {
+                  continuation.yield(part)
+                }
+              }
             } catch {
               continuation.finish(throwing: error)
               return
             }
           }
+
+          continuation.finish()
+        } catch {
+          LatencyLogger.shared.logLatency(
+            type: .server, latencyMs: Int(Date().timeIntervalSince(startTime) * 1000),
+            status: "ERROR")
+          continuation.finish(throwing: error)
         }
-        continuation.finish()
       }
-      task.resume()
 
       continuation.onTermination = { @Sendable _ in
-        task.cancel()
+        fetchTask.cancel()
       }
     }
+  }
+
+  nonisolated static func parseSSELine(_ line: String) throws -> [ParsedA2AEvent]? {
+    guard line.hasPrefix("data: ") else { return nil }
+    let eventString = String(line.dropFirst(6)).trimmingCharacters(in: .whitespaces)
+    guard !eventString.isEmpty else { return nil }
+
+    guard let eventData = eventString.data(using: .utf8),
+      let rawJson = try? JSONSerialization.jsonObject(with: eventData) as? [String: Any]
+    else {
+      return nil
+    }
+
+    let payload = (rawJson["result"] as? [String: Any]) ?? rawJson
+
+    let kind = payload["kind"] as? String
+    if kind == "task" {
+      return nil
+    }
+
+    var finalPayloadToParse = payload
+    if kind == "status-update",
+      let status = payload["status"] as? [String: Any],
+      let message = status["message"] as? [String: Any]
+    {
+      finalPayloadToParse = message
+    }
+
+    if let errorDict = finalPayloadToParse["error"] as? [String: Any],
+      let errorMessage = errorDict["message"] as? String
+    {
+      throw Error.custom(errorMessage)
+    } else if let errorObj = finalPayloadToParse["error"], !(errorObj is NSNull) {
+      throw Error.custom(String(describing: errorObj))
+    }
+
+    return try A2AResponseParser.parse(finalPayloadToParse)
   }
 
   nonisolated private func processParsedJSON(
