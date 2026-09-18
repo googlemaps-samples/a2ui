@@ -19,16 +19,22 @@ package com.example.maui.data
 import android.content.Context
 import android.util.Log
 import com.example.maui.BuildConfig
+import com.google.android.libraries.mapsplatform.a2ui.A2AResponseParser
+import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -87,7 +93,7 @@ class ChatRepository(private val context: Context) {
   private val contextId = UUID.randomUUID().toString()
 
   suspend fun discoverProtocol(): Boolean =
-    kotlinx.coroutines.withContext(Dispatchers.IO) {
+    withContext(Dispatchers.IO) {
       discoveryMutex.withLock {
         if (hasDiscoveredProtocol) {
           return@withContext useSseProtocol ?: false
@@ -140,16 +146,13 @@ class ChatRepository(private val context: Context) {
           it.readText()
         }
       val mapObj = JSONObject(mappingJson)
-      for (key in mapObj.keys()) {
-        if (key == text) {
-          val value = mapObj.getString(key)
-          val correctValue =
-            if (value.startsWith("prompt_")) "canned_responses/$value"
-            else value.replace("canned_prompts", "canned_responses")
-          val jsonString =
-            applicationContext.assets.open(correctValue).bufferedReader().use { it.readText() }
-          return JSONObject(jsonString)
-        }
+      if (mapObj.has(text)) {
+        val filename = mapObj.getString(text)
+        val jsonString =
+          applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
+            it.readText()
+          }
+        return JSONObject(jsonString)
       }
     } catch (e: Exception) {
       Log.e(TAG, "Error loading mapping.json or canned response", e)
@@ -157,77 +160,49 @@ class ChatRepository(private val context: Context) {
     return null
   }
 
-  private fun buildRequest(useSse: Boolean, partsArray: JSONArray): Request {
+  private fun buildRequest(partsArray: JSONArray): Request {
     val requestBuilder = Request.Builder().addHeader("Content-Type", "application/json")
 
     if (activeServer == ServerType.DEMO) {
       requestBuilder.addHeader("X-A2A-Extensions", "https://a2ui.org/a2a-extension/a2ui/v0.9")
     }
 
-    if (useSse) {
-      val json =
-        JSONObject().apply {
-          put("appName", appName)
-          put("userId", "user")
-          put("sessionId", activeSessionId ?: "")
-          put(
-            "newMessage",
-            JSONObject().apply {
-              put("role", "user")
-              put("parts", partsArray)
-            },
-          )
+    val json =
+      JSONObject().apply {
+        put("jsonrpc", JSON_RPC_VERSION)
+        put("method", "message/stream")
+        put("id", 1)
+        if (activeSessionId != null) {
+          put("sessionId", activeSessionId)
         }
-      val body = json.toString().toRequestBody("application/json".toMediaType())
-      requestBuilder.url("$baseUrl/run_sse").post(body)
-    } else {
-      val json =
-        JSONObject().apply {
-          put("jsonrpc", JSON_RPC_VERSION)
-          put("method", "message/send")
-          put("id", 1)
-          put(
-            "params",
-            JSONObject().apply {
-              put(
-                "message",
-                JSONObject().apply {
-                  put("role", "user")
-                  put("messageId", UUID.randomUUID().toString())
-                  put("contextId", contextId)
-                  put("parts", partsArray)
-                },
-              )
-            },
-          )
-        }
-      val body = json.toString().toRequestBody("application/json".toMediaType())
-      requestBuilder.url("$baseUrl/?key=$apiKey").post(body)
+        put(
+          "params",
+          JSONObject().apply {
+            put(
+              "message",
+              JSONObject().apply {
+                put("role", "user")
+                put("messageId", UUID.randomUUID().toString())
+                put("contextId", contextId)
+                put("parts", partsArray)
+              },
+            )
+          },
+        )
+      }
+    val body = json.toString().toRequestBody("application/json".toMediaType())
+
+    val urlString = if (activeServer == ServerType.DEMO) "$baseUrl/?key=$apiKey" else baseUrl
+    requestBuilder.url(urlString).post(body)
+
+    if (activeServer == ServerType.VANILLA) {
+      requestBuilder.addHeader("x-api-key", apiKey)
     }
 
     return requestBuilder.build()
   }
 
-  private fun parseSseEvent(data: String): String {
-    var textDelta = ""
-    try {
-      val jsonObj = JSONObject(data)
-      val parts = jsonObj.optJSONArray("parts")
-      if (parts != null) {
-        for (i in 0 until parts.length()) {
-          val p = parts.optJSONObject(i)
-          if (p != null && p.has("text")) {
-            textDelta += p.optString("text")
-          }
-        }
-      }
-    } catch (e: Exception) {
-      Log.e(TAG, "Error parsing SSE data: $data", e)
-    }
-    return textDelta
-  }
-
-  fun callPythonServer(userMessage: JSONObject): Flow<Result<AgentResponse>> =
+  fun callPythonServer(userMessage: JSONObject): Flow<Result<List<ParsedA2AEvent>>> =
     flow {
         val textStr = userMessage.optString("text")
         val bypassCanned = userMessage.optBoolean("bypassCanned", false)
@@ -235,11 +210,13 @@ class ChatRepository(private val context: Context) {
 
         if (cannedResponse != null) {
           delay(2000) // Simulate network delay
-          emit(Result.success(AgentResponse("", cannedResponse.toString(), isCanned = true)))
+          val payload = cannedResponse.optJSONObject("result") ?: cannedResponse
+          val parsed = A2AResponseParser.parse(payload)
+          emit(Result.success(parsed))
           return@flow
         }
 
-        val useSse = discoverProtocol()
+        discoverProtocol() // Just to ensure session is logged if needed
         val partsArray = JSONArray()
         if (userMessage.has("text")) {
           partsArray.put(JSONObject().apply { put("text", userMessage.optString("text")) })
@@ -251,7 +228,7 @@ class ChatRepository(private val context: Context) {
           )
         }
 
-        val request = buildRequest(useSse, partsArray)
+        val request = buildRequest(partsArray)
 
         try {
           client.newCall(request).execute().use { response ->
@@ -260,33 +237,78 @@ class ChatRepository(private val context: Context) {
               return@use
             }
 
-            if (useSse || response.header("Content-Type")?.contains("text/event-stream") == true) {
-              val source = response.body?.source() ?: return@use
-              val globalSseAccumulator = StringBuilder()
-              while (!source.exhausted()) {
-                val line = source.readUtf8Line()
-                if (line != null && line.startsWith(SSE_DATA_PREFIX)) {
-                  val data = line.removePrefix(SSE_DATA_PREFIX)
-                  if (data.isNotEmpty() && data != SSE_DONE_MESSAGE) {
-                    val textDelta = parseSseEvent(data)
-                    if (textDelta.isNotEmpty()) {
-                      globalSseAccumulator.append(textDelta)
-                    }
-                    emit(Result.success(AgentResponse(globalSseAccumulator.toString(), data)))
-                  }
+            val source = response.body?.source() ?: return@use
+
+            val buffer = StringBuilder()
+
+            suspend fun emitParsedData(rawJson: JSONObject) {
+              val payload = rawJson.optJSONObject("result") ?: rawJson
+              val errorObj = rawJson.opt("error") ?: payload.opt("error")
+              if (errorObj != null) {
+                val errorMessage =
+                  (errorObj as? JSONObject)?.optString("message")?.takeIf { it.isNotEmpty() }
+                    ?: errorObj.toString()
+                emit(Result.failure(Exception("Server Error: $errorMessage")))
+                return
+              }
+
+              val kind = payload.optString("kind")
+              if (kind == "task") return
+
+              var finalPayloadToParse = payload
+              if (kind == "status-update") {
+                val statusObj = payload.optJSONObject("status")
+                val messageObj = statusObj?.optJSONObject("message")
+                if (messageObj != null) {
+                  finalPayloadToParse = messageObj
                 }
               }
-            } else {
-              val responseData = response.body?.string() ?: return@use
-              try {
-                val jsonResponse = JSONObject(responseData)
-                val resultObj = jsonResponse.opt("result")
-                val finalJson =
-                  if (resultObj is JSONObject) resultObj.toString()
-                  else if (resultObj is String) resultObj else jsonResponse.toString()
-                emit(Result.success(AgentResponse("", finalJson)))
-              } catch (e: Exception) {
-                emit(Result.failure(Exception("Error parsing JSON: ${e.message}")))
+
+              val parsedEvents = A2AResponseParser.parse(finalPayloadToParse)
+              emit(Result.success(parsedEvents))
+            }
+
+            while (!source.exhausted()) {
+              if (!currentCoroutineContext().isActive) {
+                break
+              }
+              val line = source.readUtf8Line()
+
+              if (line != null) {
+                var dataString = ""
+                val isSseMetadataOrComment =
+                  line.startsWith("id:") ||
+                    line.startsWith("event:") ||
+                    line.startsWith(":") ||
+                    line.startsWith("retry:")
+
+                if (line.startsWith(SSE_DATA_PREFIX)) {
+                  dataString = line.removePrefix(SSE_DATA_PREFIX)
+                  if (dataString == SSE_DONE_MESSAGE) {
+                    break
+                  }
+                } else if (line.isNotEmpty() && !isSseMetadataOrComment) {
+                  dataString = line
+                }
+
+                if (dataString.isNotEmpty()) {
+                  buffer.append(dataString).append("\n")
+                  val currentBufferString = buffer.toString().trim()
+
+                  if (currentBufferString.startsWith("{")) {
+                    try {
+                      val rawJson = JSONObject(currentBufferString)
+                      buffer.clear()
+                      emitParsedData(rawJson)
+                    } catch (e: CancellationException) {
+                      throw e
+                    } catch (e: Exception) {
+                      // If JSONObject threw JSONException, keep the incomplete fragment in buffer
+                      // to reassemble with the next line. If JSONObject succeeded, buffer is
+                      // already cleared above.
+                    }
+                  }
+                }
               }
             }
           }
