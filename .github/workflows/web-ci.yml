@@ -22,6 +22,7 @@ on:
 
 jobs:
   build:
+    name: Web CI / build
     runs-on: ubuntu-latest
     permissions:
       contents: read
