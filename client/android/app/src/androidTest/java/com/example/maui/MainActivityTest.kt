@@ -16,123 +16,106 @@
 
 package com.example.maui
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.swipeUp
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.maui.A2UIWebViewAssertions.Components
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/** UI test suite for the A2UI Android sample application. */
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
-  @get:Rule val activityRule = ActivityScenarioRule(MainActivity::class.java)
+  @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
 
+  // ===============================================================================================
+  // Core architectural UI tests
+  // ===============================================================================================
+
+  /** Verifies the WebView height dynamically expands to fit its web content. */
   @Test
-  fun testSeattleCoffeeShopsCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText("Show me 5 coffee shops near South Lake Union in Seattle"),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  fun dynamicHeight_expandsToFitContent() {
+    runTestCase(SEATTLE_COFFEE_SHOPS_PROMPT)
+    A2UIWebViewAssertions.assertDynamicHeightMatchesContent(composeTestRule)
   }
 
+  // ===============================================================================================
+  // Canned response tests
+  // ===============================================================================================
+
+  /** Verifies Seattle Coffee Shops renders Map View and Place Details. */
   @Test
-  fun testEdgewaterHotelCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(replaceText("Is the Edgewater Hotel in Seattle a good hotel?"), closeSoftKeyboard())
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  fun seattleCoffeeShops_rendersMapAndPlaceDetails() {
+    runAndVerifyCannedTestCase(SEATTLE_COFFEE_SHOPS_PROMPT)
   }
 
+  /** Verifies Edgewater Hotel renders Map View and Place Details. */
   @Test
-  fun testKirklandCommuteCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText(
-          "How long will it take to commute to Google Kirkland office from downtown Redmond during my morning rush hour commute?"
-        ),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  fun edgewaterHotel_rendersMapAndPlaceDetails() {
+    runAndVerifyCannedTestCase(EDGEWATER_HOTEL_PROMPT)
   }
 
+  /** Verifies Kirkland Commute renders Map View and Place Details. */
   @Test
-  fun testSLUSaladsCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText(
-          "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the 2nd one (starting from the Google South Lake Union WLK building)"
-        ),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  fun kirklandCommute_rendersMapAndPlaceDetails() {
+    runAndVerifyCannedTestCase(KIRKLAND_COMMUTE_PROMPT)
   }
 
+  /** Verifies SLU Salads (Directions) renders Map View and Place Details. */
   @Test
-  fun testLondonItineraryCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText("Give me a 3 day itinerary for a family of 3 traveling to London"),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
+  fun sluSaladsDirections_rendersMapAndPlaceDetails() {
+    runAndVerifyCannedTestCase(SLU_SALADS_DIRECTIONS_PROMPT)
+  }
 
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
+  /** Verifies London Itinerary renders Map View and Place Details. */
+  @Test
+  fun londonItinerary_rendersMapAndPlaceDetails() {
+    runAndVerifyCannedTestCase(LONDON_ITINERARY_PROMPT)
+  }
 
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
+  // ===============================================================================================
+  // Helpers
+  // ===============================================================================================
 
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  /** Sends [prompt] and waits for the resulting A2UI surface to attach and lay out. */
+  private fun runTestCase(prompt: String) {
+    composeTestRule.onNodeWithTag(EDIT_TEXT_TAG).performTextReplacement(prompt)
+    composeTestRule.onNodeWithTag(SEND_BUTTON_TAG).performClick()
+    A2UIWebViewAssertions.awaitSurface(composeTestRule)
+  }
+
+  /** Verifies a canned response renders Map View and Place Details. */
+  private fun runAndVerifyCannedTestCase(prompt: String) {
+    runTestCase(prompt)
+    A2UIWebViewAssertions.assertComponentRendered(composeTestRule, Components.MAP)
+    A2UIWebViewAssertions.assertComponentRendered(composeTestRule, Components.PLACE_DETAILS)
+  }
+
+  private companion object {
+    /** `testTag`s declared in `MainActivity.kt`. */
+    const val EDIT_TEXT_TAG = "editTextMessage"
+
+    const val SEND_BUTTON_TAG = "buttonSend"
+
+    /** Prompts matching the canned responses in `//third_party/googlemaps_samples/a2ui:BUILD`. */
+    const val SEATTLE_COFFEE_SHOPS_PROMPT =
+      "Show me 5 coffee shops near South Lake Union in Seattle"
+
+    const val EDGEWATER_HOTEL_PROMPT = "Is the Edgewater Hotel in Seattle a good hotel?"
+
+    const val KIRKLAND_COMMUTE_PROMPT =
+      "How long will it take to commute to Google Kirkland office from downtown Redmond during " +
+        "my morning rush hour commute?"
+
+    const val SLU_SALADS_DIRECTIONS_PROMPT =
+      "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the " +
+        "2nd one (starting from the Google South Lake Union WLK building)"
+
+    const val LONDON_ITINERARY_PROMPT =
+      "Give me a 3 day itinerary for a family of 3 traveling to London"
   }
 }
