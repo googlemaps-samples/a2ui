@@ -22,7 +22,9 @@ on:
 
 jobs:
   build:
+    name: Web CI / build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: read
