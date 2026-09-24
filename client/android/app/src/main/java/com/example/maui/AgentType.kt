@@ -16,8 +16,7 @@
 
 package com.example.maui
 
-enum class AgentType {
-  LITE,
-  VERTEX,
-  TEMPLATE,
+enum class AgentType(val serverPrefix: String) {
+  LITE("[TEMPLATE] "),
+  VERTEX("[GROUNDING_TEMPLATE] "),
 }

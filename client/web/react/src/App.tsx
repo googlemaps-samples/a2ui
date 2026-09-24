@@ -36,14 +36,8 @@ const GROUNDING_OPTIONS: readonly GroundingOption[] = [
   {id: 'vertex', label: 'Grounding with Google Maps (Vertex)'},
 ];
 
-function getAgentPrefix(
-  grounding: GroundingType,
-  useTemplates: boolean,
-): string {
-  if (grounding === 'vertex') {
-    return useTemplates ? '[GROUNDING_TEMPLATE] ' : '[GROUNDING] ';
-  }
-  return useTemplates ? '[TEMPLATE] ' : '[MCP] ';
+function getAgentPrefix(grounding: GroundingType): string {
+  return grounding === 'vertex' ? '[GROUNDING_TEMPLATE] ' : '[TEMPLATE] ';
 }
 
 /**
@@ -56,7 +50,6 @@ function App() {
   const [useStreaming, setUseStreaming] = useState(DEFAULT_USE_STREAMING);
   const [selectedGrounding, setSelectedGrounding] =
     useState<GroundingType>('mcp');
-  const [useTemplates, setUseTemplates] = useState<boolean>(true);
 
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [input, setInput] = useState('');
@@ -112,7 +105,7 @@ function App() {
     if (!input.trim() || isRequesting) return;
 
     const messageText = input.trim();
-    const prefix = getAgentPrefix(selectedGrounding, useTemplates);
+    const prefix = getAgentPrefix(selectedGrounding);
     const serverText = `${prefix}${messageText}`;
 
     setInput('');
@@ -271,16 +264,6 @@ function App() {
                 </label>
               ))}
             </div>
-            <label className="agent-option">
-              <input
-                type="checkbox"
-                name="use-templates"
-                checked={useTemplates}
-                onChange={(e) => setUseTemplates(e.target.checked)}
-                disabled={isRequesting}
-              />
-              <span>Use Templates</span>
-            </label>
           </div>
 
           <textarea
