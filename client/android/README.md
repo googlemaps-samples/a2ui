@@ -45,6 +45,10 @@ In `app/src/main/java/com/example/maui/MainActivity.kt`, verify the flags match 
 *   `DeviceType.PHYSICAL`: Use when testing on real Android devices. *(Note: If using a local Demo Server on a physical device, run `adb reverse tcp:10002 tcp:10002`)*
 *   `DeviceType.EMULATOR`: Use when testing on emulators.
 
+#### Streaming vs. Non-Streaming (`useStreaming`)
+*   By default, the app uses SSE streaming (`ChatRepository.DEFAULT_USE_STREAMING = true` in `ChatRepository.kt`, sending JSON-RPC `message/stream`).
+*   You can toggle between streaming (`message/stream`) and non-streaming (`message/send`) at runtime using the **Streaming** switch in the control bar (`MainActivity.kt`), or change `DEFAULT_USE_STREAMING` in `ChatRepository.kt`.
+
 ### 4. Build and Run the App
 
 1. Build and install the app (Debug version):
