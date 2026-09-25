@@ -1,3 +1,17 @@
+// Copyright 2026 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import {
   A2UIClient,
   A2UIRenderer,
@@ -7,6 +21,29 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import './App.css';
 
+// --- Configuration ---
+const DEFAULT_USE_STREAMING = true;
+
+type AgentType = 'mcp' | 'vertex' | 'template';
+
+interface AgentOption {
+  readonly id: AgentType;
+  readonly label: string;
+  readonly prefix: string;
+}
+
+const AGENT_OPTIONS: readonly AgentOption[] = [
+  {id: 'mcp', label: 'Grounding Lite (MCP)', prefix: ''},
+  {
+    id: 'vertex',
+    label: 'Grounding with Google Maps (Vertex)',
+    prefix: '[GROUNDING] ',
+  },
+  {id: 'template', label: 'Template Agent', prefix: '[TEMPLATE] '},
+];
+
+const DEFAULT_AGENT_TYPE: AgentType = 'mcp';
+
 /**
  * Main Application component that demonstrates A2UI integration in a React environment.
  * It manages a chat interface with a timeline of text messages and A2UI interactive surfaces.
@@ -14,6 +51,9 @@ import './App.css';
 function App() {
   // --- UI State ---
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const [useStreaming, setUseStreaming] = useState(DEFAULT_USE_STREAMING);
+  const [selectedAgentType, setSelectedAgentType] =
+    useState<AgentType>(DEFAULT_AGENT_TYPE);
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [input, setInput] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -68,6 +108,11 @@ function App() {
     if (!input.trim() || isRequesting) return;
 
     const messageText = input.trim();
+    const selectedAgent = AGENT_OPTIONS.find(
+      (option) => option.id === selectedAgentType,
+    );
+    const serverText = `${selectedAgent?.prefix ?? ''}${messageText}`;
+
     setInput('');
     setIsRequesting(true);
 
@@ -76,8 +121,19 @@ function App() {
     setTimeline([...rendererRef.current.timeline]);
 
     try {
+      if (useStreaming) {
+        const streamedMessages: any[] = [];
+        for await (const chunk of clientRef.current.sendStream(serverText)) {
+          rendererRef.current.processResponse([chunk as any]);
+          if (chunk.type === 'a2ui') {
+            streamedMessages.push(chunk.message);
+            setLastResponseJson(JSON.stringify(streamedMessages, null, 2));
+          }
+          setTimeline([...rendererRef.current.timeline]);
+        }
+      } else {
       // 2. Send the message to the A2A agent via A2UIClient
-      const response = await clientRef.current.send(messageText);
+      const response = await clientRef.current.send(serverText);
 
       // 3. Process the response (which may contain text and/or A2UI data)
       rendererRef.current.processResponse(response);
@@ -92,6 +148,7 @@ function App() {
 
       // 4. Synchronize the React state with the renderer's updated timeline
       setTimeline([...rendererRef.current.timeline]);
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
       rendererRef.current.processResponse([
@@ -126,6 +183,15 @@ function App() {
       <aside className={`chat-panel ${isChatOpen ? 'open' : 'closed'}`}>
         <div className="chat-header">
           <h2>Chat</h2>
+
+          <label className="streaming-toggle">
+            <input
+              type="checkbox"
+              checked={useStreaming}
+              onChange={(e) => setUseStreaming(e.target.checked)}
+            />
+            Streaming
+          </label>
 
           <button
             className="close-chat-btn"
@@ -184,6 +250,24 @@ function App() {
 
         {/* --- Chat Input Area --- */}
         <div className="chat-input-area">
+          <div
+            className="agent-selector"
+            role="radiogroup"
+            aria-label="Agent type">
+            {AGENT_OPTIONS.map((option) => (
+              <label key={option.id} className="agent-option">
+                <input
+                  type="radio"
+                  name="agent-type"
+                  value={option.id}
+                  checked={selectedAgentType === option.id}
+                  onChange={() => setSelectedAgentType(option.id)}
+                  disabled={isRequesting}
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
           <textarea
             className="chat-textarea"
             placeholder="Type a message..."
