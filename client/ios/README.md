@@ -59,6 +59,8 @@ If your `activeServer` is set to `.demo` (This means the server is running on yo
 ### 4. Using the Demo
 
 Once the app is running:
+
+*   **Toggle Streaming vs. Non-Streaming (`useStreaming`):** Streaming (`message/stream`) is enabled by default (`ChatService.defaultUseStreaming = true` in `ChatService.swift`). You can switch between incremental SSE streaming (`message/stream`) and single-response non-streaming (`message/send`) at runtime using the **Streaming** toggle above the agent selector in `ChatView.swift`, or change the default `defaultUseStreaming` boolean in `ChatService.swift`.
 *   **Select agent Mode:** Use the radio buttons above the chat bar to toggle between **Grounding Lite (MCP)**, **Grounding with Google Maps (Vertex)** and **Template**.
 *   **Use Canned Prompts:** Tap the **Flask** or **List** icons next to the text input for a menu of pre-written test scenarios.
 *   **Send Custom Prompts:** Type a query into the text box (e.g., *"Show me 3 Chinese restaurants in Seattle"*) and hit send.
