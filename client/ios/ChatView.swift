@@ -85,6 +85,10 @@ struct ChatView: View {
         }
       }
 
+      Toggle("Streaming", isOn: $viewModel.useStreaming)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 4)
+
       AgentSelector(selection: $viewModel.selectedAgentType)
 
       Divider()
