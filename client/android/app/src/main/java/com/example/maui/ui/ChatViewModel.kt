@@ -17,10 +17,14 @@
 package com.example.maui.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.maui.AgentType
 import com.example.maui.ChatMessage
 import com.example.maui.data.ChatRepository
 import com.example.maui.telemetry.ResourceLogger
+import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent
+import java.util.UUID
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,75 +43,82 @@ class ChatViewModel(
   val uiState: StateFlow<List<ChatMessage>> = _uiState.asStateFlow()
 
   private var currentRequestJob: Job? = null
-  private var currentAgentTextIndex: Int? = null
-  private var currentAgentA2UIIndex: Int? = null
+  private var currentStreamingMessageId: String? = null
+  private var currentUpdateComponentsMsg: JSONObject? = null
+  private val currentUpdateDataModelMsgs = mutableListOf<JSONObject>()
+  private val currentStreamingText = StringBuilder()
+  private var currentStreamingTextId: String? = null
+  private var lastUseStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING
 
   init {
     resourceLogger.startLogging(viewModelScope)
   }
 
+  private fun resetStreamingStateAndCancelJob() {
+    currentRequestJob?.cancel()
+    currentStreamingMessageId = null
+    currentUpdateComponentsMsg = null
+    currentUpdateDataModelMsgs.clear()
+    currentStreamingText.clear()
+    currentStreamingTextId = null
+  }
+
   fun sendMessage(
     text: String,
-    agentType: com.example.maui.AgentType = com.example.maui.AgentType.LITE,
+    agentType: AgentType = AgentType.TEMPLATE,
     bypassCanned: Boolean = false,
+    useStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING,
   ) {
-    currentRequestJob?.cancel()
-    currentAgentTextIndex = null
-    currentAgentA2UIIndex = null
+    resetStreamingStateAndCancelJob()
+    lastUseStreaming = useStreaming
     val serverMessageText =
       when (agentType) {
-        com.example.maui.AgentType.VERTEX -> "[GROUNDING] $text"
-        com.example.maui.AgentType.TEMPLATE -> "[TEMPLATE] $text"
-        com.example.maui.AgentType.LITE -> text
+        AgentType.VERTEX -> "[GROUNDING] $text"
+        AgentType.TEMPLATE -> "[TEMPLATE] $text"
+        AgentType.LITE -> "[MCP] $text"
       }
 
-    addMessage(ChatMessage.Text(text, true))
+    addMessage(ChatMessage.Text(text = text, isUser = true))
     val jsonObject =
       JSONObject().apply {
         put("text", serverMessageText)
         put("bypassCanned", bypassCanned)
+        put("useStreaming", useStreaming)
       }
     sendPayload(jsonObject)
   }
 
   fun handleAgentAction(actionName: String, contextJson: String) {
+    resetStreamingStateAndCancelJob()
     val userAction =
       JSONObject().apply {
         put("name", actionName)
         put("context", JSONObject(contextJson))
       }
-    val jsonObject = JSONObject().apply { put("userAction", userAction) }
+    val jsonObject =
+      JSONObject().apply {
+        put("userAction", userAction)
+        put("useStreaming", lastUseStreaming)
+      }
     sendPayload(jsonObject)
   }
 
   private fun sendPayload(jsonObject: JSONObject) {
     addMessage(ChatMessage.Loading)
     currentRequestJob = viewModelScope.launch {
-      repository.callPythonServer(jsonObject).collect { result ->
-        result
-          .onSuccess { agentResponse ->
-            removeLastLoadingMessage()
-            if (agentResponse.isCanned) {
-              processJsonResponse(JSONObject(agentResponse.a2uiJson))
-            } else {
-              if (agentResponse.conversationalText.isNotEmpty()) {
-                val textUpdate =
-                  JSONObject()
-                    .put(
-                      "parts",
-                      JSONArray().put(JSONObject().put("text", agentResponse.conversationalText)),
-                    )
-                processJsonResponse(textUpdate)
-              }
-              if (agentResponse.a2uiJson.isNotEmpty()) {
-                processJsonResponse(JSONObject(agentResponse.a2uiJson))
-              }
+      try {
+        repository.callPythonServer(jsonObject).collect { result ->
+          result
+            .onSuccess { parsedEvents -> handleParsedEvents(parsedEvents) }
+            .onFailure { exception ->
+              removeLastLoadingMessage()
+              addMessage(
+                ChatMessage.Text(text = exception.message ?: "Unknown Error", isUser = false)
+              )
             }
-          }
-          .onFailure { exception ->
-            removeLastLoadingMessage()
-            addMessage(ChatMessage.Text(exception.message ?: "Unknown Error", false))
-          }
+        }
+      } finally {
+        removeLastLoadingMessage()
       }
     }
   }
@@ -126,81 +137,147 @@ class ChatViewModel(
     }
   }
 
-  private fun processJsonResponse(json: JSONObject) {
-    if (json.has("error")) {
-      val error = json.opt("error")
-      val errorMsg =
-        if (error is JSONObject) error.optString("message")
-        else error?.toString() ?: "Unknown error"
-      addMessage(ChatMessage.Text("Server Error: $errorMsg", false))
-      return
-    }
+  private fun handleParsedEvents(events: List<ParsedA2AEvent>) {
+    var foundRealContent = false
+    var updatedTextMessage: ChatMessage.Text? = null
+    var updatedMapSpec: Pair<String, String>? = null
+    val deletedMapMessageIds = mutableSetOf<String>()
+    val fallbackStartTime = System.currentTimeMillis()
 
-    val parsedParts =
-      try {
-        com.google.android.libraries.mapsplatform.a2ui.A2AResponseParser.parse(json)
-      } catch (e: Exception) {
-        emptyList<com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent>()
-      }
-
-    var aggregatedText = StringBuilder()
-    var aggregatedJson = JSONArray()
-
-    for (part in parsedParts) {
+    for (part in events) {
       when (part) {
-        is com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent.Text -> {
-          if (aggregatedText.isNotEmpty()) aggregatedText.append("\n")
-          aggregatedText.append(part.text)
-        }
-        is com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent.Data -> {
-          if (part.data != "[]") {
-            try {
-              val array = JSONArray(part.data)
-              for (j in 0 until array.length()) {
-                aggregatedJson.put(array.get(j))
-              }
-            } catch (e: Exception) {}
+        is ParsedA2AEvent.Text -> {
+          if (part.text.isNotEmpty()) {
+            foundRealContent = true
+            currentStreamingText.append(part.text)
+            val fullText = currentStreamingText.toString()
+            if (currentStreamingTextId == null) {
+              currentStreamingTextId = UUID.randomUUID().toString()
+            }
+            updatedTextMessage =
+              ChatMessage.Text(text = fullText, isUser = false, id = currentStreamingTextId!!)
           }
+        }
+        is ParsedA2AEvent.Data -> {
+          val jsonString = part.data
+          if (jsonString.contains(DUMMY_STATUS_TOKEN)) {
+            continue
+          }
+          foundRealContent = true
+
+          try {
+            val incomingArray =
+              if (jsonString.trim().startsWith("[")) {
+                JSONArray(jsonString)
+              } else {
+                JSONArray().put(JSONObject(jsonString))
+              }
+            for (i in 0 until incomingArray.length()) {
+              val a2uiMessage = incomingArray.optJSONObject(i) ?: continue
+              when {
+                a2uiMessage.has(KEY_DELETE_SURFACE) -> {
+                  currentStreamingMessageId?.let { deletedMapMessageIds.add(it) }
+                  currentStreamingMessageId = null
+                  currentUpdateComponentsMsg = null
+                  currentUpdateDataModelMsgs.clear()
+                  updatedMapSpec = null
+                }
+                a2uiMessage.has(KEY_CREATE_SURFACE) -> {
+                  // Omit createSurface so core-shell.ts auto-injects it at index 0
+                  // only when the surface does not exist yet.
+                }
+                a2uiMessage.has(KEY_UPDATE_COMPONENTS) -> {
+                  val componentsArray =
+                    a2uiMessage.optJSONObject(KEY_UPDATE_COMPONENTS)?.optJSONArray(KEY_COMPONENTS)
+                  if (componentsArray != null) {
+                    for (j in 0 until componentsArray.length()) {
+                      val componentJson = componentsArray.optJSONObject(j) ?: continue
+                      if (componentJson.optString(KEY_COMPONENT) == COMPONENT_GOOGLE_MAP) {
+                        if (componentJson.opt(KEY_MARKERS) is JSONObject) {
+                          componentJson.put(KEY_MARKERS, JSONArray())
+                        }
+                        if (componentJson.opt(KEY_ROUTES) is JSONObject) {
+                          componentJson.put(KEY_ROUTES, JSONArray())
+                        }
+                      }
+                    }
+                  }
+                  currentUpdateComponentsMsg = a2uiMessage
+                }
+                a2uiMessage.has(KEY_UPDATE_DATA_MODEL) -> {
+                  currentUpdateDataModelMsgs.add(a2uiMessage)
+                }
+              }
+            }
+          } catch (e: Exception) {
+            // Fallback if jsonString is non-standard
+          }
+
+          val componentsMsg = currentUpdateComponentsMsg ?: continue
+          val outArray = JSONArray()
+          outArray.put(componentsMsg)
+          for (dataModelMessage in currentUpdateDataModelMsgs) {
+            outArray.put(dataModelMessage)
+          }
+          val accumulatedJson = outArray.toString()
+
+          if (currentStreamingMessageId == null) {
+            currentStreamingMessageId = UUID.randomUUID().toString()
+          }
+          updatedMapSpec = Pair(currentStreamingMessageId!!, accumulatedJson)
         }
       }
     }
 
-    val finalConversationalText = aggregatedText.toString()
-    val finalA2uiJson = if (aggregatedJson.length() > 0) aggregatedJson.toString() else ""
+    _uiState.update { currentList ->
+      val mutableList = currentList.toMutableList()
 
-    if (finalConversationalText.isNotEmpty() || finalA2uiJson.isNotEmpty()) {
-      _uiState.update { currentList ->
-        val mutableList = currentList.toMutableList()
-        if (finalConversationalText.isNotEmpty()) {
-          currentAgentTextIndex?.let { idx ->
-            if (idx < mutableList.size) {
-              mutableList[idx] = ChatMessage.Text(finalConversationalText, false)
-            }
-          }
-            ?: run {
-              mutableList.add(ChatMessage.Text(finalConversationalText, false))
-              currentAgentTextIndex = mutableList.size - 1
-            }
-        }
-        if (finalA2uiJson.isNotEmpty() && finalA2uiJson != "[]") {
-          currentAgentA2UIIndex?.let { idx ->
-            if (idx < mutableList.size) {
-              val oldMsg = mutableList[idx] as? ChatMessage.GmpA2UIView
-              mutableList[idx] =
-                ChatMessage.GmpA2UIView(
-                  finalA2uiJson,
-                  oldMsg?.startTime ?: System.currentTimeMillis(),
-                )
-            }
-          }
-            ?: run {
-              val gmpViewStartTime = System.currentTimeMillis()
-              mutableList.add(ChatMessage.GmpA2UIView(finalA2uiJson, gmpViewStartTime))
-              currentAgentA2UIIndex = mutableList.size - 1
-            }
-        }
-        mutableList.toList()
+      if (
+        foundRealContent && mutableList.isNotEmpty() && mutableList.last() is ChatMessage.Loading
+      ) {
+        mutableList.removeAt(mutableList.size - 1)
       }
+
+      if (deletedMapMessageIds.isNotEmpty()) {
+        mutableList.removeAll { (it as? ChatMessage.GmpA2UIView)?.id in deletedMapMessageIds }
+      }
+
+      if (updatedTextMessage != null) {
+        val targetTextIndex = mutableList.indexOfFirst {
+          it is ChatMessage.Text && it.id == updatedTextMessage.id
+        }
+        if (targetTextIndex != -1) {
+          mutableList[targetTextIndex] = updatedTextMessage
+        } else {
+          mutableList.add(updatedTextMessage)
+        }
+      }
+
+      if (updatedMapSpec != null) {
+        val (messageId, accumulatedJson) = updatedMapSpec
+        val targetIndex = mutableList.indexOfFirst {
+          (it as? ChatMessage.GmpA2UIView)?.id == messageId
+        }
+        val existingStartTime =
+          if (targetIndex != -1) {
+            (mutableList[targetIndex] as? ChatMessage.GmpA2UIView)?.startTime
+          } else null
+
+        val newMessage =
+          ChatMessage.GmpA2UIView(
+            a2uiJsonString = accumulatedJson,
+            startTime = existingStartTime ?: fallbackStartTime,
+            id = messageId,
+          )
+
+        if (targetIndex != -1) {
+          mutableList[targetIndex] = newMessage
+        } else {
+          mutableList.add(newMessage)
+        }
+      }
+
+      mutableList.toList()
     }
   }
 
@@ -210,11 +287,22 @@ class ChatViewModel(
   }
 
   companion object {
+    private const val DUMMY_STATUS_TOKEN = "dummy_status"
+    private const val KEY_DELETE_SURFACE = "deleteSurface"
+    private const val KEY_CREATE_SURFACE = "createSurface"
+    private const val KEY_UPDATE_COMPONENTS = "updateComponents"
+    private const val KEY_UPDATE_DATA_MODEL = "updateDataModel"
+    private const val KEY_COMPONENTS = "components"
+    private const val KEY_COMPONENT = "component"
+    private const val COMPONENT_GOOGLE_MAP = "GoogleMap"
+    private const val KEY_MARKERS = "markers"
+    private const val KEY_ROUTES = "routes"
+
     fun provideFactory(
       repository: ChatRepository,
       resourceLogger: ResourceLogger,
-    ): androidx.lifecycle.ViewModelProvider.Factory =
-      object : androidx.lifecycle.ViewModelProvider.Factory {
+    ): ViewModelProvider.Factory =
+      object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
           return ChatViewModel(repository, resourceLogger) as T
