@@ -16,123 +16,64 @@
 
 package com.example.maui
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.swipeUp
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
+import com.example.maui.A2UIWebViewAssertions.Components
+import com.google.testing.junit.testparameterinjector.TestParameter
+import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+/** UI test suite for the A2UI Android sample application. */
+@RunWith(TestParameterInjector::class)
 class MainActivityTest {
 
-  @get:Rule val activityRule = ActivityScenarioRule(MainActivity::class.java)
+  @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
 
   @Test
-  fun testSeattleCoffeeShopsCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText("Show me 5 coffee shops near South Lake Union in Seattle"),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
+  fun dynamicHeight_expandsToFitContent() {
+    sendPromptAndAwaitSurface(CannedResponse.SEATTLE_COFFEE_SHOPS.prompt)
 
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+    A2UIWebViewAssertions.assertDynamicHeightMatchesContent(composeTestRule)
   }
 
   @Test
-  fun testEdgewaterHotelCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(replaceText("Is the Edgewater Hotel in Seattle a good hotel?"), closeSoftKeyboard())
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
+  fun cannedResponse_rendersMapAndPlaceDetails(@TestParameter cannedResponse: CannedResponse) {
+    sendPromptAndAwaitSurface(cannedResponse.prompt)
 
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+    A2UIWebViewAssertions.assertComponentRendered(composeTestRule, Components.MAP)
+    A2UIWebViewAssertions.assertComponentRendered(composeTestRule, Components.PLACE_DETAILS)
   }
 
-  @Test
-  fun testKirklandCommuteCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText(
-          "How long will it take to commute to Google Kirkland office from downtown Redmond during my morning rush hour commute?"
-        ),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  /** Prompts matching the canned responses in `assets/canned_responses/mapping.json`. */
+  enum class CannedResponse(val prompt: String) {
+    SEATTLE_COFFEE_SHOPS("Show me 5 coffee shops near South Lake Union in Seattle"),
+    EDGEWATER_HOTEL("Is the Edgewater Hotel in Seattle a good hotel?"),
+    KIRKLAND_COMMUTE(
+      "How long will it take to commute to Google Kirkland office from downtown Redmond during " +
+        "my morning rush hour commute?"
+    ),
+    SLU_SALADS_DIRECTIONS(
+      "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the " +
+        "2nd one (starting from the Google South Lake Union WLK building)"
+    ),
+    LONDON_ITINERARY("Give me a 3 day itinerary for a family of 3 traveling to London"),
   }
 
-  @Test
-  fun testSLUSaladsCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText(
-          "Show me 5 lunch restaurants with Salads in South Lake Union. Give me directions to the 2nd one (starting from the Google South Lake Union WLK building)"
-        ),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
-
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+  /** Sends [prompt] and waits for the resulting A2UI surface to attach and lay out. */
+  private fun sendPromptAndAwaitSurface(prompt: String) {
+    composeTestRule.onNodeWithTag(EDIT_TEXT_TAG).performTextReplacement(prompt)
+    composeTestRule.onNodeWithTag(SEND_BUTTON_TAG).performClick()
+    A2UIWebViewAssertions.awaitSurface(composeTestRule)
   }
 
-  @Test
-  fun testLondonItineraryCannedResponse() {
-    onView(withId(R.id.editTextMessage))
-      .perform(
-        replaceText("Give me a 3 day itinerary for a family of 3 traveling to London"),
-        closeSoftKeyboard(),
-      )
-    onView(withId(R.id.buttonSend)).perform(click())
-    Thread.sleep(7000)
+  companion object {
+    /** `testTag`s declared in `MainActivity.kt`. */
+    private const val EDIT_TEXT_TAG = "editTextMessage"
 
-    // Verify that the A2UIView container (which renders the mock JSON) is displayed
-    onView(withId(R.id.gmpA2UIView)).check(matches(isDisplayed()))
-
-    // Scroll the recycler view to see the full content
-    onView(withId(R.id.recyclerView)).perform(swipeUp())
-
-    // Pause to let the observer see the final state before the next test starts
-    Thread.sleep(2000)
+    private const val SEND_BUTTON_TAG = "buttonSend"
   }
 }
