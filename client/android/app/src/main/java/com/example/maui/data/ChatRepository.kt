@@ -19,22 +19,30 @@ package com.example.maui.data
 import android.content.Context
 import android.util.Log
 import com.example.maui.BuildConfig
+import com.google.android.libraries.mapsplatform.a2ui.A2AParserException
+import com.google.android.libraries.mapsplatform.a2ui.A2AResponseParser
+import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 
 class ChatRepository(private val context: Context) {
   private val applicationContext = context.applicationContext
@@ -67,14 +75,15 @@ class ChatRepository(private val context: Context) {
 
   val baseUrl: String
     get() =
-      when (activeServer) {
-        ServerType.DEMO -> BuildConfig.GATEWAY_URL
-        ServerType.VANILLA ->
-          when (deviceType) {
-            DeviceType.PHYSICAL -> "http://127.0.0.1:10002"
-            DeviceType.EMULATOR -> "http://10.0.2.2:10002"
-          }
-      }
+      baseUrlOverride
+        ?: when (activeServer) {
+          ServerType.DEMO -> BuildConfig.GATEWAY_URL
+          ServerType.VANILLA ->
+            when (deviceType) {
+              DeviceType.PHYSICAL -> "http://127.0.0.1:10002"
+              DeviceType.EMULATOR -> "http://10.0.2.2:10002"
+            }
+        }
 
   val appName: String
     get() =
@@ -87,7 +96,7 @@ class ChatRepository(private val context: Context) {
   private val contextId = UUID.randomUUID().toString()
 
   suspend fun discoverProtocol(): Boolean =
-    kotlinx.coroutines.withContext(Dispatchers.IO) {
+    withContext(Dispatchers.IO) {
       discoveryMutex.withLock {
         if (hasDiscoveredProtocol) {
           return@withContext useSseProtocol ?: false
@@ -133,22 +142,19 @@ class ChatRepository(private val context: Context) {
     return getCannedResponse(text) != null
   }
 
-  fun getCannedResponse(text: String): JSONObject? {
+  fun getCannedResponse(text: String): String? {
     try {
       val mappingJson =
         applicationContext.assets.open("canned_responses/mapping.json").bufferedReader().use {
           it.readText()
         }
       val mapObj = JSONObject(mappingJson)
-      for (key in mapObj.keys()) {
-        if (key == text) {
-          val value = mapObj.getString(key)
-          val correctValue =
-            if (value.startsWith("prompt_")) "canned_responses/$value"
-            else value.replace("canned_prompts", "canned_responses")
-          val jsonString =
-            applicationContext.assets.open(correctValue).bufferedReader().use { it.readText() }
-          return JSONObject(jsonString)
+      val strippedText =
+        text.removePrefix("[GROUNDING] ").removePrefix("[TEMPLATE] ").removePrefix("[MCP] ")
+      if (mapObj.has(strippedText)) {
+        val filename = mapObj.getString(strippedText)
+        return applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
+          it.readText()
         }
       }
     } catch (e: Exception) {
@@ -157,89 +163,65 @@ class ChatRepository(private val context: Context) {
     return null
   }
 
-  private fun buildRequest(useSse: Boolean, partsArray: JSONArray): Request {
+  private fun buildRequest(
+    partsArray: JSONArray,
+    useStreaming: Boolean = DEFAULT_USE_STREAMING,
+  ): Request {
     val requestBuilder = Request.Builder().addHeader("Content-Type", "application/json")
 
     if (activeServer == ServerType.DEMO) {
       requestBuilder.addHeader("X-A2A-Extensions", "https://a2ui.org/a2a-extension/a2ui/v0.9")
     }
 
-    if (useSse) {
-      val json =
-        JSONObject().apply {
-          put("appName", appName)
-          put("userId", "user")
-          put("sessionId", activeSessionId ?: "")
-          put(
-            "newMessage",
-            JSONObject().apply {
-              put("role", "user")
-              put("parts", partsArray)
-            },
-          )
+    val json =
+      JSONObject().apply {
+        put("jsonrpc", JSON_RPC_VERSION)
+        put("method", rpcMethod(useStreaming))
+        put("id", 1)
+        if (activeSessionId != null) {
+          put("sessionId", activeSessionId)
         }
-      val body = json.toString().toRequestBody("application/json".toMediaType())
-      requestBuilder.url("$baseUrl/run_sse").post(body)
-    } else {
-      val json =
-        JSONObject().apply {
-          put("jsonrpc", JSON_RPC_VERSION)
-          put("method", "message/send")
-          put("id", 1)
-          put(
-            "params",
-            JSONObject().apply {
-              put(
-                "message",
-                JSONObject().apply {
-                  put("role", "user")
-                  put("messageId", UUID.randomUUID().toString())
-                  put("contextId", contextId)
-                  put("parts", partsArray)
-                },
-              )
-            },
-          )
-        }
-      val body = json.toString().toRequestBody("application/json".toMediaType())
-      requestBuilder.url("$baseUrl/?key=$apiKey").post(body)
+        put(
+          "params",
+          JSONObject().apply {
+            put(
+              "message",
+              JSONObject().apply {
+                put("role", "user")
+                put("messageId", UUID.randomUUID().toString())
+                put("contextId", contextId)
+                put("parts", partsArray)
+              },
+            )
+          },
+        )
+      }
+    val body = json.toString().toRequestBody("application/json".toMediaType())
+
+    val urlString = if (activeServer == ServerType.DEMO) "$baseUrl/?key=$apiKey" else baseUrl
+    requestBuilder.url(urlString).post(body)
+
+    if (activeServer == ServerType.VANILLA) {
+      requestBuilder.addHeader("x-api-key", apiKey)
     }
 
     return requestBuilder.build()
   }
 
-  private fun parseSseEvent(data: String): String {
-    var textDelta = ""
-    try {
-      val jsonObj = JSONObject(data)
-      val parts = jsonObj.optJSONArray("parts")
-      if (parts != null) {
-        for (i in 0 until parts.length()) {
-          val p = parts.optJSONObject(i)
-          if (p != null && p.has("text")) {
-            textDelta += p.optString("text")
-          }
-        }
-      }
-    } catch (e: Exception) {
-      Log.e(TAG, "Error parsing SSE data: $data", e)
-    }
-    return textDelta
-  }
-
-  fun callPythonServer(userMessage: JSONObject): Flow<Result<AgentResponse>> =
+  fun callPythonServer(userMessage: JSONObject): Flow<Result<List<ParsedA2AEvent>>> =
     flow {
         val textStr = userMessage.optString("text")
         val bypassCanned = userMessage.optBoolean("bypassCanned", false)
+        val useStreaming = userMessage.optBoolean("useStreaming", DEFAULT_USE_STREAMING)
         val cannedResponse = if (!bypassCanned) getCannedResponse(textStr) else null
 
         if (cannedResponse != null) {
           delay(2000) // Simulate network delay
-          emit(Result.success(AgentResponse("", cannedResponse.toString(), isCanned = true)))
+          emit(Result.success(A2AResponseParser.parse(cannedResponse)))
           return@flow
         }
 
-        val useSse = discoverProtocol()
+        discoverProtocol() // Just to ensure session is logged if needed
         val partsArray = JSONArray()
         if (userMessage.has("text")) {
           partsArray.put(JSONObject().apply { put("text", userMessage.optString("text")) })
@@ -251,7 +233,7 @@ class ChatRepository(private val context: Context) {
           )
         }
 
-        val request = buildRequest(useSse, partsArray)
+        val request = buildRequest(partsArray, useStreaming)
 
         try {
           client.newCall(request).execute().use { response ->
@@ -260,33 +242,74 @@ class ChatRepository(private val context: Context) {
               return@use
             }
 
-            if (useSse || response.header("Content-Type")?.contains("text/event-stream") == true) {
-              val source = response.body?.source() ?: return@use
-              val globalSseAccumulator = StringBuilder()
-              while (!source.exhausted()) {
-                val line = source.readUtf8Line()
-                if (line != null && line.startsWith(SSE_DATA_PREFIX)) {
-                  val data = line.removePrefix(SSE_DATA_PREFIX)
-                  if (data.isNotEmpty() && data != SSE_DONE_MESSAGE) {
-                    val textDelta = parseSseEvent(data)
-                    if (textDelta.isNotEmpty()) {
-                      globalSseAccumulator.append(textDelta)
+            suspend fun emitParsedData(rawJson: String) {
+              val events =
+                try {
+                  A2AResponseParser.parse(rawJson)
+                } catch (e: A2AParserException.ServerError) {
+                  emit(Result.failure(Exception("Server Error: ${e.message}")))
+                  return
+                } catch (e: A2AParserException) {
+                  Log.w(TAG, "Unparseable A2A response", e)
+                  // A single malformed stream event should not end the whole reply.
+                  if (!useStreaming) emit(Result.failure(e))
+                  return
+                }
+              emit(Result.success(events))
+            }
+
+            if (!useStreaming) {
+              val responseBody = response.body?.string() ?: return@use
+              emitParsedData(responseBody)
+              return@use
+            }
+
+            val source = response.body?.source() ?: return@use
+
+            val buffer = StringBuilder()
+
+            while (!source.exhausted()) {
+              if (!currentCoroutineContext().isActive) {
+                break
+              }
+              val line = source.readUtf8Line()
+
+              if (line != null) {
+                var dataString = ""
+                val isSseMetadataOrComment =
+                  line.startsWith("id:") ||
+                    line.startsWith("event:") ||
+                    line.startsWith(":") ||
+                    line.startsWith("retry:")
+
+                if (line.startsWith(SSE_DATA_PREFIX)) {
+                  dataString = line.removePrefix(SSE_DATA_PREFIX)
+                  if (dataString == SSE_DONE_MESSAGE) {
+                    break
+                  }
+                } else if (line.isNotEmpty() && !isSseMetadataOrComment) {
+                  dataString = line
+                }
+
+                if (dataString.isNotEmpty()) {
+                  buffer.append(dataString).append("\n")
+                  val currentBufferString = buffer.toString().trim()
+
+                  if (currentBufferString.startsWith("{")) {
+                    // A payload may span several data lines; wait until the buffer holds a complete
+                    // JSON object before handing it to the parser.
+                    val isComplete =
+                      try {
+                        JSONTokener(currentBufferString).nextValue() is JSONObject
+                      } catch (e: JSONException) {
+                        false
+                      }
+                    if (isComplete) {
+                      buffer.clear()
+                      emitParsedData(currentBufferString)
                     }
-                    emit(Result.success(AgentResponse(globalSseAccumulator.toString(), data)))
                   }
                 }
-              }
-            } else {
-              val responseData = response.body?.string() ?: return@use
-              try {
-                val jsonResponse = JSONObject(responseData)
-                val resultObj = jsonResponse.opt("result")
-                val finalJson =
-                  if (resultObj is JSONObject) resultObj.toString()
-                  else if (resultObj is String) resultObj else jsonResponse.toString()
-                emit(Result.success(AgentResponse("", finalJson)))
-              } catch (e: Exception) {
-                emit(Result.failure(Exception("Error parsing JSON: ${e.message}")))
               }
             }
           }
@@ -297,9 +320,22 @@ class ChatRepository(private val context: Context) {
       .flowOn(Dispatchers.IO)
 
   companion object {
+    const val DEFAULT_USE_STREAMING = true
+
+    fun rpcMethod(useStreaming: Boolean): String =
+      if (useStreaming) "message/stream" else "message/send"
+
     private const val TAG = "ChatRepository"
     private const val SSE_DATA_PREFIX = "data: "
     private const val SSE_DONE_MESSAGE = "[DONE]"
     private const val JSON_RPC_VERSION = "2.0"
+
+    /**
+     * Overrides the backend base URL, e.g. "https://maui-backend.google.com".
+     *
+     * Set by integration tests that drive the app against a server other than the one baked in at
+     * build time. `null`, the default, keeps [BuildConfig.GATEWAY_URL].
+     */
+    @Volatile @JvmStatic var baseUrlOverride: String? = null
   }
 }
