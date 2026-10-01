@@ -1,0 +1,823 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+    "history": [
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "E6C6DCDE-8F82-411D-989A-7F73E342FEFD",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Give me a 3 day itinerary for a family of 3 traveling to London"
+          }
+        ],
+        "role": "user",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "ba711c74-f2c0-459d-b017-0ab67785eebd",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "london-itinerary-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "0bb55232-d122-4f0f-97cf-f3a90c7d3f88",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "london-itinerary-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "itinerary-intro",
+                      "day-1-section",
+                      "day-2-section",
+                      "day-3-section"
+                    ]
+                  },
+                  {
+                    "id": "itinerary-intro",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "London is a fantastic city for families, blending world-class history with interactive fun. Here is a curated 3-day itinerary designed for a family of three to see the highlights without feeling rushed."
+                  },
+                  {
+                    "id": "day-1-section",
+                    "component": "Column",
+                    "children": [
+                      "day-1-text",
+                      "day-1-map",
+                      "day-1-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-1-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 1: Icons of the South Bank\nStart your trip by seeing London's most famous landmarks. The South Bank is pedestrian-friendly and perfect for families.\n\n*   **Morning:** Take a flight on the **London Eye** for 360-degree views of the city. It's best to book in advance!\n*   **Midday:** Walk across Westminster Bridge to see **Big Ben** and the Houses of Parliament up close.\n*   **Afternoon:** Head back to the South Bank to visit the **SEA LIFE London Aquarium**, which is always a hit with kids."
+                  },
+                  {
+                    "id": "day-1-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.502,
+                      "lng": -0.12
+                    },
+                    "zoom": 15,
+                    "markers": [
+                      {
+                        "lat": 51.5033,
+                        "lng": -0.1195,
+                        "label": "London Eye",
+                        "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                      },
+                      {
+                        "lat": 51.5007,
+                        "lng": -0.1246,
+                        "label": "Big Ben",
+                        "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                      },
+                      {
+                        "lat": 51.501558,
+                        "lng": -0.119506,
+                        "label": "SEA LIFE Aquarium",
+                        "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-1-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "eye-card",
+                      "ben-card",
+                      "sea-card"
+                    ]
+                  },
+                  {
+                    "id": "eye-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                  },
+                  {
+                    "id": "ben-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                  },
+                  {
+                    "id": "sea-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                  },
+                  {
+                    "id": "day-2-section",
+                    "component": "Column",
+                    "children": [
+                      "day-2-text",
+                      "day-2-map",
+                      "day-2-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-2-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 2: Discovery in South Kensington\nThis area is home to London's best museums and one of its most beautiful parks.\n\n*   **Morning:** Visit the **Natural History Museum**. The dinosaur gallery is legendary and a must-see for families.\n*   **Afternoon:** Right next door is the **Science Museum**, featuring interactive 'Wonderlab' exhibits for all ages.\n*   **Late Afternoon:** Burn off some energy at **Kensington Gardens**, specifically the Diana Memorial Playground."
+                  },
+                  {
+                    "id": "day-2-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.498,
+                      "lng": -0.176
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 51.496715,
+                        "lng": -0.1763672,
+                        "label": "Natural History Museum",
+                        "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                      },
+                      {
+                        "lat": 51.4975,
+                        "lng": -0.1747,
+                        "label": "Science Museum",
+                        "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                      },
+                      {
+                        "lat": 51.507,
+                        "lng": -0.179,
+                        "label": "Kensington Gardens",
+                        "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-2-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "nhm-card",
+                      "sci-card",
+                      "kg-card"
+                    ]
+                  },
+                  {
+                    "id": "nhm-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                  },
+                  {
+                    "id": "sci-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                  },
+                  {
+                    "id": "kg-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                  },
+                  {
+                    "id": "day-3-section",
+                    "component": "Column",
+                    "children": [
+                      "day-3-text",
+                      "day-3-map",
+                      "day-3-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-3-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 3: History & Indoor Fun\nCombine historic grandeur with some modern excitement.\n\n*   **Morning:** Explore the **Tower of London**. See the Crown Jewels and meet the Yeoman Warders (Beefeaters).\n*   **Midday:** Walk across the iconic **Tower Bridge** for great river views.\n*   **Afternoon:** For something different, visit **Babylon Park London** in Camden—a massive indoor theme park that's perfect if the weather turns 'British'."
+                  },
+                  {
+                    "id": "day-3-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.515,
+                      "lng": -0.1
+                    },
+                    "zoom": 12,
+                    "markers": [
+                      {
+                        "lat": 51.5081,
+                        "lng": -0.0759,
+                        "label": "Tower of London",
+                        "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                      },
+                      {
+                        "lat": 51.5055,
+                        "lng": -0.0754,
+                        "label": "Tower Bridge",
+                        "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                      },
+                      {
+                        "lat": 51.5422,
+                        "lng": -0.1449,
+                        "label": "Babylon Park",
+                        "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-3-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "tower-card",
+                      "bridge-card",
+                      "babylon-card"
+                    ]
+                  },
+                  {
+                    "id": "tower-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                  },
+                  {
+                    "id": "bridge-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                  },
+                  {
+                    "id": "babylon-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "360db222-1a17-43af-8d52-78b9737ef602",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "london-itinerary-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      },
+      {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "959df0eb-bc32-4269-a429-46433244ed0c",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "london-itinerary-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "itinerary-intro",
+                      "day-1-section",
+                      "day-2-section",
+                      "day-3-section"
+                    ]
+                  },
+                  {
+                    "id": "itinerary-intro",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "London is a fantastic city for families, blending world-class history with interactive fun. Here is a curated 3-day itinerary designed for a family of three to see the highlights without feeling rushed."
+                  },
+                  {
+                    "id": "day-1-section",
+                    "component": "Column",
+                    "children": [
+                      "day-1-text",
+                      "day-1-map",
+                      "day-1-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-1-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 1: Icons of the South Bank\nStart your trip by seeing London's most famous landmarks. The South Bank is pedestrian-friendly and perfect for families.\n\n*   **Morning:** Take a flight on the **London Eye** for 360-degree views of the city. It's best to book in advance!\n*   **Midday:** Walk across Westminster Bridge to see **Big Ben** and the Houses of Parliament up close.\n*   **Afternoon:** Head back to the South Bank to visit the **SEA LIFE London Aquarium**, which is always a hit with kids."
+                  },
+                  {
+                    "id": "day-1-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.502,
+                      "lng": -0.12
+                    },
+                    "zoom": 15,
+                    "markers": [
+                      {
+                        "lat": 51.5033,
+                        "lng": -0.1195,
+                        "label": "London Eye",
+                        "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                      },
+                      {
+                        "lat": 51.5007,
+                        "lng": -0.1246,
+                        "label": "Big Ben",
+                        "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                      },
+                      {
+                        "lat": 51.501558,
+                        "lng": -0.119506,
+                        "label": "SEA LIFE Aquarium",
+                        "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-1-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "eye-card",
+                      "ben-card",
+                      "sea-card"
+                    ]
+                  },
+                  {
+                    "id": "eye-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                  },
+                  {
+                    "id": "ben-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                  },
+                  {
+                    "id": "sea-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                  },
+                  {
+                    "id": "day-2-section",
+                    "component": "Column",
+                    "children": [
+                      "day-2-text",
+                      "day-2-map",
+                      "day-2-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-2-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 2: Discovery in South Kensington\nThis area is home to London's best museums and one of its most beautiful parks.\n\n*   **Morning:** Visit the **Natural History Museum**. The dinosaur gallery is legendary and a must-see for families.\n*   **Afternoon:** Right next door is the **Science Museum**, featuring interactive 'Wonderlab' exhibits for all ages.\n*   **Late Afternoon:** Burn off some energy at **Kensington Gardens**, specifically the Diana Memorial Playground."
+                  },
+                  {
+                    "id": "day-2-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.498,
+                      "lng": -0.176
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 51.496715,
+                        "lng": -0.1763672,
+                        "label": "Natural History Museum",
+                        "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                      },
+                      {
+                        "lat": 51.4975,
+                        "lng": -0.1747,
+                        "label": "Science Museum",
+                        "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                      },
+                      {
+                        "lat": 51.507,
+                        "lng": -0.179,
+                        "label": "Kensington Gardens",
+                        "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-2-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "nhm-card",
+                      "sci-card",
+                      "kg-card"
+                    ]
+                  },
+                  {
+                    "id": "nhm-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                  },
+                  {
+                    "id": "sci-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                  },
+                  {
+                    "id": "kg-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                  },
+                  {
+                    "id": "day-3-section",
+                    "component": "Column",
+                    "children": [
+                      "day-3-text",
+                      "day-3-map",
+                      "day-3-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-3-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 3: History & Indoor Fun\nCombine historic grandeur with some modern excitement.\n\n*   **Morning:** Explore the **Tower of London**. See the Crown Jewels and meet the Yeoman Warders (Beefeaters).\n*   **Midday:** Walk across the iconic **Tower Bridge** for great river views.\n*   **Afternoon:** For something different, visit **Babylon Park London** in Camden—a massive indoor theme park that's perfect if the weather turns 'British'."
+                  },
+                  {
+                    "id": "day-3-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.515,
+                      "lng": -0.1
+                    },
+                    "zoom": 12,
+                    "markers": [
+                      {
+                        "lat": 51.5081,
+                        "lng": -0.0759,
+                        "label": "Tower of London",
+                        "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                      },
+                      {
+                        "lat": 51.5055,
+                        "lng": -0.0754,
+                        "label": "Tower Bridge",
+                        "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                      },
+                      {
+                        "lat": 51.5422,
+                        "lng": -0.1449,
+                        "label": "Babylon Park",
+                        "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-3-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "tower-card",
+                      "bridge-card",
+                      "babylon-card"
+                    ]
+                  },
+                  {
+                    "id": "tower-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                  },
+                  {
+                    "id": "bridge-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                  },
+                  {
+                    "id": "babylon-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      }
+    ],
+    "id": "b836ef84-d5d4-4cc2-b30e-0271974eeb62",
+    "kind": "task",
+    "status": {
+      "message": {
+        "contextId": "CC896B42-2507-41A3-A5DB-35394856B8A5",
+        "kind": "message",
+        "messageId": "b4e19d87-5394-4290-bd06-280e5aa23292",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "london-itinerary-surface",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "london-itinerary-surface",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "itinerary-intro",
+                      "day-1-section",
+                      "day-2-section",
+                      "day-3-section"
+                    ]
+                  },
+                  {
+                    "id": "itinerary-intro",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "London is a fantastic city for families, blending world-class history with interactive fun. Here is a curated 3-day itinerary designed for a family of three to see the highlights without feeling rushed."
+                  },
+                  {
+                    "id": "day-1-section",
+                    "component": "Column",
+                    "children": [
+                      "day-1-text",
+                      "day-1-map",
+                      "day-1-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-1-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 1: Icons of the South Bank\nStart your trip by seeing London's most famous landmarks. The South Bank is pedestrian-friendly and perfect for families.\n\n*   **Morning:** Take a flight on the **London Eye** for 360-degree views of the city. It's best to book in advance!\n*   **Midday:** Walk across Westminster Bridge to see **Big Ben** and the Houses of Parliament up close.\n*   **Afternoon:** Head back to the South Bank to visit the **SEA LIFE London Aquarium**, which is always a hit with kids."
+                  },
+                  {
+                    "id": "day-1-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.502,
+                      "lng": -0.12
+                    },
+                    "zoom": 15,
+                    "markers": [
+                      {
+                        "lat": 51.5033,
+                        "lng": -0.1195,
+                        "label": "London Eye",
+                        "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                      },
+                      {
+                        "lat": 51.5007,
+                        "lng": -0.1246,
+                        "label": "Big Ben",
+                        "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                      },
+                      {
+                        "lat": 51.501558,
+                        "lng": -0.119506,
+                        "label": "SEA LIFE Aquarium",
+                        "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-1-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "eye-card",
+                      "ben-card",
+                      "sea-card"
+                    ]
+                  },
+                  {
+                    "id": "eye-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRkuoJJBfzkUI"
+                  },
+                  {
+                    "id": "ben-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ2dGMjMMEdkgRqVqkuXQkj7c"
+                  },
+                  {
+                    "id": "sea-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJc2nSALkEdkgRviluWxwFsxA"
+                  },
+                  {
+                    "id": "day-2-section",
+                    "component": "Column",
+                    "children": [
+                      "day-2-text",
+                      "day-2-map",
+                      "day-2-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-2-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 2: Discovery in South Kensington\nThis area is home to London's best museums and one of its most beautiful parks.\n\n*   **Morning:** Visit the **Natural History Museum**. The dinosaur gallery is legendary and a must-see for families.\n*   **Afternoon:** Right next door is the **Science Museum**, featuring interactive 'Wonderlab' exhibits for all ages.\n*   **Late Afternoon:** Burn off some energy at **Kensington Gardens**, specifically the Diana Memorial Playground."
+                  },
+                  {
+                    "id": "day-2-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.498,
+                      "lng": -0.176
+                    },
+                    "zoom": 14,
+                    "markers": [
+                      {
+                        "lat": 51.496715,
+                        "lng": -0.1763672,
+                        "label": "Natural History Museum",
+                        "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                      },
+                      {
+                        "lat": 51.4975,
+                        "lng": -0.1747,
+                        "label": "Science Museum",
+                        "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                      },
+                      {
+                        "lat": 51.507,
+                        "lng": -0.179,
+                        "label": "Kensington Gardens",
+                        "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-2-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "nhm-card",
+                      "sci-card",
+                      "kg-card"
+                    ]
+                  },
+                  {
+                    "id": "nhm-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPy8Y5kIFdkgRxGSXw4Xjt3s"
+                  },
+                  {
+                    "id": "sci-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJP9oAE0MFdkgR3iKGFKZO1SE"
+                  },
+                  {
+                    "id": "kg-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJPaOn4FAFdkgRfLe2KIKp7mI"
+                  },
+                  {
+                    "id": "day-3-section",
+                    "component": "Column",
+                    "children": [
+                      "day-3-text",
+                      "day-3-map",
+                      "day-3-cards"
+                    ]
+                  },
+                  {
+                    "id": "day-3-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "### Day 3: History & Indoor Fun\nCombine historic grandeur with some modern excitement.\n\n*   **Morning:** Explore the **Tower of London**. See the Crown Jewels and meet the Yeoman Warders (Beefeaters).\n*   **Midday:** Walk across the iconic **Tower Bridge** for great river views.\n*   **Afternoon:** For something different, visit **Babylon Park London** in Camden—a massive indoor theme park that's perfect if the weather turns 'British'."
+                  },
+                  {
+                    "id": "day-3-map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 51.515,
+                      "lng": -0.1
+                    },
+                    "zoom": 12,
+                    "markers": [
+                      {
+                        "lat": 51.5081,
+                        "lng": -0.0759,
+                        "label": "Tower of London",
+                        "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                      },
+                      {
+                        "lat": 51.5055,
+                        "lng": -0.0754,
+                        "label": "Tower Bridge",
+                        "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                      },
+                      {
+                        "lat": 51.5422,
+                        "lng": -0.1449,
+                        "label": "Babylon Park",
+                        "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "day-3-cards",
+                    "component": "List",
+                    "direction": "horizontal",
+                    "children": [
+                      "tower-card",
+                      "bridge-card",
+                      "babylon-card"
+                    ]
+                  },
+                  {
+                    "id": "tower-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ3TgfM0kDdkgRZ2TV4d1Jv6g"
+                  },
+                  {
+                    "id": "bridge-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJSdtli0MDdkgRLW9aCBpCeJ4"
+                  },
+                  {
+                    "id": "babylon-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": "ChIJ7_PV980bdkgROekbwOVWVfo"
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "b836ef84-d5d4-4cc2-b30e-0271974eeb62"
+      },
+      "state": "input-required",
+      "timestamp": "2026-07-13T22:11:35.245265+00:00"
+    }
+  }
+}
