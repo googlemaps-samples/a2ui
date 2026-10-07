@@ -49,10 +49,12 @@ class MAUIAgentExecutor(AgentExecutor):
       default_agent: MAUIAgent,
       grounding_agent: MAUIAgentWithGrounding,
       template_agent: Optional[MAUIAgentWithTemplates] = None,
+      ui_agent: Optional[MAUIAgent] = None,
   ):
     self._default_agent = default_agent
     self._grounding_agent = grounding_agent
     self._template_agent = template_agent
+    self._ui_agent = ui_agent or default_agent
 
   async def execute(
       self,
@@ -94,7 +96,13 @@ class MAUIAgentExecutor(AgentExecutor):
 
     # Interpret prefix and choose agent
     agent_to_use = self._default_agent
-    if query.startswith("[GROUNDING]"):
+    if query.startswith("[MCP]"):
+      logger.info(
+          "--- AGENT_EXECUTOR: Prefix [MCP] detected. Using UI (MCP) Agent. ---"
+      )
+      agent_to_use = self._ui_agent
+      query = query[len("[MCP]") :].strip()
+    elif query.startswith("[GROUNDING]"):
       logger.info(
           "--- AGENT_EXECUTOR: Prefix [GROUNDING] detected. Using Grounding"
           " Agent. ---"
