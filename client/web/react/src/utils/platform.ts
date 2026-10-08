@@ -20,7 +20,7 @@ export const isMobileWebView = isAndroid || isIOS;
 
 export const getAttributionId = () => {
   if (isAndroid)
-    return 'gmp_web_maui_v0.1.8_atoui,gmp_android_maui_v0.1.8_atoui';
-  if (isIOS) return 'gmp_web_maui_v0.1.8_atoui,gmp_ios_maui_v0.1.8_atoui';
-  return 'gmp_web_maui_v0.1.8_atoui';
+    return 'gmp_web_maui_v0.1.9_atoui,gmp_android_maui_v0.1.9_atoui';
+  if (isIOS) return 'gmp_web_maui_v0.1.9_atoui,gmp_ios_maui_v0.1.9_atoui';
+  return 'gmp_web_maui_v0.1.9_atoui';
 };
