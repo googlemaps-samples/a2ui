@@ -86,6 +86,10 @@ a static template:
 *   `A2UI_FALLBACK_MODE=DYNAMIC` ➔ Falls back to full dynamic multi-turn A2UI
     component generation.
 
+### Streaming Support (`message/stream` & `message/send`)
+
+The sample server uses `StreamingRequestHandler` by default, enabling both real-time Server-Sent Events (`message/stream`) and single-response JSON-RPC requests (`message/send`). Client applications across Web, Android, and iOS can toggle between streaming and non-streaming modes at runtime using their `useStreaming` toggle without restarting the server.
+
 To run the frontend, follow the instructions in
 [../../client/web/react/README.md](../../client/web/react/README.md)
 
