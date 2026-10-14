@@ -13,4 +13,8 @@ npm run dev
 
 2. Open [http://localhost:5173](http://localhost:5173) in your browser. You should see a chat interface.
 
+## Streaming vs. Non-Streaming (`useStreaming`)
+
+By default, the React sample streams incremental text and A2UI component updates via `client.sendStream()` (`DEFAULT_USE_STREAMING = true` in `src/App.tsx`). You can switch between streaming (`client.sendStream()`) and non-streaming (`client.send()`) at any time using the **Streaming** checkbox in the chat header or by modifying `DEFAULT_USE_STREAMING` in `src/App.tsx`.
+
 To run the backend, follow the instructions in [../../../agent/python/README.md](../../../agent/python/README.md)
