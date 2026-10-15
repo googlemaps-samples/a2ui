@@ -1,0 +1,502 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+    "history": [
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "27E15EF7-C036-40DF-BB09-361A98CB34AB",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "Show me 5 coffee shops near South Lake Union in Seattle"
+          }
+        ],
+        "role": "user",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "9d87732c-0ae7-49ae-a91c-6f969cff5d29",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "slu-coffee-shops",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "b74e4d4f-623b-4cae-a642-70cc466ef7b6",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "slu-coffee-shops",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "map",
+                      "places-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union is home to some of Seattle's most vibrant coffee spots, ranging from specialized matcha bars to industrial-chic espresso houses. Here are 5 great options to check out:\n\n*   **Matcha Magic SLU**: A quiet, highly-rated cafe known for its unique matcha offerings and pink-and-green aesthetic. Perfect for a calm break or solo work.\n*   **203° Fahrenheit Coffee Company**: A contemporary, trendy spot with a large selection of vegan and vegetarian dishes. It's dog-friendly and features a bright design with outdoor seating.\n*   **Espresso Vivace South Lake Union**: An iconic industrial-chic espresso bar famous for its foam art and high-quality roasts. A popular hub for laptop work.\n*   **Evoke Cafe Bar**: A women-owned, inclusive space offering vegan/vegetarian options and a welcoming vibe for quiet conversation.\n*   **Zoka Coffee**: A casual, contemporary atmosphere serving hand-roasted coffee and housemade baked goods, ideal for dates or remote work."
+                  },
+                  {
+                    "id": "map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367
+                    },
+                    "zoom": 15,
+                    "mode": "roadmap",
+                    "anchorMarker": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367,
+                      "label": "South Lake Union"
+                    },
+                    "markers": [
+                      {
+                        "lat": 47.6233103,
+                        "lng": -122.3340936,
+                        "label": "Matcha Magic SLU",
+                        "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                      },
+                      {
+                        "lat": 47.6251236,
+                        "lng": -122.3369152,
+                        "label": "203° Fahrenheit Coffee Company",
+                        "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                      },
+                      {
+                        "lat": 47.6202049,
+                        "lng": -122.3306253,
+                        "label": "Espresso Vivace South Lake Union",
+                        "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                      },
+                      {
+                        "lat": 47.6205512,
+                        "lng": -122.3395949,
+                        "label": "Evoke Cafe Bar",
+                        "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                      },
+                      {
+                        "lat": 47.621526,
+                        "lng": -122.335971,
+                        "label": "Zoka Coffee",
+                        "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "places-list",
+                    "component": "List",
+                    "direction": "vertical",
+                    "children": {
+                      "componentId": "place-card",
+                      "path": "/places"
+                    }
+                  },
+                  {
+                    "id": "place-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": {
+                      "path": "placeId"
+                    }
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "7423c70b-79b5-4681-b411-1fc9863db46f",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "slu-coffee-shops",
+                "path": "/",
+                "value": {
+                  "places": [
+                    {
+                      "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                    },
+                    {
+                      "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                    },
+                    {
+                      "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                    },
+                    {
+                      "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                    },
+                    {
+                      "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                    }
+                  ]
+                }
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "12920398-2fa0-4c51-a476-c8b3216c1e67",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "slu-coffee-shops",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "c710a1d4-b2f3-4580-8f41-def15e6a31ad",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "slu-coffee-shops",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "map",
+                      "places-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union is home to some of Seattle's most vibrant coffee spots, ranging from specialized matcha bars to industrial-chic espresso houses. Here are 5 great options to check out:\n\n*   **Matcha Magic SLU**: A quiet, highly-rated cafe known for its unique matcha offerings and pink-and-green aesthetic. Perfect for a calm break or solo work.\n*   **203° Fahrenheit Coffee Company**: A contemporary, trendy spot with a large selection of vegan and vegetarian dishes. It's dog-friendly and features a bright design with outdoor seating.\n*   **Espresso Vivace South Lake Union**: An iconic industrial-chic espresso bar famous for its foam art and high-quality roasts. A popular hub for laptop work.\n*   **Evoke Cafe Bar**: A women-owned, inclusive space offering vegan/vegetarian options and a welcoming vibe for quiet conversation.\n*   **Zoka Coffee**: A casual, contemporary atmosphere serving hand-roasted coffee and housemade baked goods, ideal for dates or remote work."
+                  },
+                  {
+                    "id": "map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367
+                    },
+                    "zoom": 15,
+                    "mode": "roadmap",
+                    "anchorMarker": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367,
+                      "label": "South Lake Union"
+                    },
+                    "markers": [
+                      {
+                        "lat": 47.6233103,
+                        "lng": -122.3340936,
+                        "label": "Matcha Magic SLU",
+                        "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                      },
+                      {
+                        "lat": 47.6251236,
+                        "lng": -122.3369152,
+                        "label": "203° Fahrenheit Coffee Company",
+                        "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                      },
+                      {
+                        "lat": 47.6202049,
+                        "lng": -122.3306253,
+                        "label": "Espresso Vivace South Lake Union",
+                        "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                      },
+                      {
+                        "lat": 47.6205512,
+                        "lng": -122.3395949,
+                        "label": "Evoke Cafe Bar",
+                        "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                      },
+                      {
+                        "lat": 47.621526,
+                        "lng": -122.335971,
+                        "label": "Zoka Coffee",
+                        "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "places-list",
+                    "component": "List",
+                    "direction": "vertical",
+                    "children": {
+                      "componentId": "place-card",
+                      "path": "/places"
+                    }
+                  },
+                  {
+                    "id": "place-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": {
+                      "path": "placeId"
+                    }
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "dbce7360-9c14-44f2-9c8b-8b454e4524fe",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "slu-coffee-shops",
+                "path": "/",
+                "value": {
+                  "places": [
+                    {
+                      "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                    },
+                    {
+                      "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                    },
+                    {
+                      "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                    },
+                    {
+                      "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                    },
+                    {
+                      "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                    }
+                  ]
+                }
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      }
+    ],
+    "id": "ff17d057-c537-4101-a1a3-03af4a8c6bd1",
+    "kind": "task",
+    "status": {
+      "message": {
+        "contextId": "2A51BB51-2D34-4E83-81AF-AC9C471ED5C9",
+        "kind": "message",
+        "messageId": "11460b24-41af-4961-87e1-c6d250dd485f",
+        "parts": [
+          {
+            "data": {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "slu-coffee-shops",
+                "catalogId": "a2ui://maps-agentic-ui-catalog.json"
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateComponents": {
+                "surfaceId": "slu-coffee-shops",
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Column",
+                    "children": [
+                      "intro-text",
+                      "map",
+                      "places-list"
+                    ]
+                  },
+                  {
+                    "id": "intro-text",
+                    "component": "Text",
+                    "variant": "body",
+                    "text": "South Lake Union is home to some of Seattle's most vibrant coffee spots, ranging from specialized matcha bars to industrial-chic espresso houses. Here are 5 great options to check out:\n\n*   **Matcha Magic SLU**: A quiet, highly-rated cafe known for its unique matcha offerings and pink-and-green aesthetic. Perfect for a calm break or solo work.\n*   **203° Fahrenheit Coffee Company**: A contemporary, trendy spot with a large selection of vegan and vegetarian dishes. It's dog-friendly and features a bright design with outdoor seating.\n*   **Espresso Vivace South Lake Union**: An iconic industrial-chic espresso bar famous for its foam art and high-quality roasts. A popular hub for laptop work.\n*   **Evoke Cafe Bar**: A women-owned, inclusive space offering vegan/vegetarian options and a welcoming vibe for quiet conversation.\n*   **Zoka Coffee**: A casual, contemporary atmosphere serving hand-roasted coffee and housemade baked goods, ideal for dates or remote work."
+                  },
+                  {
+                    "id": "map",
+                    "component": "GoogleMap",
+                    "center": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367
+                    },
+                    "zoom": 15,
+                    "mode": "roadmap",
+                    "anchorMarker": {
+                      "lat": 47.6245912,
+                      "lng": -122.3343367,
+                      "label": "South Lake Union"
+                    },
+                    "markers": [
+                      {
+                        "lat": 47.6233103,
+                        "lng": -122.3340936,
+                        "label": "Matcha Magic SLU",
+                        "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                      },
+                      {
+                        "lat": 47.6251236,
+                        "lng": -122.3369152,
+                        "label": "203° Fahrenheit Coffee Company",
+                        "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                      },
+                      {
+                        "lat": 47.6202049,
+                        "lng": -122.3306253,
+                        "label": "Espresso Vivace South Lake Union",
+                        "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                      },
+                      {
+                        "lat": 47.6205512,
+                        "lng": -122.3395949,
+                        "label": "Evoke Cafe Bar",
+                        "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                      },
+                      {
+                        "lat": 47.621526,
+                        "lng": -122.335971,
+                        "label": "Zoka Coffee",
+                        "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "places-list",
+                    "component": "List",
+                    "direction": "vertical",
+                    "children": {
+                      "componentId": "place-card",
+                      "path": "/places"
+                    }
+                  },
+                  {
+                    "id": "place-card",
+                    "component": "PlaceDetailsCompact",
+                    "placeId": {
+                      "path": "placeId"
+                    }
+                  }
+                ]
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          },
+          {
+            "data": {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "slu-coffee-shops",
+                "path": "/",
+                "value": {
+                  "places": [
+                    {
+                      "placeId": "ChIJMesSl2YVkFQR9cjxPkeMS_g"
+                    },
+                    {
+                      "placeId": "ChIJjS-CKQ8VkFQRy_oDiA11YVE"
+                    },
+                    {
+                      "placeId": "ChIJ1-NiqTYVkFQRO2XahxpM_-g"
+                    },
+                    {
+                      "placeId": "ChIJq8K12DcVkFQRdPGoNaBvVUQ"
+                    },
+                    {
+                      "placeId": "ChIJd-dIDzcVkFQRd5NS87_99yY"
+                    }
+                  ]
+                }
+              }
+            },
+            "kind": "data",
+            "metadata": {
+              "mimeType": "application/json+a2ui"
+            }
+          }
+        ],
+        "role": "agent",
+        "taskId": "ff17d057-c537-4101-a1a3-03af4a8c6bd1"
+      },
+      "state": "input-required",
+      "timestamp": "2026-07-13T16:52:28.551816+00:00"
+    }
+  }
+}
