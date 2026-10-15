@@ -16,7 +16,7 @@ import logging
 import os
 
 from a2a.server.apps import A2AStarletteApplication
-from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.request_handlers import DefaultRequestHandler  # pylint: disable=unused-import
 from a2a.server.tasks import InMemoryTaskStore
 import click
 import dotenv
@@ -29,6 +29,7 @@ from agent import MAUIAgent
 from agent_config import AgentConfig, FallbackMode
 from agent_with_grounding import MAUIAgentWithGrounding
 from agent_with_templates import MAUIAgentWithTemplates
+from streaming_request_handler import StreamingRequestHandler
 from agent_executor import MAUIAgentExecutor
 
 dotenv.load_dotenv()
@@ -43,7 +44,7 @@ class MissingAPIKeyError(Exception):
 
 @click.command()
 @click.option("--serverurl", default="")
-@click.option("--host", default="0.0.0.0")
+@click.option("--host", default="::")
 @click.option("--port", default=10002)
 @click.option(
     "--agent",
@@ -66,10 +67,14 @@ def main(serverurl, host, port, agent):
             " GOOGLE_GENAI_USE_VERTEXAI is not TRUE."
         )
 
-    base_url = f"http://{host}:{port}"
-
     if serverurl != "":
       base_url = serverurl
+    elif host in ("0.0.0.0", "::"):
+      base_url = f"http://localhost:{port}"
+    elif ":" in host and not (host.startswith("[") and host.endswith("]")):
+      base_url = f"http://[{host}]:{port}"
+    else:
+      base_url = f"http://{host}:{port}"
 
     fallback_mode_env = os.getenv("A2UI_FALLBACK_MODE")
     if fallback_mode_env:
@@ -107,9 +112,10 @@ def main(serverurl, host, port, agent):
         default_agent=default_agent,
         grounding_agent=grounding_agent,
         template_agent=template_agent,
+        ui_agent=ui_agent,
     )
 
-    request_handler = DefaultRequestHandler(
+    request_handler = StreamingRequestHandler(
         agent_executor=agent_executor,
         task_store=InMemoryTaskStore(),
     )
@@ -121,10 +127,11 @@ def main(serverurl, host, port, agent):
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
+        allow_origin_regex=r"https?://.*",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        allow_private_network=True,
     )
 
     logger.info(f"Starting A2A server on {host}:{port}")
