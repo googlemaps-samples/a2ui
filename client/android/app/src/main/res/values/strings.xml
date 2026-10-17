@@ -16,4 +16,11 @@
 -->
 <resources>
     <string name="app_name">Agentic UI ToolKit</string>
+    <string name="most_asked_questions">Most asked questions</string>
+    <string name="label_server">Server</string>
+    <string name="agent_grounding_lite">Grounding Lite (MCP)</string>
+    <string name="agent_grounding_vertex">Grounding with Google Maps (Vertex)</string>
+    <string name="agent_template">Template Agent</string>
+    <string name="hint_type_message">Type a message...</string>
+    <string name="button_send">Send</string>
 </resources>
