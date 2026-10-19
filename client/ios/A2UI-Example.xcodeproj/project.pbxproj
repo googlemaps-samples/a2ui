@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0686BC60303E3D7200D716B2 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */; };
+		067B1D96307D5CC9006AC6E5 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */; };
+		067B1DA9307D6572006AC6E5 /* ChatServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067B1DA8307D6572006AC6E5 /* ChatServiceTests.swift */; };
 		0686BC61303E3F8D00D716B2 /* MockScenarioRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */; };
 		06D7D39E303CFB03005E2E6E /* LatencyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D380303CFB03005E2E6E /* LatencyLogger.swift */; };
 		06D7D39F303CFB03005E2E6E /* ResourceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D383303CFB03005E2E6E /* ResourceLogger.swift */; };
@@ -43,6 +44,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		067B1DA3307D64C3006AC6E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FDC9C4C82F5B9CB800ABA773 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FDC9C4CF2F5B9CB800ABA773;
+			remoteInfo = "A2UI-Example";
+		};
 		FD3276E12F7B9B3B007E25E3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FDC9C4C82F5B9CB800ABA773 /* Project object */;
@@ -53,6 +61,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		067B1D9F307D64C3006AC6E5 /* A2UI-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "A2UI-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		067B1DA8307D6572006AC6E5 /* ChatServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatServiceTests.swift; sourceTree = "<group>"; };
 		06D7D37E303CFB03005E2E6E /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		06D7D380303CFB03005E2E6E /* LatencyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatencyLogger.swift; sourceTree = "<group>"; };
 		06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockScenarioRegistry.swift; sourceTree = "<group>"; };
@@ -87,6 +97,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		067B1D9C307D64C3006AC6E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FD3276D82F7B9B3B007E25E3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -98,7 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0686BC60303E3D7200D716B2 /* GoogleMapsA2UI in Frameworks */,
+				067B1D96307D5CC9006AC6E5 /* GoogleMapsA2UI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +150,7 @@
 		FDC9C4C72F5B9CB800ABA773 = {
 			isa = PBXGroup;
 			children = (
+				067B1DA8307D6572006AC6E5 /* ChatServiceTests.swift */,
 				06D7D37E303CFB03005E2E6E /* ChatService.swift */,
 				06D7D380303CFB03005E2E6E /* LatencyLogger.swift */,
 				06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */,
@@ -155,6 +173,7 @@
 			children = (
 				FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */,
 				FD3276DB2F7B9B3B007E25E3 /* A2UI-ExampleUITests.xctest */,
+				067B1D9F307D64C3006AC6E5 /* A2UI-ExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,6 +181,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		067B1D9E307D64C3006AC6E5 /* A2UI-ExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 067B1DA7307D64C3006AC6E5 /* Build configuration list for PBXNativeTarget "A2UI-ExampleTests" */;
+			buildPhases = (
+				067B1D9B307D64C3006AC6E5 /* Sources */,
+				067B1D9C307D64C3006AC6E5 /* Frameworks */,
+				067B1D9D307D64C3006AC6E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				067B1DA4307D64C3006AC6E5 /* PBXTargetDependency */,
+			);
+			name = "A2UI-ExampleTests";
+			packageProductDependencies = (
+			);
+			productName = "A2UI-ExampleTests";
+			productReference = 067B1D9F307D64C3006AC6E5 /* A2UI-ExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FD3276DA2F7B9B3B007E25E3 /* A2UI-ExampleUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FD3276E52F7B9B3B007E25E3 /* Build configuration list for PBXNativeTarget "A2UI-ExampleUITests" */;
@@ -199,7 +238,7 @@
 			);
 			name = "A2UI-Example";
 			packageProductDependencies = (
-				0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */,
+				067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */,
 			);
 			productName = "A2UI-Example";
 			productReference = FDC9C4D02F5B9CB800ABA773 /* A2UI-Example.app */;
@@ -212,9 +251,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					067B1D9E307D64C3006AC6E5 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = FDC9C4CF2F5B9CB800ABA773;
+					};
 					FD3276DA2F7B9B3B007E25E3 = {
 						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = FDC9C4CF2F5B9CB800ABA773;
@@ -235,7 +278,7 @@
 			mainGroup = FDC9C4C72F5B9CB800ABA773;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
+				067B1D94307D5CAD006AC6E5 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FDC9C4D12F5B9CB800ABA773 /* Products */;
@@ -244,11 +287,19 @@
 			targets = (
 				FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */,
 				FD3276DA2F7B9B3B007E25E3 /* A2UI-ExampleUITests */,
+				067B1D9E307D64C3006AC6E5 /* A2UI-ExampleTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		067B1D9D307D64C3006AC6E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FD3276D92F7B9B3B007E25E3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,6 +339,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		067B1D9B307D64C3006AC6E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				067B1DA9307D6572006AC6E5 /* ChatServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FD3276D72F7B9B3B007E25E3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -315,6 +374,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		067B1DA4307D64C3006AC6E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */;
+			targetProxy = 067B1DA3307D64C3006AC6E5 /* PBXContainerItemProxy */;
+		};
 		FD3276E22F7B9B3B007E25E3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FDC9C4CF2F5B9CB800ABA773 /* A2UI-Example */;
@@ -323,6 +387,46 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		067B1DA5307D64C3006AC6E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/A2UI-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/A2UI-Example";
+			};
+			name = Debug;
+		};
+		067B1DA6307D64C3006AC6E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/A2UI-Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/A2UI-Example";
+			};
+			name = Release;
+		};
 		FD3276E32F7B9B3B007E25E3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -333,7 +437,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -352,7 +455,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -504,8 +606,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -538,8 +638,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -550,6 +648,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		067B1DA7307D64C3006AC6E5 /* Build configuration list for PBXNativeTarget "A2UI-ExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				067B1DA5307D64C3006AC6E5 /* Debug */,
+				067B1DA6307D64C3006AC6E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FD3276E52F7B9B3B007E25E3 /* Build configuration list for PBXNativeTarget "A2UI-ExampleUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -580,16 +687,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
+		067B1D94307D5CAD006AC6E5 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../a2ui/client/ios/GoogleMapsA2UI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0686BC5F303E3D7200D716B2 /* GoogleMapsA2UI */ = {
+		067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0686BC5E303E3D6200D716B2 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
+			package = 067B1D94307D5CAD006AC6E5 /* XCLocalSwiftPackageReference "../../../a2ui/client/ios/GoogleMapsA2UI" */;
 			productName = GoogleMapsA2UI;
 		};
 /* End XCSwiftPackageProductDependency section */

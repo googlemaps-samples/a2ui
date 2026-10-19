@@ -16,10 +16,24 @@
 
 package com.example.maui
 
+import java.util.UUID
+
 sealed class ChatMessage {
-  data class Text(val text: String, val isUser: Boolean) : ChatMessage()
+  abstract val id: String
 
-  data class GmpA2UIView(val a2uiJsonString: String, val startTime: Long? = null) : ChatMessage()
+  data class Text(
+    val text: String,
+    val isUser: Boolean,
+    override val id: String = UUID.randomUUID().toString(),
+  ) : ChatMessage()
 
-  object Loading : ChatMessage()
+  data class GmpA2UIView(
+    val a2uiJsonString: String,
+    val startTime: Long? = null,
+    override val id: String = UUID.randomUUID().toString(),
+  ) : ChatMessage()
+
+  object Loading : ChatMessage() {
+    override val id: String = "loading"
+  }
 }
