@@ -33,7 +33,7 @@ interface AgentOption {
 }
 
 const AGENT_OPTIONS: readonly AgentOption[] = [
-  {id: 'mcp', label: 'Grounding Lite (MCP)', prefix: ''},
+  {id: 'mcp', label: 'Grounding Lite (MCP)', prefix: '[MCP] '},
   {
     id: 'vertex',
     label: 'Grounding with Google Maps (Vertex)',
@@ -42,7 +42,7 @@ const AGENT_OPTIONS: readonly AgentOption[] = [
   {id: 'template', label: 'Template Agent', prefix: '[TEMPLATE] '},
 ];
 
-const DEFAULT_AGENT_TYPE: AgentType = 'mcp';
+const DEFAULT_AGENT_TYPE: AgentType = 'template';
 
 /**
  * Main Application component that demonstrates A2UI integration in a React environment.
