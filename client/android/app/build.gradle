@@ -100,5 +100,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    androidTestImplementation 'com.google.truth:truth:1.4.2'
+    androidTestImplementation 'com.google.testparameterinjector:test-parameter-injector:1.18'
     implementation 'com.google.android.libraries.mapsplatform.a2ui:GoogleMapsA2UI:0.1.0'
 }
