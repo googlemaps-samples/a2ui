@@ -24,7 +24,7 @@ class ChatViewModel: ObservableObject {
   @Published private(set) var messages: [ChatMessage] = []
   @Published private(set) var isLoading: Bool = false
   @Published var webViewToScrollID: UUID?
-  @Published var selectedAgentType: AgentType = .template
+  @Published var selectedAgentType: AgentType = .lite
   @Published var useStreaming: Bool = ChatService.defaultUseStreaming
 
   private let chatService: ChatServiceProtocol

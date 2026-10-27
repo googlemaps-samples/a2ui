@@ -13,7 +13,7 @@ This application relies on the core `GoogleMapsA2UI` module. To set up this depe
 ## Project Structure
 
 *   `ChatApp.swift`: The main application entry point.
-*   `ChatView.swift`: The main chat UI, displaying message history, the input bar, and toggles to switch between different agent modes (e.g., Vertex AI Maps Grounding vs. MCP Lite vs. Template).
+*   `ChatView.swift`: The main chat UI, displaying message history, the input bar, and radio buttons to switch between Grounding Lite (MCP) and Grounding with Google Maps (Vertex).
 *   `ChatViewModel.swift`: Handles all networking with the backend protocols, maintains state, and routes A2A responses to the `GoogleMapsA2UI` library parser.
 *   `Models.swift`: Basic data structures for chat messages and agent mode configurations.
 *   `GoogleMapsA2UI`: A Swift package dependency pulled in from the `a2ui` module. It provides the `A2UIView` SwiftUI component to render the dynamic maps components and parses the A2A payload into a list of `ParsedA2AEvent` objects. *(See the [Library Dependency](#library-dependency) section above for integration details).*
@@ -61,7 +61,7 @@ If your `activeServer` is set to `.demo` (This means the server is running on yo
 Once the app is running:
 
 *   **Toggle Streaming vs. Non-Streaming (`useStreaming`):** Streaming (`message/stream`) is enabled by default (`ChatService.defaultUseStreaming = true` in `ChatService.swift`). You can switch between incremental SSE streaming (`message/stream`) and single-response non-streaming (`message/send`) at runtime using the **Streaming** toggle above the agent selector in `ChatView.swift`, or change the default `defaultUseStreaming` boolean in `ChatService.swift`.
-*   **Select agent Mode:** Use the radio buttons above the chat bar to toggle between **Grounding Lite (MCP)**, **Grounding with Google Maps (Vertex)** and **Template**.
+*   **Select Grounding Method:** Use the radio buttons above the chat bar to switch between **Grounding Lite (MCP)** and **Grounding with Google Maps (Vertex)**.
 *   **Use Canned Prompts:** Tap the **Flask** or **List** icons next to the text input for a menu of pre-written test scenarios.
 *   **Send Custom Prompts:** Type a query into the text box (e.g., *"Show me 3 Chinese restaurants in Seattle"*) and hit send.
 *   **Interact with Maps:** Wait for the A2UI components to load. You can interact with the rendered maps and place cards (like tapping `Get Directions`) to trigger native Swift callbacks.

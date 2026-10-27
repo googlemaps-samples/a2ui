@@ -20,9 +20,17 @@ import SwiftUI
 enum AgentType: String, CaseIterable, Identifiable {
   case lite = "Grounding Lite (MCP)"
   case vertex = "Grounding with Google Maps (Vertex)"
-  case template = "Template Agent"
 
   var id: Self { self }
+
+  var serverPrefix: String {
+    switch self {
+    case .lite:
+      return "[TEMPLATE] "
+    case .vertex:
+      return "[GROUNDING_TEMPLATE] "
+    }
+  }
 }
 
 struct ChatMessage: Identifiable {
