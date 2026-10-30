@@ -47,14 +47,15 @@ variables to be set:
 
 ## Agent Modes & Configuration
 
-The sample server supports 3 agent backends configured via `--agent` or the
+The sample server supports 4 agent backends configured via `--agent` or the
 `A2UI_DEFAULT_AGENT` environment variable:
 
-Agent Mode                       | CLI Flag / Env Option                                 | Description
-:------------------------------- | :---------------------------------------------------- | :----------
-**Template Agent (Recommended)** | `--agent TEMPLATE`<br>`A2UI_DEFAULT_AGENT=TEMPLATE`   | Low-latency template agent with fast intent classification (`LOCAL_SEARCH`, `DIRECTIONS`) and structured parameter merging.
-**Base Agent**                   | `--agent BASE`<br>`A2UI_DEFAULT_AGENT=BASE`           | Standard dynamic UI agent generating unconstrained A2UI component trees.
-**Grounding Agent**              | `--agent GROUNDING`<br>`A2UI_DEFAULT_AGENT=GROUNDING` | Vertex AI Maps Grounding agent.
+Agent Mode                               | CLI Flag / Env Option                                                   | Description
+:--------------------------------------- | :---------------------------------------------------------------------- | :----------
+**Template Agent (Recommended)**         | `--agent TEMPLATE`<br>`A2UI_DEFAULT_AGENT=TEMPLATE`                     | Low-latency template agent with fast intent classification (`LOCAL_SEARCH`, `DIRECTIONS`) and structured parameter merging.
+**Grounding Template Agent**             | `--agent GROUNDING_TEMPLATE`<br>`A2UI_DEFAULT_AGENT=GROUNDING_TEMPLATE` | Template agent using Vertex AI Maps Grounding.
+**Base Agent**                           | `--agent BASE`<br>`A2UI_DEFAULT_AGENT=BASE`                             | Standard dynamic UI agent generating unconstrained A2UI component trees.
+**Grounding Agent**                      | `--agent GROUNDING`<br>`A2UI_DEFAULT_AGENT=GROUNDING`                   | Vertex AI Maps Grounding agent.
 
 ### Running with Template Agent
 
@@ -70,10 +71,14 @@ uv run python __main__.py --host 127.0.0.1 --port 10002
 You can test specific agent implementations against a running server using
 prompt prefixes:
 
+*   `[MCP] <query>` ➔ Routes directly to `MAUIAgent` (Grounding Lite MCP dynamic agent, e.g.
+    `[MCP] Coffee shops near Pike Place`).
 *   `[TEMPLATE] <query>` ➔ Routes directly to `MAUIAgentWithTemplates` (e.g.
     `[TEMPLATE] Coffee shops near Pike Place`).
 *   `[GROUNDING] <query>` ➔ Routes directly to `MAUIAgentWithGrounding` (e.g.
     `[GROUNDING] Hotels in Bellevue`).
+*   `[GROUNDING_TEMPLATE] <query>` ➔ Routes directly to `MAUIAgentWithGrounding` with template configuration (e.g.
+    `[GROUNDING_TEMPLATE] Hotels in Bellevue`).
 *   `<query>` (no prefix) ➔ Routes to the configured default agent.
 
 ### Fallback Modes

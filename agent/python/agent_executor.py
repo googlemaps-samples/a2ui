@@ -50,11 +50,13 @@ class MAUIAgentExecutor(AgentExecutor):
       grounding_agent: MAUIAgentWithGrounding,
       template_agent: Optional[MAUIAgentWithTemplates] = None,
       ui_agent: Optional[MAUIAgent] = None,
+      grounding_template_agent: Optional[MAUIAgentWithGrounding] = None,
   ):
     self._default_agent = default_agent
     self._grounding_agent = grounding_agent
     self._template_agent = template_agent
     self._ui_agent = ui_agent or default_agent
+    self._grounding_template_agent = grounding_template_agent
 
   async def execute(
       self,
@@ -111,13 +113,30 @@ class MAUIAgentExecutor(AgentExecutor):
       query = query[len("[GROUNDING]") :].strip()
     elif query.startswith("[TEMPLATE]"):
       if not self._template_agent:
-        raise UnsupportedOperationError("Template Agent is not configured.")
+        raise ServerError(
+            error=UnsupportedOperationError(
+                message="Template Agent is not configured."
+            )
+        )
       logger.info(
           "--- AGENT_EXECUTOR: Prefix [TEMPLATE] detected. Using Template"
           " Agent. ---"
       )
       agent_to_use = self._template_agent
       query = query[len("[TEMPLATE]") :].strip()
+    elif query.startswith("[GROUNDING_TEMPLATE]"):
+      if not self._grounding_template_agent:
+        raise ServerError(
+            error=UnsupportedOperationError(
+                message="Grounding Template Agent is not configured."
+            )
+        )
+      logger.info(
+          "--- AGENT_EXECUTOR: Prefix [GROUNDING_TEMPLATE] detected. Using"
+          " Grounding Template Agent. ---"
+      )
+      agent_to_use = self._grounding_template_agent
+      query = query[len("[GROUNDING_TEMPLATE]") :].strip()
     else:
       logger.info(
           "--- AGENT_EXECUTOR: No prefix detected. Using Default Agent. ---"
