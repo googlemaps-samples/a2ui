@@ -17,4 +17,8 @@ npm run dev
 
 By default, the React sample streams incremental text and A2UI component updates via `client.sendStream()` (`DEFAULT_USE_STREAMING = true` in `src/App.tsx`). You can switch between streaming (`client.sendStream()`) and non-streaming (`client.send()`) at any time using the **Streaming** checkbox in the chat header or by modifying `DEFAULT_USE_STREAMING` in `src/App.tsx`.
 
+## Grounding Method Selection
+
+Use the **Grounding Method** radio buttons in the chat header to switch between **Grounding Lite (MCP)** and **Grounding with Google Maps (Vertex)**.
+
 To run the backend, follow the instructions in [../../../agent/python/README.md](../../../agent/python/README.md)

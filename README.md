@@ -165,6 +165,10 @@ You can switch between **Streaming** (`message/stream` / `client.sendStream()`) 
     *   **Android**: Set `DEFAULT_USE_STREAMING = true` (or `false`) in [`ChatRepository.kt`](client/android/app/src/main/java/com/example/maui/data/ChatRepository.kt).
     *   **iOS**: Set `defaultUseStreaming: Bool = true` (or `false`) in [`ChatService.swift`](client/ios/ChatService.swift).
 
+#### Grounding Method Selection
+
+All three sample clients (Web, Android, and iOS) let you switch between **Grounding Lite (MCP)** and **Grounding with Google Maps (Vertex)** in the client header or control bar.
+
 ## Google API Keys
 
 ### Google Maps API Key

@@ -53,8 +53,9 @@ class MissingAPIKeyError(Exception):
     envvar="A2UI_DEFAULT_AGENT",
     help=(
         "Agent to use as default. Accepts class name (e.g., 'MAUIAgent',"
-        " 'MAUIAgentWithTemplates', 'MAUIAgentWithGrounding') or shorthand"
-        " ('BASE', 'TEMPLATE', 'GROUNDING')."
+        " 'MAUIAgentWithTemplates', 'MAUIAgentWithGrounding',"
+        " 'MAUIAgentWithGroundingTemplates') or shorthand"
+        " ('BASE', 'TEMPLATE', 'GROUNDING', 'GROUNDING_TEMPLATE')."
     ),
 )
 def main(serverurl, host, port, agent):
@@ -86,6 +87,9 @@ def main(serverurl, host, port, agent):
     ui_agent = MAUIAgent(base_url=base_url)
     grounding_agent = MAUIAgentWithGrounding(base_url=base_url)
     template_agent = MAUIAgentWithTemplates(base_url=base_url, config=config)
+    grounding_template_agent = MAUIAgentWithGrounding(
+        base_url=base_url, template_config=config
+    )
 
     agent_map = {
         "MAUIAGENT": ui_agent,
@@ -94,6 +98,8 @@ def main(serverurl, host, port, agent):
         "GROUNDING": grounding_agent,
         "MAUIAGENTWITHTEMPLATES": template_agent,
         "TEMPLATE": template_agent,
+        "MAUIAGENTWITHGROUNDINGTEMPLATES": grounding_template_agent,
+        "GROUNDING_TEMPLATE": grounding_template_agent,
     }
 
     normalized_agent = agent.upper()
@@ -113,6 +119,7 @@ def main(serverurl, host, port, agent):
         grounding_agent=grounding_agent,
         template_agent=template_agent,
         ui_agent=ui_agent,
+        grounding_template_agent=grounding_template_agent,
     )
 
     request_handler = StreamingRequestHandler(
