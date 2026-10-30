@@ -155,7 +155,8 @@
   background: var(--bg);
 }
 
-.agent-selector {
+.agent-selector,
+.grounding-options {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -171,7 +172,8 @@
   user-select: none;
 }
 
-.agent-option input[type='radio'] {
+.agent-option input[type='radio'],
+.agent-option input[type='checkbox'] {
   accent-color: var(--accent);
   cursor: pointer;
   margin: 0;
