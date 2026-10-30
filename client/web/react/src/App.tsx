@@ -24,25 +24,21 @@ import './App.css';
 // --- Configuration ---
 const DEFAULT_USE_STREAMING = true;
 
-type AgentType = 'mcp' | 'vertex' | 'template';
+type GroundingType = 'mcp' | 'vertex';
 
-interface AgentOption {
-  readonly id: AgentType;
+interface GroundingOption {
+  readonly id: GroundingType;
   readonly label: string;
-  readonly prefix: string;
 }
 
-const AGENT_OPTIONS: readonly AgentOption[] = [
-  {id: 'mcp', label: 'Grounding Lite (MCP)', prefix: ''},
-  {
-    id: 'vertex',
-    label: 'Grounding with Google Maps (Vertex)',
-    prefix: '[GROUNDING] ',
-  },
-  {id: 'template', label: 'Template Agent', prefix: '[TEMPLATE] '},
+const GROUNDING_OPTIONS: readonly GroundingOption[] = [
+  {id: 'mcp', label: 'Grounding Lite (MCP)'},
+  {id: 'vertex', label: 'Grounding with Google Maps (Vertex)'},
 ];
 
-const DEFAULT_AGENT_TYPE: AgentType = 'mcp';
+function getAgentPrefix(grounding: GroundingType): string {
+  return grounding === 'vertex' ? '[GROUNDING_TEMPLATE] ' : '[TEMPLATE] ';
+}
 
 /**
  * Main Application component that demonstrates A2UI integration in a React environment.
@@ -52,8 +48,9 @@ function App() {
   // --- UI State ---
   const [isChatOpen, setIsChatOpen] = useState(true);
   const [useStreaming, setUseStreaming] = useState(DEFAULT_USE_STREAMING);
-  const [selectedAgentType, setSelectedAgentType] =
-    useState<AgentType>(DEFAULT_AGENT_TYPE);
+  const [selectedGrounding, setSelectedGrounding] =
+    useState<GroundingType>('mcp');
+
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [input, setInput] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -108,10 +105,8 @@ function App() {
     if (!input.trim() || isRequesting) return;
 
     const messageText = input.trim();
-    const selectedAgent = AGENT_OPTIONS.find(
-      (option) => option.id === selectedAgentType,
-    );
-    const serverText = `${selectedAgent?.prefix ?? ''}${messageText}`;
+    const prefix = getAgentPrefix(selectedGrounding);
+    const serverText = `${prefix}${messageText}`;
 
     setInput('');
     setIsRequesting(true);
@@ -250,24 +245,27 @@ function App() {
 
         {/* --- Chat Input Area --- */}
         <div className="chat-input-area">
-          <div
-            className="agent-selector"
-            role="radiogroup"
-            aria-label="Agent type">
-            {AGENT_OPTIONS.map((option) => (
-              <label key={option.id} className="agent-option">
-                <input
-                  type="radio"
-                  name="agent-type"
-                  value={option.id}
-                  checked={selectedAgentType === option.id}
-                  onChange={() => setSelectedAgentType(option.id)}
-                  disabled={isRequesting}
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
+          <div className="agent-selector">
+            <div
+              className="grounding-options"
+              role="radiogroup"
+              aria-label="Grounding type">
+              {GROUNDING_OPTIONS.map((option) => (
+                <label key={option.id} className="agent-option">
+                  <input
+                    type="radio"
+                    name="grounding"
+                    value={option.id}
+                    checked={selectedGrounding === option.id}
+                    onChange={() => setSelectedGrounding(option.id)}
+                    disabled={isRequesting}
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
+
           <textarea
             className="chat-textarea"
             placeholder="Type a message..."
