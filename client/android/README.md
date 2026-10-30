@@ -49,6 +49,9 @@ In `app/src/main/java/com/example/maui/MainActivity.kt`, verify the flags match 
 *   By default, the app uses SSE streaming (`ChatRepository.DEFAULT_USE_STREAMING = true` in `ChatRepository.kt`, sending JSON-RPC `message/stream`).
 *   You can toggle between streaming (`message/stream`) and non-streaming (`message/send`) at runtime using the **Streaming** switch in the control bar (`MainActivity.kt`), or change `DEFAULT_USE_STREAMING` in `ChatRepository.kt`.
 
+#### Grounding Method (`AgentType`)
+*   Use the radio buttons in the control bar (`MainActivity.kt`) to switch between **Grounding Lite (MCP)** and **Grounding with Google Maps (Vertex)**.
+
 ### 4. Build and Run the App
 
 1. Build and install the app (Debug version):

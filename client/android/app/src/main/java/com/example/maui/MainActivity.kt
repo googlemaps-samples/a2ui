@@ -18,6 +18,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,12 +47,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,7 +106,13 @@ class MainActivity : ComponentActivity() {
       BuildConfig.MAPS_API_KEY
     )
 
-    setContent { MaterialTheme { ChatScreen(viewModel, latencyLogger) } }
+    setContent {
+      MaterialTheme(
+        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+      ) {
+        ChatScreen(viewModel, latencyLogger)
+      }
+    }
   }
 
   companion object {
@@ -114,10 +124,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ChatScreen(viewModel: ChatViewModel, latencyLogger: LatencyLogger) {
   val messages by viewModel.uiState.collectAsStateWithLifecycle()
-  var inputText by remember { mutableStateOf("") }
-  var selectedAgentType by remember { mutableStateOf(AgentType.TEMPLATE) }
-  var bypassCanned by remember { mutableStateOf(false) }
-  var useStreaming by remember { mutableStateOf(ChatRepository.DEFAULT_USE_STREAMING) }
+  var inputText by rememberSaveable { mutableStateOf("") }
+  var selectedAgentType by rememberSaveable { mutableStateOf(AgentType.LITE) }
+  var bypassCanned by rememberSaveable { mutableStateOf(false) }
+  var useStreaming by rememberSaveable { mutableStateOf(ChatRepository.DEFAULT_USE_STREAMING) }
 
   Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
     MessageList(
@@ -164,7 +174,7 @@ fun ControlPanel(
 ) {
   var expanded by remember { mutableStateOf(false) }
   val defaultPrompt = stringResource(R.string.most_asked_questions)
-  var selectedPrompt by remember { mutableStateOf(defaultPrompt) }
+  var selectedPrompt by rememberSaveable { mutableStateOf(defaultPrompt) }
   val examplePrompts = remember(defaultPrompt) { listOf(defaultPrompt) + SAMPLE_PROMPTS }
 
   Row(
@@ -279,23 +289,6 @@ fun AgentSelectionColumn(selectedAgentType: AgentType, onAgentTypeChange: (Agent
       )
       Text(
         stringResource(R.string.agent_grounding_vertex),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-      )
-    }
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      RadioButton(
-        selected = selectedAgentType == AgentType.TEMPLATE,
-        onClick = { onAgentTypeChange(AgentType.TEMPLATE) },
-        colors =
-          RadioButtonDefaults.colors(
-            selectedColor = MaterialTheme.colorScheme.primary,
-            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-          ),
-        modifier = Modifier.scale(0.8f).testTag("radioAgentTemplate"),
-      )
-      Text(
-        stringResource(R.string.agent_template),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
       )
