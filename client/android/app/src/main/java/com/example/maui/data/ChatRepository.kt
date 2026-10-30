@@ -19,12 +19,12 @@ package com.example.maui.data
 import android.content.Context
 import android.util.Log
 import com.example.maui.BuildConfig
+import com.google.android.libraries.mapsplatform.a2ui.A2AParserException
 import com.google.android.libraries.mapsplatform.a2ui.A2AResponseParser
 import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -40,7 +40,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 
 class ChatRepository(private val context: Context) {
   private val applicationContext = context.applicationContext
@@ -140,7 +142,7 @@ class ChatRepository(private val context: Context) {
     return getCannedResponse(text) != null
   }
 
-  fun getCannedResponse(text: String): JSONObject? {
+  fun getCannedResponse(text: String): String? {
     try {
       val mappingJson =
         applicationContext.assets.open("canned_responses/mapping.json").bufferedReader().use {
@@ -151,11 +153,9 @@ class ChatRepository(private val context: Context) {
         text.removePrefix("[GROUNDING] ").removePrefix("[TEMPLATE] ").removePrefix("[MCP] ")
       if (mapObj.has(strippedText)) {
         val filename = mapObj.getString(strippedText)
-        val jsonString =
-          applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
-            it.readText()
-          }
-        return JSONObject(jsonString)
+        return applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
+          it.readText()
+        }
       }
     } catch (e: Exception) {
       Log.e(TAG, "Error loading mapping.json or canned response", e)
@@ -217,9 +217,7 @@ class ChatRepository(private val context: Context) {
 
         if (cannedResponse != null) {
           delay(2000) // Simulate network delay
-          val payload = cannedResponse.optJSONObject("result") ?: cannedResponse
-          val parsed = A2AResponseParser.parse(payload)
-          emit(Result.success(parsed))
+          emit(Result.success(A2AResponseParser.parse(cannedResponse)))
           return@flow
         }
 
@@ -244,36 +242,25 @@ class ChatRepository(private val context: Context) {
               return@use
             }
 
-            suspend fun emitParsedData(rawJson: JSONObject) {
-              val payload = rawJson.optJSONObject("result") ?: rawJson
-              val errorObj = rawJson.opt("error") ?: payload.opt("error")
-              if (errorObj != null) {
-                val errorMessage =
-                  (errorObj as? JSONObject)?.optString("message")?.takeIf { it.isNotEmpty() }
-                    ?: errorObj.toString()
-                emit(Result.failure(Exception("Server Error: $errorMessage")))
-                return
-              }
-
-              val kind = payload.optString("kind")
-              if (useStreaming && kind == "task") return
-
-              var finalPayloadToParse = payload
-              if (kind == "status-update" || kind == "task") {
-                val statusObj = payload.optJSONObject("status")
-                val messageObj = statusObj?.optJSONObject("message")
-                if (messageObj != null) {
-                  finalPayloadToParse = messageObj
+            suspend fun emitParsedData(rawJson: String) {
+              val events =
+                try {
+                  A2AResponseParser.parse(rawJson)
+                } catch (e: A2AParserException.ServerError) {
+                  emit(Result.failure(Exception("Server Error: ${e.message}")))
+                  return
+                } catch (e: A2AParserException) {
+                  Log.w(TAG, "Unparseable A2A response", e)
+                  // A single malformed stream event should not end the whole reply.
+                  if (!useStreaming) emit(Result.failure(e))
+                  return
                 }
-              }
-
-              val parsedEvents = A2AResponseParser.parse(finalPayloadToParse)
-              emit(Result.success(parsedEvents))
+              emit(Result.success(events))
             }
 
             if (!useStreaming) {
               val responseBody = response.body?.string() ?: return@use
-              emitParsedData(JSONObject(responseBody))
+              emitParsedData(responseBody)
               return@use
             }
 
@@ -309,16 +296,17 @@ class ChatRepository(private val context: Context) {
                   val currentBufferString = buffer.toString().trim()
 
                   if (currentBufferString.startsWith("{")) {
-                    try {
-                      val rawJson = JSONObject(currentBufferString)
+                    // A payload may span several data lines; wait until the buffer holds a complete
+                    // JSON object before handing it to the parser.
+                    val isComplete =
+                      try {
+                        JSONTokener(currentBufferString).nextValue() is JSONObject
+                      } catch (e: JSONException) {
+                        false
+                      }
+                    if (isComplete) {
                       buffer.clear()
-                      emitParsedData(rawJson)
-                    } catch (e: CancellationException) {
-                      throw e
-                    } catch (e: Exception) {
-                      // If JSONObject threw JSONException, keep the incomplete fragment in buffer
-                      // to reassemble with the next line. If JSONObject succeeded, buffer is
-                      // already cleared above.
+                      emitParsedData(currentBufferString)
                     }
                   }
                 }
