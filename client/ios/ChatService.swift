@@ -62,8 +62,12 @@ actor ChatService: ChatServiceProtocol {
   /// UI test hooks in this file, so release builds always talk to `defaultServer`.
   nonisolated static let backendURLOverrideKey = "A2UI_BACKEND_URL_OVERRIDE"
 
+  /// Launch environment key providing a Bearer token for IAM-authenticated backends (Cloud Run).
+  nonisolated static let backendBearerTokenKey = "A2UI_BACKEND_BEARER_TOKEN"
+
   let activeServer: ServerType
   let baseUrl: String
+  let bearerToken: String?
 
   init(
     defaultServer: ServerType = .remote,
@@ -71,9 +75,14 @@ actor ChatService: ChatServiceProtocol {
   ) {
     #if DEBUG
       let overrideURL = environment[Self.backendURLOverrideKey].flatMap { $0.isEmpty ? nil : $0 }
+      let bearerToken = environment[Self.backendBearerTokenKey]
+        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        .flatMap { $0.isEmpty ? nil : $0 }
     #else
       let overrideURL: String? = nil
+      let bearerToken: String? = nil
     #endif
+    self.bearerToken = bearerToken
     if let overrideURL {
       self.activeServer = .demo
       self.baseUrl = overrideURL
@@ -104,15 +113,7 @@ actor ChatService: ChatServiceProtocol {
       ParsedA2AEvent, Swift.Error
     >
   {
-    var serverText = text
-    switch agentType {
-    case .vertex:
-      serverText = "[GROUNDING] \(text)"
-    case .template:
-      serverText = "[TEMPLATE] \(text)"
-    case .lite:
-      serverText = "[MCP] \(text)"
-    }
+    let serverText = "\(agentType.serverPrefix)\(text)"
     let payload: [String: Any] = ["text": serverText]
     return try await callPythonServer(userMessage: payload, useStreaming: useStreaming)
   }
@@ -159,6 +160,9 @@ actor ChatService: ChatServiceProtocol {
     var request = URLRequest(url: url)
     request.timeoutInterval = 120
     request.httpMethod = "POST"
+    if let bearerToken = self.bearerToken {
+      request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+    }
     if activeServer == .remote {
       request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
     }
@@ -216,6 +220,9 @@ actor ChatService: ChatServiceProtocol {
 
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    if let bearerToken = self.bearerToken {
+      request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+    }
 
     if self.activeServer == .remote {
       request.setValue(self.apiKey, forHTTPHeaderField: "x-api-key")
@@ -240,15 +247,10 @@ actor ChatService: ChatServiceProtocol {
           DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             guard let self = self else { return }
             if let path = Bundle.main.path(forResource: mockScenario, ofType: "json"),
-              let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-              let rawJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+              let rawJson = try? String(contentsOfFile: path, encoding: .utf8)
             {
               do {
-                if let result = rawJson["result"] as? [String: Any] {
-                  try self.processParsedJSON(result, continuation: continuation)
-                } else {
-                  try self.processParsedJSON(rawJson, continuation: continuation)
-                }
+                try self.yieldParsedEvents(from: rawJson, continuation: continuation)
                 continuation.finish()
               } catch {
                 continuation.finish(throwing: error)
@@ -345,68 +347,43 @@ actor ChatService: ChatServiceProtocol {
       return
     }
 
-    guard let rawJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
-    else {
+    guard let rawJson = String(data: data, encoding: .utf8) else {
       continuation.finish(throwing: Error.noData)
       return
     }
 
-    let payload = (rawJson["result"] as? [String: Any]) ?? rawJson
-    try self.processParsedJSON(payload, continuation: continuation)
+    try self.yieldParsedEvents(from: rawJson, continuation: continuation)
     continuation.finish()
   }
 
+  /// Parses one SSE line. Returns `nil` for lines that carry no JSON event, such as comments,
+  /// non-`data:` fields, or malformed payloads.
   nonisolated static func parseSSELine(_ line: String) throws -> [ParsedA2AEvent]? {
     guard line.hasPrefix("data: ") else { return nil }
     let eventString = String(line.dropFirst(6)).trimmingCharacters(in: .whitespaces)
     guard !eventString.isEmpty else { return nil }
 
-    guard let eventData = eventString.data(using: .utf8),
-      let rawJson = try? JSONSerialization.jsonObject(with: eventData) as? [String: Any]
-    else {
+    do {
+      return try parseResponse(eventString)
+    } catch A2AParserError.invalidJSONFormat {
       return nil
     }
-
-    let payload = (rawJson["result"] as? [String: Any]) ?? rawJson
-
-    let kind = payload["kind"] as? String
-    if kind == "task" {
-      return nil
-    }
-
-    var finalPayloadToParse = payload
-    if kind == "status-update",
-      let status = payload["status"] as? [String: Any],
-      let message = status["message"] as? [String: Any]
-    {
-      finalPayloadToParse = message
-    }
-
-    if let errorDict = finalPayloadToParse["error"] as? [String: Any],
-      let errorMessage = errorDict["message"] as? String
-    {
-      throw Error.custom(errorMessage)
-    } else if let errorObj = finalPayloadToParse["error"], !(errorObj is NSNull) {
-      throw Error.custom(String(describing: errorObj))
-    }
-
-    return try A2AResponseParser.parse(finalPayloadToParse)
   }
 
-  nonisolated private func processParsedJSON(
-    _ dictionary: [String: Any],
+  /// Parses one raw A2A response, surfacing JSON-RPC errors as `Error.custom`.
+  nonisolated static func parseResponse(_ rawJSON: String) throws -> [ParsedA2AEvent] {
+    do {
+      return try A2AResponseParser.parse(rawJSON)
+    } catch A2AParserError.serverError(_, let message) {
+      throw Error.custom(message)
+    }
+  }
+
+  nonisolated private func yieldParsedEvents(
+    from rawJSON: String,
     continuation: AsyncThrowingStream<ParsedA2AEvent, Swift.Error>.Continuation
   ) throws {
-    if let errorDict = dictionary["error"] as? [String: Any],
-      let errorMessage = errorDict["message"] as? String
-    {
-      throw Error.custom(errorMessage)
-    } else if let errorObj = dictionary["error"], !(errorObj is NSNull) {
-      throw Error.custom(String(describing: errorObj))
-    }
-
-    let parsedParts = try A2AResponseParser.parse(dictionary)
-    for part in parsedParts {
+    for part in try Self.parseResponse(rawJSON) {
       continuation.yield(part)
     }
   }
@@ -419,9 +396,8 @@ actor ChatService: ChatServiceProtocol {
     }
     let strippedText =
       text
-      .replacingOccurrences(of: "[GROUNDING] ", with: "")
+      .replacingOccurrences(of: "[GROUNDING_TEMPLATE] ", with: "")
       .replacingOccurrences(of: "[TEMPLATE] ", with: "")
-      .replacingOccurrences(of: "[MCP] ", with: "")
     return MockScenarioRegistry.scenarios.first(where: { $0.query == strippedText })?.fileName
   }
 }

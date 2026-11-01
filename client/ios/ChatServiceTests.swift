@@ -49,12 +49,25 @@ final class ChatServiceTests: XCTestCase {
     }
   }
 
-  func testParseSSELine_ignoresTaskMetadataKind() throws {
+  func testParseSSELine_taskSnapshotWithoutMessageYieldsNoEvents() throws {
     let sseLine = """
       data: {"jsonrpc":"2.0","id":1,"result":{"kind":"task","id":"task-123"}}
       """
     let events = try ChatService.parseSSELine(sseLine)
-    XCTAssertNil(events)
+    XCTAssertEqual(events?.isEmpty, true)
+  }
+
+  func testParseSSELine_jsonRpcErrorThrowsCustomError() {
+    let sseLine = """
+      data: {"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"Internal error"}}
+      """
+    XCTAssertThrowsError(try ChatService.parseSSELine(sseLine)) { error in
+      XCTAssertEqual(error.localizedDescription, "Internal error")
+    }
+  }
+
+  func testParseSSELine_ignoresMalformedJSON() throws {
+    XCTAssertNil(try ChatService.parseSSELine(#"data: {"jsonrpc":"2.0","#))
   }
 
   func testParseSSELine_ignoresNonDataLines() throws {
@@ -108,6 +121,34 @@ final class ChatServiceTests: XCTestCase {
     let baseUrl = await service.baseUrl
     XCTAssertEqual(activeServer, .remote)
     XCTAssertEqual(baseUrl, "REQUIRED_REMOTE_ENDPOINT")
+  }
+
+  func testInit_defaultsToNilBearerTokenWhenAbsent() async {
+    let service = ChatService(environment: [:])
+    let bearerToken = await service.bearerToken
+    XCTAssertNil(bearerToken)
+  }
+
+  func testInit_populatesAndTrimsBearerTokenFromEnvironment() async {
+    let service = ChatService(
+      environment: [ChatService.backendBearerTokenKey: "  ya29.valid-token  \n"]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertEqual(bearerToken, "ya29.valid-token")
+  }
+
+  func testInit_ignoresEmptyOrWhitespaceBearerToken() async {
+    let serviceEmpty = ChatService(
+      environment: [ChatService.backendBearerTokenKey: ""]
+    )
+    let bearerTokenEmpty = await serviceEmpty.bearerToken
+    XCTAssertNil(bearerTokenEmpty)
+
+    let serviceWhitespace = ChatService(
+      environment: [ChatService.backendBearerTokenKey: "   \n\t  "]
+    )
+    let bearerTokenWhitespace = await serviceWhitespace.bearerToken
+    XCTAssertNil(bearerTokenWhitespace)
   }
 
   @MainActor
@@ -166,5 +207,10 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNotNil(viewModel.currentUpdateComponentsMsg)
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
+  }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
   }
 }
