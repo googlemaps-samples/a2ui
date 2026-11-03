@@ -49,12 +49,25 @@ final class ChatServiceTests: XCTestCase {
     }
   }
 
-  func testParseSSELine_ignoresTaskMetadataKind() throws {
+  func testParseSSELine_taskSnapshotWithoutMessageYieldsNoEvents() throws {
     let sseLine = """
       data: {"jsonrpc":"2.0","id":1,"result":{"kind":"task","id":"task-123"}}
       """
     let events = try ChatService.parseSSELine(sseLine)
-    XCTAssertNil(events)
+    XCTAssertEqual(events?.isEmpty, true)
+  }
+
+  func testParseSSELine_jsonRpcErrorThrowsCustomError() {
+    let sseLine = """
+      data: {"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"Internal error"}}
+      """
+    XCTAssertThrowsError(try ChatService.parseSSELine(sseLine)) { error in
+      XCTAssertEqual(error.localizedDescription, "Internal error")
+    }
+  }
+
+  func testParseSSELine_ignoresMalformedJSON() throws {
+    XCTAssertNil(try ChatService.parseSSELine(#"data: {"jsonrpc":"2.0","#))
   }
 
   func testParseSSELine_ignoresNonDataLines() throws {
