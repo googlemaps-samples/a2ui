@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
 fun ChatScreen(viewModel: ChatViewModel, latencyLogger: LatencyLogger) {
   val messages by viewModel.uiState.collectAsStateWithLifecycle()
   var inputText by rememberSaveable { mutableStateOf("") }
-  var selectedAgentType by rememberSaveable { mutableStateOf(AgentType.TEMPLATE) }
+  var selectedAgentType by rememberSaveable { mutableStateOf(AgentType.LITE) }
   var bypassCanned by rememberSaveable { mutableStateOf(false) }
   var useStreaming by rememberSaveable { mutableStateOf(ChatRepository.DEFAULT_USE_STREAMING) }
 
@@ -289,23 +289,6 @@ fun AgentSelectionColumn(selectedAgentType: AgentType, onAgentTypeChange: (Agent
       )
       Text(
         stringResource(R.string.agent_grounding_vertex),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-      )
-    }
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      RadioButton(
-        selected = selectedAgentType == AgentType.TEMPLATE,
-        onClick = { onAgentTypeChange(AgentType.TEMPLATE) },
-        colors =
-          RadioButtonDefaults.colors(
-            selectedColor = MaterialTheme.colorScheme.primary,
-            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-          ),
-        modifier = Modifier.scale(0.8f).testTag("radioAgentTemplate"),
-      )
-      Text(
-        stringResource(R.string.agent_template),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
       )
