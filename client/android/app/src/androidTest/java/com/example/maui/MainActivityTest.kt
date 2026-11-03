@@ -21,6 +21,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
 import com.example.maui.A2UIWebViewAssertions.Components
+import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Assume.assumeFalse
@@ -33,6 +34,12 @@ import org.junit.runner.RunWith
 class MainActivityTest {
 
   @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+  @Test
+  fun serverPrefix_returnsExpectedRoutingTag() {
+    assertThat(AgentType.LITE.serverPrefix).isEqualTo("[TEMPLATE] ")
+    assertThat(AgentType.VERTEX.serverPrefix).isEqualTo("[GROUNDING_TEMPLATE] ")
+  }
 
   @Test
   fun dynamicHeight_expandsToFitContent() {
