@@ -76,8 +76,8 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(try ChatService.parseSSELine("event: message"))
   }
 
-  func testDefaultUseStreamingIsTrue() {
-    XCTAssertTrue(ChatService.defaultUseStreaming)
+  func testDefaultUseStreamingIsFalse() {
+    XCTAssertFalse(ChatService.defaultUseStreaming)
   }
 
   func testRpcMethod_switchesBetweenStreamAndSend() {
@@ -179,5 +179,10 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNotNil(viewModel.currentUpdateComponentsMsg)
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
+  }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
   }
 }
