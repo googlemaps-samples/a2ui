@@ -180,4 +180,9 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
   }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
+  }
 }
