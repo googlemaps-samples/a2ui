@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		067B1D96307D5CC9006AC6E5 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */; };
+		067B1DAA307D6572006AC6E5 /* GoogleMapsA2UI in Frameworks */ = {isa = PBXBuildFile; productRef = 067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */; };
 		067B1DA9307D6572006AC6E5 /* ChatServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067B1DA8307D6572006AC6E5 /* ChatServiceTests.swift */; };
 		0686BC61303E3F8D00D716B2 /* MockScenarioRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D381303CFB03005E2E6E /* MockScenarioRegistry.swift */; };
 		06D7D39E303CFB03005E2E6E /* LatencyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D7D380303CFB03005E2E6E /* LatencyLogger.swift */; };
@@ -101,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				067B1DAA307D6572006AC6E5 /* GoogleMapsA2UI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +198,7 @@
 			);
 			name = "A2UI-ExampleTests";
 			packageProductDependencies = (
+				067B1D95307D5CC9006AC6E5 /* GoogleMapsA2UI */,
 			);
 			productName = "A2UI-ExampleTests";
 			productReference = 067B1D9F307D64C3006AC6E5 /* A2UI-ExampleTests.xctest */;
@@ -394,7 +397,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -414,7 +417,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.A2UI-ExampleTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -515,7 +518,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -572,7 +575,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
