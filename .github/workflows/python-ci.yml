@@ -27,29 +27,76 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Checkout samples repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          path: a2ui-samples
           persist-credentials: false
-      
+
+      - name: Resolve core SDK branch
+        id: core_ref
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          RESOLVED_REF="main"
+          case "$HEAD_REF" in
+            test_*)
+              # Poll up to 80s for the parallel Copybara-Review-a2ui-core export to push test_<OCL>.
+              for ATTEMPT in $(seq 1 9); do
+                if git ls-remote --exit-code --heads https://github.com/googlemaps/a2ui.git "refs/heads/$HEAD_REF" >/dev/null 2>&1; then
+                  RESOLVED_REF="$HEAD_REF"
+                  break
+                fi
+                if [ "$ATTEMPT" -lt 9 ]; then
+                  echo "Waiting 10s for Copybara to push $HEAD_REF to googlemaps/a2ui (attempt $ATTEMPT/9)..."
+                  sleep 10
+                fi
+              done
+              if [ "$RESOLVED_REF" = "main" ]; then
+                echo "::warning::Branch $HEAD_REF not found on googlemaps/a2ui after 80s; falling back to main."
+              fi
+              ;;
+          esac
+          echo "Using googlemaps/a2ui ref: $RESOLVED_REF"
+          echo "ref=$RESOLVED_REF" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout core SDK repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: googlemaps/a2ui
+          ref: ${{ steps.core_ref.outputs.ref }}
+          path: a2ui
+          persist-credentials: false
+
       - name: Install uv
         uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
         with:
           enable-cache: auto
 
       - name: Set up Python
-        run: uv python install
+        run: uv python install 3.13
 
-      - name: Install dependencies
-        run: uv sync --all-groups
-        working-directory: agent/python
-        continue-on-error: true
+      - name: Configure local MAUI SDK path and install dependencies
+        run: |
+          chmod +x setup.sh
+          ./setup.sh ../../../a2ui/agent/python_agent
+          uv sync --all-groups
+        working-directory: a2ui-samples/agent/python
+
+      - name: Verify sample agent imports and CLI entrypoint
+        run: uv run python __main__.py --help
+        working-directory: a2ui-samples/agent/python
+
+      - name: Run unit tests
+        run: uv run python -m unittest discover -s . -p "test_*.py"
+        working-directory: a2ui-samples/agent/python
 
       - name: Type check with pyright
         run: uv run pyright
-        working-directory: agent/python
+        working-directory: a2ui-samples/agent/python
         continue-on-error: true
 
       - name: Lint with ruff
         run: uv run ruff check .
-        working-directory: agent/python
+        working-directory: a2ui-samples/agent/python
         continue-on-error: true
