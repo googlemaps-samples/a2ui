@@ -67,6 +67,14 @@ android {
             languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
+
+    testOptions {
+        unitTests {
+            all {
+                it.failOnNoDiscoveredTests.set(false)
+            }
+        }
+    }
 }
 
 kotlin {

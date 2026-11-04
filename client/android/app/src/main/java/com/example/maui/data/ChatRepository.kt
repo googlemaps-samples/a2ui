@@ -149,8 +149,8 @@ class ChatRepository(private val context: Context) {
           it.readText()
         }
       val mapObj = JSONObject(mappingJson)
-      val strippedText =
-        text.removePrefix("[GROUNDING] ").removePrefix("[TEMPLATE] ").removePrefix("[MCP] ")
+      val strippedText = text.removePrefix("[GROUNDING_TEMPLATE] ").removePrefix("[TEMPLATE] ")
+
       if (mapObj.has(strippedText)) {
         val filename = mapObj.getString(strippedText)
         return applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
