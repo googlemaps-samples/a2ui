@@ -52,7 +52,7 @@ The sample server supports 4 agent backends configured via `--agent` or the
 
 Agent Mode                               | CLI Flag / Env Option                                                   | Description
 :--------------------------------------- | :---------------------------------------------------------------------- | :----------
-**Template Agent (Recommended)**         | `--agent TEMPLATE`<br>`A2UI_DEFAULT_AGENT=TEMPLATE`                     | Low-latency template agent with fast intent classification (`LOCAL_SEARCH`, `DIRECTIONS`) and structured parameter merging.
+**Template Agent (Recommended)**         | `--agent TEMPLATE`<br>`A2UI_DEFAULT_AGENT=TEMPLATE`                     | Low-latency template agent with fast intent classification (`LOCAL_SEARCH`, `DIRECTIONS`, `PLACE_ANSWER_FACTUAL`, `NEARBY_PLACES_DEPTH`) and structured parameter merging.
 **Grounding Template Agent**             | `--agent GROUNDING_TEMPLATE`<br>`A2UI_DEFAULT_AGENT=GROUNDING_TEMPLATE` | Template agent using Vertex AI Maps Grounding.
 **Base Agent**                           | `--agent BASE`<br>`A2UI_DEFAULT_AGENT=BASE`                             | Standard dynamic UI agent generating unconstrained A2UI component trees.
 **Grounding Agent**                      | `--agent GROUNDING`<br>`A2UI_DEFAULT_AGENT=GROUNDING`                   | Vertex AI Maps Grounding agent.
@@ -93,7 +93,7 @@ a static template:
 
 ### Streaming Support (`message/stream` & `message/send`)
 
-The sample server uses `StreamingRequestHandler` by default, enabling both real-time Server-Sent Events (`message/stream`) and single-response JSON-RPC requests (`message/send`). Client applications across Web, Android, and iOS can toggle between streaming and non-streaming modes at runtime using their `useStreaming` toggle without restarting the server.
+The sample server uses `StreamingRequestHandler` by default, enabling both real-time Server-Sent Events (`message/stream`) and single-response JSON-RPC requests (`message/send`).
 
 To run the frontend, follow the instructions in
 [../../client/web/react/README.md](../../client/web/react/README.md)
