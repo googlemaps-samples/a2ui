@@ -125,9 +125,8 @@ class MainActivity : ComponentActivity() {
 fun ChatScreen(viewModel: ChatViewModel, latencyLogger: LatencyLogger) {
   val messages by viewModel.uiState.collectAsStateWithLifecycle()
   var inputText by rememberSaveable { mutableStateOf("") }
-  var selectedAgentType by rememberSaveable { mutableStateOf(AgentType.TEMPLATE) }
+  var selectedAgentType by rememberSaveable { mutableStateOf(AgentType.LITE) }
   var bypassCanned by rememberSaveable { mutableStateOf(false) }
-  var useStreaming by rememberSaveable { mutableStateOf(ChatRepository.DEFAULT_USE_STREAMING) }
 
   Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
     MessageList(
@@ -141,8 +140,6 @@ fun ChatScreen(viewModel: ChatViewModel, latencyLogger: LatencyLogger) {
       onPromptSelected = { inputText = it },
       bypassCanned = bypassCanned,
       onBypassCannedChange = { bypassCanned = it },
-      useStreaming = useStreaming,
-      onUseStreamingChange = { useStreaming = it },
     )
 
     AgentSelectionColumn(
@@ -155,7 +152,7 @@ fun ChatScreen(viewModel: ChatViewModel, latencyLogger: LatencyLogger) {
       onTextChange = { inputText = it },
       onSend = {
         if (inputText.isNotBlank()) {
-          viewModel.sendMessage(inputText, selectedAgentType, bypassCanned, useStreaming)
+          viewModel.sendMessage(inputText, selectedAgentType, bypassCanned)
           inputText = ""
         }
       },
@@ -169,8 +166,6 @@ fun ControlPanel(
   onPromptSelected: (String) -> Unit,
   bypassCanned: Boolean,
   onBypassCannedChange: (Boolean) -> Unit,
-  useStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING,
-  onUseStreamingChange: (Boolean) -> Unit = {},
 ) {
   var expanded by remember { mutableStateOf(false) }
   val defaultPrompt = stringResource(R.string.most_asked_questions)
@@ -234,22 +229,6 @@ fun ControlPanel(
         modifier = Modifier.scale(0.8f).testTag("switchCannedServer"),
       )
     }
-
-    Spacer(modifier = Modifier.width(8.dp))
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Text(
-        "Streaming",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-      )
-      Spacer(modifier = Modifier.width(4.dp))
-      Switch(
-        checked = useStreaming,
-        onCheckedChange = onUseStreamingChange,
-        modifier = Modifier.scale(0.8f).testTag("switchStreaming"),
-      )
-    }
   }
 }
 
@@ -289,23 +268,6 @@ fun AgentSelectionColumn(selectedAgentType: AgentType, onAgentTypeChange: (Agent
       )
       Text(
         stringResource(R.string.agent_grounding_vertex),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-      )
-    }
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      RadioButton(
-        selected = selectedAgentType == AgentType.TEMPLATE,
-        onClick = { onAgentTypeChange(AgentType.TEMPLATE) },
-        colors =
-          RadioButtonDefaults.colors(
-            selectedColor = MaterialTheme.colorScheme.primary,
-            unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-          ),
-        modifier = Modifier.scale(0.8f).testTag("radioAgentTemplate"),
-      )
-      Text(
-        stringResource(R.string.agent_template),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
       )

@@ -67,15 +67,6 @@
   color: var(--text-h);
 }
 
-.streaming-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: auto;
-  margin-right: 12px;
-}
 
 .chat-messages {
   flex: 1;
