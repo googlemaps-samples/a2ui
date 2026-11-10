@@ -95,6 +95,19 @@ class ChatRepository(private val context: Context) {
   private val apiKey = BuildConfig.GATEWAY_API_KEY
   private val contextId = UUID.randomUUID().toString()
 
+  internal fun buildSessionRequest(): Request =
+    Request.Builder()
+      .url("$baseUrl/apps/$appName/users/user/sessions?key=$apiKey")
+      .post("{}".toRequestBody("application/json".toMediaType()))
+      .applyBearerToken()
+      .build()
+
+  private fun Request.Builder.applyBearerToken(): Request.Builder = apply {
+    bearerTokenOverride
+      ?.takeIf { it.isNotEmpty() }
+      ?.let { addHeader("Authorization", "Bearer $it") }
+  }
+
   suspend fun discoverProtocol(): Boolean =
     withContext(Dispatchers.IO) {
       discoveryMutex.withLock {
@@ -103,11 +116,7 @@ class ChatRepository(private val context: Context) {
         }
         hasDiscoveredProtocol = true
 
-        val request =
-          Request.Builder()
-            .url("$baseUrl/apps/$appName/users/user/sessions?key=$apiKey")
-            .post("{}".toRequestBody("application/json".toMediaType()))
-            .build()
+        val request = buildSessionRequest()
 
         try {
           client.newCall(request).execute().use { response ->
@@ -149,8 +158,8 @@ class ChatRepository(private val context: Context) {
           it.readText()
         }
       val mapObj = JSONObject(mappingJson)
-      val strippedText =
-        text.removePrefix("[GROUNDING] ").removePrefix("[TEMPLATE] ").removePrefix("[MCP] ")
+      val strippedText = text.removePrefix("[GROUNDING_TEMPLATE] ").removePrefix("[TEMPLATE] ")
+
       if (mapObj.has(strippedText)) {
         val filename = mapObj.getString(strippedText)
         return applicationContext.assets.open("canned_responses/$filename").bufferedReader().use {
@@ -163,7 +172,7 @@ class ChatRepository(private val context: Context) {
     return null
   }
 
-  private fun buildRequest(
+  internal fun buildRequest(
     partsArray: JSONArray,
     useStreaming: Boolean = DEFAULT_USE_STREAMING,
   ): Request {
@@ -204,6 +213,7 @@ class ChatRepository(private val context: Context) {
     if (activeServer == ServerType.VANILLA) {
       requestBuilder.addHeader("x-api-key", apiKey)
     }
+    requestBuilder.applyBearerToken()
 
     return requestBuilder.build()
   }
@@ -320,7 +330,7 @@ class ChatRepository(private val context: Context) {
       .flowOn(Dispatchers.IO)
 
   companion object {
-    const val DEFAULT_USE_STREAMING = true
+    const val DEFAULT_USE_STREAMING = false
 
     fun rpcMethod(useStreaming: Boolean): String =
       if (useStreaming) "message/stream" else "message/send"
@@ -337,5 +347,12 @@ class ChatRepository(private val context: Context) {
      * build time. `null`, the default, keeps [BuildConfig.GATEWAY_URL].
      */
     @Volatile @JvmStatic var baseUrlOverride: String? = null
+
+    /**
+     * Overrides the Authorization Bearer token attached to backend requests.
+     *
+     * Set by integration tests that drive the app against an IAM-protected Cloud Run instance.
+     */
+    @Volatile @JvmStatic var bearerTokenOverride: String? = null
   }
 }
