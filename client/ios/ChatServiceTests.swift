@@ -76,8 +76,8 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(try ChatService.parseSSELine("event: message"))
   }
 
-  func testDefaultUseStreamingIsTrue() {
-    XCTAssertTrue(ChatService.defaultUseStreaming)
+  func testDefaultUseStreamingIsFalse() {
+    XCTAssertFalse(ChatService.defaultUseStreaming)
   }
 
   func testRpcMethod_switchesBetweenStreamAndSend() {
@@ -121,6 +121,33 @@ final class ChatServiceTests: XCTestCase {
     let baseUrl = await service.baseUrl
     XCTAssertEqual(activeServer, .remote)
     XCTAssertEqual(baseUrl, "REQUIRED_REMOTE_ENDPOINT")
+  }
+
+  func testInit_setsBearerTokenFromEnvironmentAndAppliesAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: "test-identity-token"]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertEqual(bearerToken, "test-identity-token")
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertEqual(
+      request.value(forHTTPHeaderField: "Authorization"), "Bearer test-identity-token")
+  }
+
+  func testInit_ignoresEmptyBearerTokenInEnvironmentAndOmitsAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: ""]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertNil(bearerToken)
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
   }
 
   @MainActor
@@ -180,4 +207,41 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
   }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
+  }
+
+  #if DEBUG
+    func testLaunchOverrides_parsesSettingsAndPrompt() {
+      let overrides = LaunchOverrides(environment: [
+        LaunchOverrides.useCannedResponsesKey: "True",
+        LaunchOverrides.agentTypeKey: "vertex",
+        LaunchOverrides.autoSendPromptKey: "Show 3 Indian Restaurants in Seattle",
+      ])
+
+      XCTAssertEqual(
+        overrides,
+        LaunchOverrides(
+          useCannedResponses: true, agentType: .vertex,
+          autoSendPrompt: "Show 3 Indian Restaurants in Seattle"))
+    }
+
+    func testLaunchOverrides_parsesLiteAgentCaseInsensitively() {
+      let overrides = LaunchOverrides(environment: [LaunchOverrides.agentTypeKey: "LITE"])
+
+      XCTAssertEqual(overrides.agentType, .lite)
+    }
+
+    func testLaunchOverrides_ignoresMissingAndInvalidValues() {
+      let overrides = LaunchOverrides(environment: [
+        LaunchOverrides.useCannedResponsesKey: "maybe",
+        LaunchOverrides.agentTypeKey: "unknown",
+        LaunchOverrides.autoSendPromptKey: "   \n ",
+      ])
+
+      XCTAssertEqual(overrides, LaunchOverrides())
+    }
+  #endif
 }

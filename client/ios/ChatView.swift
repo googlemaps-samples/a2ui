@@ -17,6 +17,52 @@
 import GoogleMapsA2UI
 import SwiftUI
 
+#if DEBUG
+  /// Debug-only launch settings that let UI tests open the app in a given mode and send a prompt
+  /// without tapping the controls. A nil field keeps the app's normal default.
+  struct LaunchOverrides: Equatable {
+    static let useCannedResponsesKey = "A2UI_USE_CANNED_RESPONSES"
+    static let agentTypeKey = "A2UI_AGENT_TYPE"
+    static let autoSendPromptKey = "A2UI_AUTO_SEND_PROMPT"
+
+    var useCannedResponses: Bool?
+    var agentType: AgentType?
+    var autoSendPrompt: String?
+
+    init(
+      useCannedResponses: Bool? = nil,
+      agentType: AgentType? = nil,
+      autoSendPrompt: String? = nil
+    ) {
+      self.useCannedResponses = useCannedResponses
+      self.agentType = agentType
+      self.autoSendPrompt = autoSendPrompt
+    }
+
+    init(environment: [String: String]) {
+      switch environment[Self.useCannedResponsesKey]?.lowercased() {
+      case "true":
+        useCannedResponses = true
+      case "false":
+        useCannedResponses = false
+      default:
+        useCannedResponses = nil
+      }
+      switch environment[Self.agentTypeKey]?.lowercased() {
+      case "lite":
+        agentType = .lite
+      case "vertex":
+        agentType = .vertex
+      default:
+        agentType = nil
+      }
+      let prompt = environment[Self.autoSendPromptKey]?.trimmingCharacters(
+        in: .whitespacesAndNewlines)
+      autoSendPrompt = (prompt?.isEmpty ?? true) ? nil : prompt
+    }
+  }
+#endif
+
 struct ChatView: View {
   private enum Constants {
     static let scrollDelay: TimeInterval = 0.1
@@ -85,10 +131,6 @@ struct ChatView: View {
         }
       }
 
-      Toggle("Streaming", isOn: $viewModel.useStreaming)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 4)
-
       AgentSelector(selection: $viewModel.selectedAgentType)
 
       Divider()
@@ -129,7 +171,32 @@ struct ChatView: View {
       .padding(.horizontal)
       .padding(.bottom, 8)
     }
+    #if DEBUG
+      .onAppear(perform: applyLaunchOverridesOnce)
+    #endif
   }
+
+  #if DEBUG
+    // Applies launch settings once, so returning to this view does not resend the prompt.
+    @State private var didApplyLaunchOverrides = false
+
+    private func applyLaunchOverridesOnce() {
+      guard !didApplyLaunchOverrides else { return }
+      didApplyLaunchOverrides = true
+      let overrides = LaunchOverrides(environment: ProcessInfo.processInfo.environment)
+      if let useCannedResponses = overrides.useCannedResponses {
+        UserDefaults.standard.set(
+          useCannedResponses, forKey: MockScenarioRegistry.useCannedResponsesKey)
+      }
+      if let agentType = overrides.agentType {
+        viewModel.selectedAgentType = agentType
+      }
+      if let prompt = overrides.autoSendPrompt {
+        viewModel.sendMessage(text: prompt)
+        lastQuery = prompt
+      }
+    }
+  #endif
 
   /// Submits the current input text to the view model.
   private func submitMessage() {
