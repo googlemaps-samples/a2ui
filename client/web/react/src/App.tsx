@@ -22,7 +22,7 @@ import {useEffect, useRef, useState} from 'react';
 import './App.css';
 
 // --- Configuration ---
-const DEFAULT_USE_STREAMING = true;
+const DEFAULT_USE_STREAMING = false;
 
 type GroundingType = 'mcp' | 'vertex';
 
@@ -36,14 +36,8 @@ const GROUNDING_OPTIONS: readonly GroundingOption[] = [
   {id: 'vertex', label: 'Grounding with Google Maps (Vertex)'},
 ];
 
-function getAgentPrefix(
-  grounding: GroundingType,
-  useTemplates: boolean,
-): string {
-  if (grounding === 'vertex') {
-    return useTemplates ? '[GROUNDING_TEMPLATE] ' : '[GROUNDING] ';
-  }
-  return useTemplates ? '[TEMPLATE] ' : '[MCP] ';
+function getAgentPrefix(grounding: GroundingType): string {
+  return grounding === 'vertex' ? '[GROUNDING_TEMPLATE] ' : '[TEMPLATE] ';
 }
 
 /**
@@ -53,10 +47,8 @@ function getAgentPrefix(
 function App() {
   // --- UI State ---
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const [useStreaming, setUseStreaming] = useState(DEFAULT_USE_STREAMING);
   const [selectedGrounding, setSelectedGrounding] =
     useState<GroundingType>('mcp');
-  const [useTemplates, setUseTemplates] = useState<boolean>(true);
 
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [input, setInput] = useState('');
@@ -112,7 +104,7 @@ function App() {
     if (!input.trim() || isRequesting) return;
 
     const messageText = input.trim();
-    const prefix = getAgentPrefix(selectedGrounding, useTemplates);
+    const prefix = getAgentPrefix(selectedGrounding);
     const serverText = `${prefix}${messageText}`;
 
     setInput('');
@@ -123,7 +115,7 @@ function App() {
     setTimeline([...rendererRef.current.timeline]);
 
     try {
-      if (useStreaming) {
+      if (DEFAULT_USE_STREAMING) {
         const streamedMessages: any[] = [];
         for await (const chunk of clientRef.current.sendStream(serverText)) {
           rendererRef.current.processResponse([chunk as any]);
@@ -134,22 +126,22 @@ function App() {
           setTimeline([...rendererRef.current.timeline]);
         }
       } else {
-      // 2. Send the message to the A2A agent via A2UIClient
-      const response = await clientRef.current.send(serverText);
+        // 2. Send the message to the A2A agent via A2UIClient
+        const response = await clientRef.current.send(serverText);
 
-      // 3. Process the response (which may contain text and/or A2UI data)
-      rendererRef.current.processResponse(response);
+        // 3. Process the response (which may contain text and/or A2UI data)
+        rendererRef.current.processResponse(response);
 
-      // Update last response JSON
-      const uiMessages = response
-        .filter((p: any) => p.type === 'a2ui')
-        .map((p: any) => p.message);
-      if (uiMessages.length > 0) {
-        setLastResponseJson(JSON.stringify(uiMessages, null, 2));
-      }
+        // Update last response JSON
+        const uiMessages = response
+          .filter((p: any) => p.type === 'a2ui')
+          .map((p: any) => p.message);
+        if (uiMessages.length > 0) {
+          setLastResponseJson(JSON.stringify(uiMessages, null, 2));
+        }
 
-      // 4. Synchronize the React state with the renderer's updated timeline
-      setTimeline([...rendererRef.current.timeline]);
+        // 4. Synchronize the React state with the renderer's updated timeline
+        setTimeline([...rendererRef.current.timeline]);
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -185,15 +177,6 @@ function App() {
       <aside className={`chat-panel ${isChatOpen ? 'open' : 'closed'}`}>
         <div className="chat-header">
           <h2>Chat</h2>
-
-          <label className="streaming-toggle">
-            <input
-              type="checkbox"
-              checked={useStreaming}
-              onChange={(e) => setUseStreaming(e.target.checked)}
-            />
-            Streaming
-          </label>
 
           <button
             className="close-chat-btn"
@@ -271,16 +254,6 @@ function App() {
                 </label>
               ))}
             </div>
-            <label className="agent-option">
-              <input
-                type="checkbox"
-                name="use-templates"
-                checked={useTemplates}
-                onChange={(e) => setUseTemplates(e.target.checked)}
-                disabled={isRequesting}
-              />
-              <span>Use Templates</span>
-            </label>
           </div>
 
           <textarea
@@ -299,17 +272,7 @@ function App() {
             {lastResponseJson && <ResponseViewer json={lastResponseJson} />}
             <button
               className="import-btn-input"
-              onClick={() => importDialogRef.current?.showModal()}
-              style={{
-                background: 'transparent',
-                color: 'var(--accent, #1a73e8)',
-                border: '1px solid var(--accent, #1a73e8)',
-                padding: '10px 24px',
-                borderRadius: '9999px',
-                fontWeight: 500,
-                cursor: 'pointer',
-                marginRight: '8px',
-              }}>
+              onClick={() => importDialogRef.current?.showModal()}>
               Import JSON
             </button>
             <button
@@ -324,65 +287,27 @@ function App() {
 
       <dialog
         ref={importDialogRef}
+        className="app-dialog"
         onClick={(e) => {
           if (e.target === importDialogRef.current)
             importDialogRef.current.close();
-        }}
-        style={{
-          border: 'none',
-          borderRadius: '16px',
-          padding: '0',
-          width: '90%',
-          maxWidth: '600px',
         }}>
-        <div
-          className="dialog-content"
-          style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-          }}>
-          <h2 style={{margin: 0, fontSize: '1.25rem', fontWeight: 600}}>
-            Import A2UI JSON
-          </h2>
+        <div className="app-dialog-content">
+          <h2>Import A2UI JSON</h2>
           <textarea
+            className="app-dialog-textarea"
             placeholder='[ { "surfaceUpdate": { ... } }, ... ]'
             value={importJson}
-            onChange={(e) => setImportJson(e.target.value)}
-            style={{
-              width: '100%',
-              minHeight: '200px',
-              fontFamily: 'monospace',
-              boxSizing: 'border-box',
-              padding: '12px',
-            }}></textarea>
-          <div
-            className="dialog-footer"
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '12px',
-              marginTop: '12px',
-            }}>
+            onChange={(e) => setImportJson(e.target.value)}></textarea>
+          <div className="app-dialog-footer">
             <button
-              className="cancel-btn"
+              className="dialog-cancel-btn"
               onClick={() => importDialogRef.current?.close()}>
               Cancel
             </button>
             <button
-              className="render-btn"
-              onClick={handleImport}
-              style={{
-                background: 'var(--p-40, #1a73e8)',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}>
+              className="dialog-primary-btn"
+              onClick={handleImport}>
               Render A2UI
             </button>
           </div>
@@ -406,79 +331,32 @@ function ResponseViewer({json}: {json: string}) {
     <>
       <button
         className="view-response-btn"
-        onClick={() => dialogRef.current?.showModal()}
-        style={{
-          background: 'transparent',
-          color: 'var(--accent, #1a73e8)',
-          border: '1px solid var(--accent, #1a73e8)',
-          padding: '10px 24px',
-          borderRadius: '9999px',
-          fontWeight: 500,
-          cursor: 'pointer',
-          marginRight: '8px',
-        }}>
+        onClick={() => dialogRef.current?.showModal()}>
         View Last Response
       </button>
 
       <dialog
         ref={dialogRef}
+        className="app-dialog"
         onClick={(e) => {
           if (e.target === dialogRef.current) dialogRef.current.close();
-        }}
-        style={{
-          border: 'none',
-          borderRadius: '16px',
-          padding: '0',
-          width: '90%',
-          maxWidth: '600px',
         }}>
-        <div
-          className="dialog-content"
-          style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-          }}>
-          <h2 style={{margin: 0, fontSize: '1.25rem', fontWeight: 600}}>
-            Last A2UI Response
-          </h2>
-          <pre
-            style={{
-              background: 'rgba(0,0,0,0.05)',
-              padding: '12px',
-              borderRadius: '8px',
-              overflowX: 'auto',
-              maxHeight: '300px',
-              whiteSpace: 'pre-wrap',
-            }}>
+        <div className="app-dialog-content">
+          <h2>Last A2UI Response</h2>
+          <pre className="app-dialog-pre">
             {json || 'No response yet.'}
           </pre>
-          <div
-            className="dialog-footer"
-            style={{display: 'flex', justifyContent: 'flex-end', gap: '12px'}}>
+          <div className="app-dialog-footer">
             <button
-              onClick={() => dialogRef.current?.close()}
-              style={{
-                background: 'var(--n-90, #e0e0e0)',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}>
+              className="dialog-cancel-btn"
+              onClick={() => dialogRef.current?.close()}>
               Close
             </button>
             <button
+              className="dialog-primary-btn"
               onClick={handleCopy}
               style={{
-                background: copied ? '#137333' : 'var(--p-40, #1a73e8)',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
+                background: copied ? '#137333' : undefined,
               }}>
               {copied ? 'Copied!' : 'Copy JSON'}
             </button>

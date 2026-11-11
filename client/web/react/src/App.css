@@ -67,15 +67,6 @@
   color: var(--text-h);
 }
 
-.streaming-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: auto;
-  margin-right: 12px;
-}
 
 .chat-messages {
   flex: 1;
@@ -88,7 +79,7 @@
 
 .user-message {
   align-self: flex-end;
-  background: var(--accent);
+  background: var(--accent-solid);
   color: white;
   padding: 12px 16px;
   border-radius: 16px 16px 0 16px;
@@ -207,7 +198,7 @@
 }
 
 .send-button {
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #fff;
   border: none;
   padding: 10px 24px;
@@ -266,5 +257,117 @@
   &:hover {
     background: var(--social-bg);
     color: var(--text-h);
+  }
+}
+
+.import-btn-input,
+.view-response-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: var(--accent-bg);
+  }
+}
+
+.app-dialog {
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  width: 90%;
+  max-width: 600px;
+  background: transparent;
+  color: var(--text-h);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.app-dialog-content {
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+
+.app-dialog-content h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.app-dialog-textarea {
+  width: 100%;
+  min-height: 200px;
+  font-family: var(--mono);
+  box-sizing: border-box;
+  padding: 12px;
+  background: var(--code-bg);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.app-dialog-pre {
+  background: var(--code-bg);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  max-height: 300px;
+  white-space: pre-wrap;
+  font-family: var(--mono);
+}
+
+.app-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dialog-cancel-btn {
+  background: var(--code-bg);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--social-bg);
+  }
+}
+
+.dialog-primary-btn {
+  background: var(--accent-solid);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
   }
 }
