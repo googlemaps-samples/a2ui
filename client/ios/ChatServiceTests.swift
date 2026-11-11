@@ -76,8 +76,8 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(try ChatService.parseSSELine("event: message"))
   }
 
-  func testDefaultUseStreamingIsTrue() {
-    XCTAssertTrue(ChatService.defaultUseStreaming)
+  func testDefaultUseStreamingIsFalse() {
+    XCTAssertFalse(ChatService.defaultUseStreaming)
   }
 
   func testRpcMethod_switchesBetweenStreamAndSend() {
@@ -121,6 +121,33 @@ final class ChatServiceTests: XCTestCase {
     let baseUrl = await service.baseUrl
     XCTAssertEqual(activeServer, .remote)
     XCTAssertEqual(baseUrl, "REQUIRED_REMOTE_ENDPOINT")
+  }
+
+  func testInit_setsBearerTokenFromEnvironmentAndAppliesAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: "test-identity-token"]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertEqual(bearerToken, "test-identity-token")
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertEqual(
+      request.value(forHTTPHeaderField: "Authorization"), "Bearer test-identity-token")
+  }
+
+  func testInit_ignoresEmptyBearerTokenInEnvironmentAndOmitsAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: ""]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertNil(bearerToken)
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
   }
 
   @MainActor
@@ -179,5 +206,10 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNotNil(viewModel.currentUpdateComponentsMsg)
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
+  }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
   }
 }

@@ -22,7 +22,7 @@ import {useEffect, useRef, useState} from 'react';
 import './App.css';
 
 // --- Configuration ---
-const DEFAULT_USE_STREAMING = true;
+const DEFAULT_USE_STREAMING = false;
 
 type GroundingType = 'mcp' | 'vertex';
 
@@ -36,14 +36,8 @@ const GROUNDING_OPTIONS: readonly GroundingOption[] = [
   {id: 'vertex', label: 'Grounding with Google Maps (Vertex)'},
 ];
 
-function getAgentPrefix(
-  grounding: GroundingType,
-  useTemplates: boolean,
-): string {
-  if (grounding === 'vertex') {
-    return useTemplates ? '[GROUNDING_TEMPLATE] ' : '[GROUNDING] ';
-  }
-  return useTemplates ? '[TEMPLATE] ' : '[MCP] ';
+function getAgentPrefix(grounding: GroundingType): string {
+  return grounding === 'vertex' ? '[GROUNDING_TEMPLATE] ' : '[TEMPLATE] ';
 }
 
 /**
@@ -53,10 +47,8 @@ function getAgentPrefix(
 function App() {
   // --- UI State ---
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const [useStreaming, setUseStreaming] = useState(DEFAULT_USE_STREAMING);
   const [selectedGrounding, setSelectedGrounding] =
     useState<GroundingType>('mcp');
-  const [useTemplates, setUseTemplates] = useState<boolean>(true);
 
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [input, setInput] = useState('');
@@ -112,7 +104,7 @@ function App() {
     if (!input.trim() || isRequesting) return;
 
     const messageText = input.trim();
-    const prefix = getAgentPrefix(selectedGrounding, useTemplates);
+    const prefix = getAgentPrefix(selectedGrounding);
     const serverText = `${prefix}${messageText}`;
 
     setInput('');
@@ -123,7 +115,7 @@ function App() {
     setTimeline([...rendererRef.current.timeline]);
 
     try {
-      if (useStreaming) {
+      if (DEFAULT_USE_STREAMING) {
         const streamedMessages: any[] = [];
         for await (const chunk of clientRef.current.sendStream(serverText)) {
           rendererRef.current.processResponse([chunk as any]);
@@ -134,22 +126,22 @@ function App() {
           setTimeline([...rendererRef.current.timeline]);
         }
       } else {
-      // 2. Send the message to the A2A agent via A2UIClient
-      const response = await clientRef.current.send(serverText);
+        // 2. Send the message to the A2A agent via A2UIClient
+        const response = await clientRef.current.send(serverText);
 
-      // 3. Process the response (which may contain text and/or A2UI data)
-      rendererRef.current.processResponse(response);
+        // 3. Process the response (which may contain text and/or A2UI data)
+        rendererRef.current.processResponse(response);
 
-      // Update last response JSON
-      const uiMessages = response
-        .filter((p: any) => p.type === 'a2ui')
-        .map((p: any) => p.message);
-      if (uiMessages.length > 0) {
-        setLastResponseJson(JSON.stringify(uiMessages, null, 2));
-      }
+        // Update last response JSON
+        const uiMessages = response
+          .filter((p: any) => p.type === 'a2ui')
+          .map((p: any) => p.message);
+        if (uiMessages.length > 0) {
+          setLastResponseJson(JSON.stringify(uiMessages, null, 2));
+        }
 
-      // 4. Synchronize the React state with the renderer's updated timeline
-      setTimeline([...rendererRef.current.timeline]);
+        // 4. Synchronize the React state with the renderer's updated timeline
+        setTimeline([...rendererRef.current.timeline]);
       }
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -185,15 +177,6 @@ function App() {
       <aside className={`chat-panel ${isChatOpen ? 'open' : 'closed'}`}>
         <div className="chat-header">
           <h2>Chat</h2>
-
-          <label className="streaming-toggle">
-            <input
-              type="checkbox"
-              checked={useStreaming}
-              onChange={(e) => setUseStreaming(e.target.checked)}
-            />
-            Streaming
-          </label>
 
           <button
             className="close-chat-btn"
@@ -271,16 +254,6 @@ function App() {
                 </label>
               ))}
             </div>
-            <label className="agent-option">
-              <input
-                type="checkbox"
-                name="use-templates"
-                checked={useTemplates}
-                onChange={(e) => setUseTemplates(e.target.checked)}
-                disabled={isRequesting}
-              />
-              <span>Use Templates</span>
-            </label>
           </div>
 
           <textarea
