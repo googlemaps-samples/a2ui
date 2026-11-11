@@ -50,7 +50,7 @@ actor ChatService: ChatServiceProtocol {
   }
 
   // --- CONFIGURATION ---
-  nonisolated static let defaultUseStreaming: Bool = true
+  nonisolated static let defaultUseStreaming: Bool = false
   private let remoteEndpoint = "REQUIRED_REMOTE_ENDPOINT"
   private let apiKey = "REQUIRED_REMOTE_API_KEY"
   // ---------------------
@@ -104,15 +104,7 @@ actor ChatService: ChatServiceProtocol {
       ParsedA2AEvent, Swift.Error
     >
   {
-    var serverText = text
-    switch agentType {
-    case .vertex:
-      serverText = "[GROUNDING] \(text)"
-    case .template:
-      serverText = "[TEMPLATE] \(text)"
-    case .lite:
-      serverText = "[MCP] \(text)"
-    }
+    let serverText = "\(agentType.serverPrefix)\(text)"
     let payload: [String: Any] = ["text": serverText]
     return try await callPythonServer(userMessage: payload, useStreaming: useStreaming)
   }
@@ -389,9 +381,8 @@ actor ChatService: ChatServiceProtocol {
     }
     let strippedText =
       text
-      .replacingOccurrences(of: "[GROUNDING] ", with: "")
+      .replacingOccurrences(of: "[GROUNDING_TEMPLATE] ", with: "")
       .replacingOccurrences(of: "[TEMPLATE] ", with: "")
-      .replacingOccurrences(of: "[MCP] ", with: "")
     return MockScenarioRegistry.scenarios.first(where: { $0.query == strippedText })?.fileName
   }
 }
