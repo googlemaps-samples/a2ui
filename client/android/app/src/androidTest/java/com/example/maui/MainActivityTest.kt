@@ -20,9 +20,14 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.maui.A2UIWebViewAssertions.Components
+import com.example.maui.data.ChatRepository
+import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import org.json.JSONArray
+import org.junit.After
 import org.junit.Assume.assumeFalse
 import org.junit.Rule
 import org.junit.Test
@@ -33,6 +38,40 @@ import org.junit.runner.RunWith
 class MainActivityTest {
 
   @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+  @After
+  fun tearDown() {
+    ChatRepository.baseUrlOverride = null
+    ChatRepository.bearerTokenOverride = null
+  }
+
+  @Test
+  fun serverPrefix_returnsExpectedRoutingTag() {
+    assertThat(AgentType.LITE.serverPrefix).isEqualTo("[TEMPLATE] ")
+    assertThat(AgentType.VERTEX.serverPrefix).isEqualTo("[GROUNDING_TEMPLATE] ")
+  }
+
+  @Test
+  fun chatRepository_usesBaseUrlAndBearerTokenOverrides() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val repository = ChatRepository(context)
+    ChatRepository.baseUrlOverride = "https://maui-backend.google.com"
+    ChatRepository.bearerTokenOverride = "test-bearer-token"
+
+    val requestWithToken = repository.buildRequest(JSONArray())
+    val sessionRequestWithToken = repository.buildSessionRequest()
+    assertThat(repository.baseUrl).isEqualTo("https://maui-backend.google.com")
+    assertThat(requestWithToken.url.toString()).startsWith("https://maui-backend.google.com/?key=")
+    assertThat(requestWithToken.header("Authorization")).isEqualTo("Bearer test-bearer-token")
+    assertThat(sessionRequestWithToken.header("Authorization"))
+      .isEqualTo("Bearer test-bearer-token")
+
+    ChatRepository.bearerTokenOverride = ""
+    val requestWithoutToken = repository.buildRequest(JSONArray())
+    val sessionRequestWithoutToken = repository.buildSessionRequest()
+    assertThat(requestWithoutToken.header("Authorization")).isNull()
+    assertThat(sessionRequestWithoutToken.header("Authorization")).isNull()
+  }
 
   @Test
   fun dynamicHeight_expandsToFitContent() {
