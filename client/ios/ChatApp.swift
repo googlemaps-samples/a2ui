@@ -18,9 +18,33 @@ import SwiftUI
 
 @main
 struct ChatApp: App {
+  #if DEBUG
+    static func launchColorScheme(
+      from environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> ColorScheme? {
+      switch environment["A2UI_APPEARANCE"]?.lowercased() {
+      case "dark":
+        return .dark
+      case "light":
+        return .light
+      default:
+        return nil
+      }
+    }
+
+    private var launchColorScheme: ColorScheme? {
+      Self.launchColorScheme()
+    }
+  #endif
+
   var body: some Scene {
     WindowGroup {
-      ChatView()
+      #if DEBUG
+        ChatView()
+          .preferredColorScheme(launchColorScheme)
+      #else
+        ChatView()
+      #endif
     }
   }
 }
