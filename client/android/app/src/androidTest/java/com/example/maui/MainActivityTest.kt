@@ -16,13 +16,24 @@
 
 package com.example.maui
 
+import android.content.Intent
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
+import androidx.test.core.app.ActivityScenario
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.maui.A2UIWebViewAssertions.Components
+import com.example.maui.data.ChatRepository
+import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import org.json.JSONArray
+import org.junit.After
 import org.junit.Assume.assumeFalse
 import org.junit.Rule
 import org.junit.Test
@@ -33,6 +44,119 @@ import org.junit.runner.RunWith
 class MainActivityTest {
 
   @get:Rule val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+  @After
+  fun tearDown() {
+    ChatRepository.baseUrlOverride = null
+    ChatRepository.bearerTokenOverride = null
+  }
+
+  @Test
+  fun serverPrefix_returnsExpectedRoutingTag() {
+    assertThat(AgentType.LITE.serverPrefix).isEqualTo("[TEMPLATE] ")
+    assertThat(AgentType.VERTEX.serverPrefix).isEqualTo("[GROUNDING_TEMPLATE] ")
+  }
+
+  @Test
+  fun chatRepository_usesBaseUrlAndBearerTokenOverrides() {
+    val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val repository = ChatRepository(context)
+    ChatRepository.baseUrlOverride = "https://maui-backend.google.com"
+    ChatRepository.bearerTokenOverride = "test-bearer-token"
+
+    val requestWithToken = repository.buildRequest(JSONArray())
+    val sessionRequestWithToken = repository.buildSessionRequest()
+    assertThat(repository.baseUrl).isEqualTo("https://maui-backend.google.com")
+    assertThat(requestWithToken.url.toString()).startsWith("https://maui-backend.google.com/?key=")
+    assertThat(requestWithToken.header("Authorization")).isEqualTo("Bearer test-bearer-token")
+    assertThat(sessionRequestWithToken.header("Authorization"))
+      .isEqualTo("Bearer test-bearer-token")
+
+    ChatRepository.bearerTokenOverride = ""
+    val requestWithoutToken = repository.buildRequest(JSONArray())
+    val sessionRequestWithoutToken = repository.buildSessionRequest()
+    assertThat(requestWithoutToken.header("Authorization")).isNull()
+    assertThat(sessionRequestWithoutToken.header("Authorization")).isNull()
+  }
+
+  @Test
+  fun launch_withBackendAndScreenExtras_appliesOverridesToRepositoryAndScreen() {
+    composeTestRule.activityRule.scenario.close()
+    val prompt = CannedResponse.SEATTLE_COFFEE_SHOPS.prompt
+    val intent =
+      Intent(InstrumentationRegistry.getInstrumentation().targetContext, MainActivity::class.java)
+        .putExtra(LaunchOverrides.EXTRA_BACKEND_URL_OVERRIDE, "https://maui-backend.google.com")
+        .putExtra(LaunchOverrides.EXTRA_BACKEND_BEARER_TOKEN, "test-bearer-token")
+        .putExtra(LaunchOverrides.EXTRA_USE_CANNED_RESPONSES, "false")
+        .putExtra(LaunchOverrides.EXTRA_AGENT_TYPE, "vertex")
+        .putExtra(LaunchOverrides.EXTRA_AUTO_SEND_PROMPT, prompt)
+
+    ActivityScenario.launch<MainActivity>(intent).use {
+      assertThat(ChatRepository.baseUrlOverride).isEqualTo("https://maui-backend.google.com")
+      assertThat(ChatRepository.bearerTokenOverride).isEqualTo("test-bearer-token")
+      composeTestRule.onNodeWithTag("switchCannedServer").assertIsOn()
+      composeTestRule.onNodeWithTag("radioAgentVertex").assertIsSelected()
+      composeTestRule.onNodeWithText(prompt).assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun launch_withoutBackendExtras_keepsOverridesSetBeforeLaunch() {
+    ChatRepository.baseUrlOverride = "https://sut-backend.example.com"
+    ChatRepository.bearerTokenOverride = "preset-bearer-token"
+
+    ActivityScenario.launch(MainActivity::class.java).use {
+      assertThat(ChatRepository.baseUrlOverride).isEqualTo("https://sut-backend.example.com")
+      assertThat(ChatRepository.bearerTokenOverride).isEqualTo("preset-bearer-token")
+    }
+  }
+
+  @Test
+  fun launchOverrides_fromExtras_parsesSettingsAndPrompt() {
+    val extras =
+      mapOf(
+        LaunchOverrides.EXTRA_USE_CANNED_RESPONSES to "False",
+        LaunchOverrides.EXTRA_AGENT_TYPE to "vertex",
+        LaunchOverrides.EXTRA_AUTO_SEND_PROMPT to "Show 3 Indian Restaurants in Seattle",
+      )
+
+    val overrides = LaunchOverrides.fromExtras { extras[it] }
+
+    assertThat(overrides)
+      .isEqualTo(
+        LaunchOverrides(
+          useCannedResponses = false,
+          agentType = AgentType.VERTEX,
+          autoSendPrompt = "Show 3 Indian Restaurants in Seattle",
+        )
+      )
+  }
+
+  @Test
+  fun launchOverrides_fromExtras_parsesLiteAgentCaseInsensitivelyAndTrimsPrompt() {
+    val extras =
+      mapOf(
+        LaunchOverrides.EXTRA_AGENT_TYPE to "LITE",
+        LaunchOverrides.EXTRA_AUTO_SEND_PROMPT to "  Edgewater Hotel  ",
+      )
+
+    val overrides = LaunchOverrides.fromExtras { extras[it] }
+
+    assertThat(overrides.agentType).isEqualTo(AgentType.LITE)
+    assertThat(overrides.autoSendPrompt).isEqualTo("Edgewater Hotel")
+  }
+
+  @Test
+  fun launchOverrides_fromExtras_ignoresMissingAndInvalidValues() {
+    val extras =
+      mapOf(
+        LaunchOverrides.EXTRA_USE_CANNED_RESPONSES to "maybe",
+        LaunchOverrides.EXTRA_AGENT_TYPE to "unknown",
+        LaunchOverrides.EXTRA_AUTO_SEND_PROMPT to "  ",
+      )
+
+    assertThat(LaunchOverrides.fromExtras { extras[it] }).isEqualTo(LaunchOverrides())
+  }
 
   @Test
   fun dynamicHeight_expandsToFitContent() {
