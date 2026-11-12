@@ -29,7 +29,6 @@ sealed class ChatMessage {
 
   data class GmpA2UIView(
     val a2uiJsonString: String,
-    val startTime: Long? = null,
     override val id: String = UUID.randomUUID().toString(),
   ) : ChatMessage()
 

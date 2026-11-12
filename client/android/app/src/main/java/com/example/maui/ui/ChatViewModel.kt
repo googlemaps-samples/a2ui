@@ -65,18 +65,13 @@ class ChatViewModel(
 
   fun sendMessage(
     text: String,
-    agentType: AgentType = AgentType.TEMPLATE,
+    agentType: AgentType = AgentType.LITE,
     bypassCanned: Boolean = false,
     useStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING,
   ) {
     resetStreamingStateAndCancelJob()
     lastUseStreaming = useStreaming
-    val serverMessageText =
-      when (agentType) {
-        AgentType.VERTEX -> "[GROUNDING] $text"
-        AgentType.TEMPLATE -> "[TEMPLATE] $text"
-        AgentType.LITE -> "[MCP] $text"
-      }
+    val serverMessageText = "${agentType.serverPrefix}$text"
 
     addMessage(ChatMessage.Text(text = text, isUser = true))
     val jsonObject =
@@ -142,7 +137,6 @@ class ChatViewModel(
     var updatedTextMessage: ChatMessage.Text? = null
     var updatedMapSpec: Pair<String, String>? = null
     val deletedMapMessageIds = mutableSetOf<String>()
-    val fallbackStartTime = System.currentTimeMillis()
 
     for (part in events) {
       when (part) {
@@ -159,6 +153,7 @@ class ChatViewModel(
           }
         }
         is ParsedA2AEvent.Data -> {
+          if (part.metadata?.mimeType != "application/json+a2ui") continue
           val jsonString = part.data
           if (jsonString.contains(DUMMY_STATUS_TOKEN)) {
             continue
@@ -226,6 +221,7 @@ class ChatViewModel(
           }
           updatedMapSpec = Pair(currentStreamingMessageId!!, accumulatedJson)
         }
+        else -> Unit
       }
     }
 
@@ -258,17 +254,8 @@ class ChatViewModel(
         val targetIndex = mutableList.indexOfFirst {
           (it as? ChatMessage.GmpA2UIView)?.id == messageId
         }
-        val existingStartTime =
-          if (targetIndex != -1) {
-            (mutableList[targetIndex] as? ChatMessage.GmpA2UIView)?.startTime
-          } else null
 
-        val newMessage =
-          ChatMessage.GmpA2UIView(
-            a2uiJsonString = accumulatedJson,
-            startTime = existingStartTime ?: fallbackStartTime,
-            id = messageId,
-          )
+        val newMessage = ChatMessage.GmpA2UIView(a2uiJsonString = accumulatedJson, id = messageId)
 
         if (targetIndex != -1) {
           mutableList[targetIndex] = newMessage

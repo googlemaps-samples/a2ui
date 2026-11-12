@@ -85,10 +85,6 @@ struct ChatView: View {
         }
       }
 
-      Toggle("Streaming", isOn: $viewModel.useStreaming)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 4)
-
       AgentSelector(selection: $viewModel.selectedAgentType)
 
       Divider()
@@ -170,6 +166,8 @@ struct MessageRow: View {
 
       case .a2uiView(_, let view):
         view
+          .clipShape(RoundedRectangle(cornerRadius: 16))
+          .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
       }
     }
   }

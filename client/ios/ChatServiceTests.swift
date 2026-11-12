@@ -76,8 +76,8 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNil(try ChatService.parseSSELine("event: message"))
   }
 
-  func testDefaultUseStreamingIsTrue() {
-    XCTAssertTrue(ChatService.defaultUseStreaming)
+  func testDefaultUseStreamingIsFalse() {
+    XCTAssertFalse(ChatService.defaultUseStreaming)
   }
 
   func testRpcMethod_switchesBetweenStreamAndSend() {
@@ -123,10 +123,42 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertEqual(baseUrl, "REQUIRED_REMOTE_ENDPOINT")
   }
 
+  func testInit_setsBearerTokenFromEnvironmentAndAppliesAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: "test-identity-token"]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertEqual(bearerToken, "test-identity-token")
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertEqual(
+      request.value(forHTTPHeaderField: "Authorization"), "Bearer test-identity-token")
+  }
+
+  func testInit_ignoresEmptyBearerTokenInEnvironmentAndOmitsAuthorizationHeader() async throws {
+    let service = ChatService(
+      defaultServer: .demo,
+      environment: [ChatService.backendBearerTokenKey: ""]
+    )
+    let bearerToken = await service.bearerToken
+    XCTAssertNil(bearerToken)
+
+    var request = URLRequest(url: try XCTUnwrap(URL(string: "https://maui-backend.google.com")))
+    await service.applyAuthHeaders(to: &request)
+    XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+  }
+
   @MainActor
-  func testChatViewModel_streamingChunks_stripsCreateSurfaceAndUpdatesSingleCardInPlace() async {
+  func testChatViewModel_streamingChunks_stripsCreateSurfaceAndUpdatesSingleCardInPlace() throws {
     let viewModel = ChatViewModel()
     let metadata = ParsedA2AEventMetadata(mimeType: "application/json+a2ui")
+
+    func encode(_ array: [Any]) throws -> String {
+      let data = try JSONSerialization.data(withJSONObject: array, options: [.sortedKeys])
+      return try XCTUnwrap(String(data: data, encoding: .utf8))
+    }
 
     // Chunk 1: initial createSurface + updateComponents
     let chunk1: [Any] = [
@@ -141,7 +173,7 @@ final class ChatServiceTests: XCTestCase {
         ]
       ],
     ]
-    viewModel.handleParsedEvent(.data(chunk1, metadata: metadata))
+    viewModel.handleParsedEvent(.data(try encode(chunk1), metadata: metadata))
     XCTAssertEqual(viewModel.messages.count, 1)
     let firstMessageId = viewModel.messages.first?.id
 
@@ -149,7 +181,7 @@ final class ChatServiceTests: XCTestCase {
     let chunk2: [Any] = [
       ["updateDataModel": ["surfaceId": "surface-1", "value": ["title": "Pike Place"]]]
     ]
-    viewModel.handleParsedEvent(.data(chunk2, metadata: metadata))
+    viewModel.handleParsedEvent(.data(try encode(chunk2), metadata: metadata))
     XCTAssertEqual(viewModel.messages.count, 1)
     XCTAssertEqual(viewModel.messages.first?.id, firstMessageId)
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 1)
@@ -171,7 +203,7 @@ final class ChatServiceTests: XCTestCase {
       ],
       ["updateDataModel": ["surfaceId": "surface-1", "value": ["title": "Pike Place Market"]]],
     ]
-    viewModel.handleParsedEvent(.data(chunk3, metadata: metadata))
+    viewModel.handleParsedEvent(.data(try encode(chunk3), metadata: metadata))
 
     // Still only 1 card message updated in-place, with createSurface omitted
     XCTAssertEqual(viewModel.messages.count, 1)
@@ -179,5 +211,10 @@ final class ChatServiceTests: XCTestCase {
     XCTAssertNotNil(viewModel.currentUpdateComponentsMsg)
     XCTAssertNil(viewModel.currentUpdateComponentsMsg?["createSurface"])
     XCTAssertEqual(viewModel.currentUpdateDataModelMsgs.count, 2)
+  }
+
+  func testAgentType_serverPrefix_returnsExpectedRoutingTag() {
+    XCTAssertEqual(AgentType.lite.serverPrefix, "[TEMPLATE] ")
+    XCTAssertEqual(AgentType.vertex.serverPrefix, "[GROUNDING_TEMPLATE] ")
   }
 }

@@ -24,7 +24,7 @@ class ChatViewModel: ObservableObject {
   @Published private(set) var messages: [ChatMessage] = []
   @Published private(set) var isLoading: Bool = false
   @Published var webViewToScrollID: UUID?
-  @Published var selectedAgentType: AgentType = .template
+  @Published var selectedAgentType: AgentType = .lite
   @Published var useStreaming: Bool = ChatService.defaultUseStreaming
 
   private let chatService: ChatServiceProtocol
@@ -39,7 +39,9 @@ class ChatViewModel: ObservableObject {
 
   init(chatService: ChatServiceProtocol = ChatService()) {
     self.chatService = chatService
-    A2UIServices.provideApiKey(googleMapsApiKey)
+    if A2UIServices.apiKey == nil {
+      A2UIServices.provideAPIKey(googleMapsApiKey)
+    }
     Task {
       await ResourceLogger.shared.startLogging()
     }
@@ -91,11 +93,14 @@ class ChatViewModel: ObservableObject {
 
   func handleParsedEvent(_ part: ParsedA2AEvent) {
     switch part {
-    case .data(let payloadDict, let metadata):
+    case .data(let jsonString, let metadata):
       if metadata?.mimeType == "application/json+a2ui" {
+        let parsed = jsonString.data(using: .utf8).flatMap {
+          try? JSONSerialization.jsonObject(with: $0)
+        }
         let msgs =
-          ((payloadDict as? [Any])?.compactMap { $0 as? [String: Any] }
-            ?? (payloadDict as? [String: Any]).map { [$0] } ?? [])
+          ((parsed as? [Any])?.compactMap { $0 as? [String: Any] }
+            ?? (parsed as? [String: Any]).map { [$0] } ?? [])
 
         for msg in msgs {
           // Intercept transient status indicator (tool call status UI deferred)
@@ -120,29 +125,31 @@ class ChatViewModel: ObservableObject {
           isUpdate = false
         }
 
-        let accumulatedPart = ParsedA2AEvent.data(
-          [componentsMsg] + self.currentUpdateDataModelMsgs, metadata: metadata)
+        let accumulatedArray = [componentsMsg] + self.currentUpdateDataModelMsgs
+        guard
+          let accumulatedData = try? JSONSerialization.data(
+            withJSONObject: accumulatedArray, options: [.sortedKeys]),
+          let accumulatedJsonString = String(data: accumulatedData, encoding: .utf8)
+        else {
+          return
+        }
 
-        let renderStartTime = Date()
-        let view = A2UIView(
-          part: accumulatedPart,
-          id: messageId.uuidString,
-          onUserAction: { [weak self] actionStr in
+        let accumulatedPart = ParsedA2AEvent.data(accumulatedJsonString, metadata: metadata)
+
+        let view = A2UIView(part: accumulatedPart)
+          .onUserAction { [weak self] actionStr in
             Task { @MainActor in
               self?.sendAction(jsonString: actionStr)
             }
-          },
-          onRenderComplete: { [weak self] id, _, status in
-            let actualLatencyMs = Int(Date().timeIntervalSince(renderStartTime) * 1000)
+          }
+          .onRenderComplete { [weak self] latency in
+            let actualLatencyMs = Int(latency * 1000)
             LatencyLogger.shared.logLatency(
-              type: .render, latencyMs: actualLatencyMs, status: status)
-            if let uuid = UUID(uuidString: id) {
-              Task { @MainActor in
-                self?.webViewToScrollID = uuid
-              }
+              type: .render, latencyMs: actualLatencyMs, status: "A2UI Render Complete")
+            Task { @MainActor in
+              self?.webViewToScrollID = messageId
             }
           }
-        )
         let message = ChatMessage(
           id: messageId, kind: .a2uiView(type: "GoogleMapsA2UI", view: AnyView(view)))
 
