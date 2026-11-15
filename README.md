@@ -153,17 +153,9 @@ The iOS sample is a native app utilizing SwiftUI and the [GoogleMapsA2UI(iOS)](h
 
 For more server configration and other detailed setup, refer to the [iOS Sample README](client/ios/README.md).
 
-#### Streaming vs. Non-Streaming Responses (`useStreaming`)
+#### Grounding Method Selection
 
-All three sample clients (Web, Android, and iOS) default to **SSE streaming** (`useStreaming = true`) so conversational text and A2UI map components render progressively as they arrive from the agent (`message/stream`).
-
-You can switch between **Streaming** (`message/stream` / `client.sendStream()`) and **Non-Streaming** (`message/send` / `client.send()`) at any time:
-
-*   **In the UI**: Toggle the **Streaming** switch/checkbox in the sample app header or control bar.
-*   **In Code (Default Configuration)**:
-    *   **Web (React)**: Set `DEFAULT_USE_STREAMING = true` (or `false`) in [`client/web/react/src/App.tsx`](client/web/react/src/App.tsx).
-    *   **Android**: Set `DEFAULT_USE_STREAMING = true` (or `false`) in [`ChatRepository.kt`](client/android/app/src/main/java/com/example/maui/data/ChatRepository.kt).
-    *   **iOS**: Set `defaultUseStreaming: Bool = true` (or `false`) in [`ChatService.swift`](client/ios/ChatService.swift).
+All three sample clients (Web, Android, and iOS) let you switch between **Grounding Lite (MCP)** and **Grounding with Google Maps (Vertex)** in the client header or control bar.
 
 ## Google API Keys
 
