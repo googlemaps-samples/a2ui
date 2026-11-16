@@ -50,7 +50,7 @@ actor ChatService: ChatServiceProtocol {
   }
 
   // --- CONFIGURATION ---
-  nonisolated static let defaultUseStreaming: Bool = true
+  nonisolated static let defaultUseStreaming: Bool = false
   private let remoteEndpoint = "REQUIRED_REMOTE_ENDPOINT"
   private let apiKey = "REQUIRED_REMOTE_API_KEY"
   // ---------------------
@@ -62,8 +62,13 @@ actor ChatService: ChatServiceProtocol {
   /// UI test hooks in this file, so release builds always talk to `defaultServer`.
   nonisolated static let backendURLOverrideKey = "A2UI_BACKEND_URL_OVERRIDE"
 
+  /// Launch environment key that attaches an `Authorization: Bearer <token>` header to backend
+  /// requests in DEBUG builds (used when testing against IAM-protected Cloud Run instances).
+  nonisolated static let backendBearerTokenKey = "A2UI_BACKEND_BEARER_TOKEN"
+
   let activeServer: ServerType
   let baseUrl: String
+  let bearerToken: String?
 
   init(
     defaultServer: ServerType = .remote,
@@ -71,9 +76,13 @@ actor ChatService: ChatServiceProtocol {
   ) {
     #if DEBUG
       let overrideURL = environment[Self.backendURLOverrideKey].flatMap { $0.isEmpty ? nil : $0 }
+      let overrideToken =
+        environment[Self.backendBearerTokenKey].flatMap { $0.isEmpty ? nil : $0 }
     #else
       let overrideURL: String? = nil
+      let overrideToken: String? = nil
     #endif
+    self.bearerToken = overrideToken
     if let overrideURL {
       self.activeServer = .demo
       self.baseUrl = overrideURL
@@ -104,15 +113,7 @@ actor ChatService: ChatServiceProtocol {
       ParsedA2AEvent, Swift.Error
     >
   {
-    var serverText = text
-    switch agentType {
-    case .vertex:
-      serverText = "[GROUNDING] \(text)"
-    case .template:
-      serverText = "[TEMPLATE] \(text)"
-    case .lite:
-      serverText = "[MCP] \(text)"
-    }
+    let serverText = "\(agentType.serverPrefix)\(text)"
     let payload: [String: Any] = ["text": serverText]
     return try await callPythonServer(userMessage: payload, useStreaming: useStreaming)
   }
@@ -138,6 +139,15 @@ actor ChatService: ChatServiceProtocol {
     return try await callPythonServer(userMessage: payload, useStreaming: useStreaming)
   }
 
+  func applyAuthHeaders(to request: inout URLRequest) {
+    if activeServer == .remote {
+      request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
+    }
+    if let bearerToken {
+      request.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+    }
+  }
+
   private func initializeSession() async throws {
     #if DEBUG
       if ProcessInfo.processInfo.environment["UI_TEST_MOCK_SCENARIO"] != nil { return }
@@ -159,9 +169,7 @@ actor ChatService: ChatServiceProtocol {
     var request = URLRequest(url: url)
     request.timeoutInterval = 120
     request.httpMethod = "POST"
-    if activeServer == .remote {
-      request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
-    }
+    applyAuthHeaders(to: &request)
 
     // Attempt handshake
     let (data, response) = try await URLSession.shared.data(for: request)
@@ -217,14 +225,11 @@ actor ChatService: ChatServiceProtocol {
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-    if self.activeServer == .remote {
-      request.setValue(self.apiKey, forHTTPHeaderField: "x-api-key")
-    }
-
     if self.activeServer == .demo {
       request.setValue(
         "https://a2ui.org/a2a-extension/a2ui/v0.9", forHTTPHeaderField: "X-A2A-Extensions")
     }
+    applyAuthHeaders(to: &request)
 
     return AsyncThrowingStream { continuation in
       #if DEBUG
@@ -389,9 +394,8 @@ actor ChatService: ChatServiceProtocol {
     }
     let strippedText =
       text
-      .replacingOccurrences(of: "[GROUNDING] ", with: "")
+      .replacingOccurrences(of: "[GROUNDING_TEMPLATE] ", with: "")
       .replacingOccurrences(of: "[TEMPLATE] ", with: "")
-      .replacingOccurrences(of: "[MCP] ", with: "")
     return MockScenarioRegistry.scenarios.first(where: { $0.query == strippedText })?.fileName
   }
 }

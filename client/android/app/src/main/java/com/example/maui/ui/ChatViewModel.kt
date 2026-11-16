@@ -65,18 +65,13 @@ class ChatViewModel(
 
   fun sendMessage(
     text: String,
-    agentType: AgentType = AgentType.TEMPLATE,
+    agentType: AgentType = AgentType.LITE,
     bypassCanned: Boolean = false,
     useStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING,
   ) {
     resetStreamingStateAndCancelJob()
     lastUseStreaming = useStreaming
-    val serverMessageText =
-      when (agentType) {
-        AgentType.VERTEX -> "[GROUNDING] $text"
-        AgentType.TEMPLATE -> "[TEMPLATE] $text"
-        AgentType.LITE -> "[MCP] $text"
-      }
+    val serverMessageText = "${agentType.serverPrefix}$text"
 
     addMessage(ChatMessage.Text(text = text, isUser = true))
     val jsonObject =

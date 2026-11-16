@@ -40,6 +40,7 @@ struct TestCasesMenuView: View {
           .font(.title2)
           .foregroundColor(.orange)
       }
+      .accessibilityIdentifier("flask.fill")
 
       Menu {
         Section("Restaurant Finder") {
