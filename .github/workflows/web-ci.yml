@@ -20,16 +20,58 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel superseded pull_request runs when a newer commit is pushed to the same
+# PR. Other events get a per-commit group, so they are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: Web CI / build
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout samples repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          path: a2ui-samples
+          persist-credentials: false
+
+      - name: Resolve core SDK branch
+        id: core_ref
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          RESOLVED_REF="main"
+          case "$HEAD_REF" in
+            test_*)
+              # Poll up to 80s for the parallel Copybara-Review-a2ui-core export to push test_<OCL>.
+              for ATTEMPT in $(seq 1 9); do
+                if git ls-remote --exit-code --heads https://github.com/googlemaps/a2ui.git "refs/heads/$HEAD_REF" >/dev/null 2>&1; then
+                  RESOLVED_REF="$HEAD_REF"
+                  break
+                fi
+                if [ "$ATTEMPT" -lt 9 ]; then
+                  echo "Waiting 10s for Copybara to push $HEAD_REF to googlemaps/a2ui (attempt $ATTEMPT/9)..."
+                  sleep 10
+                fi
+              done
+              if [ "$RESOLVED_REF" = "main" ]; then
+                echo "::warning::Branch $HEAD_REF not found on googlemaps/a2ui after 80s; falling back to main."
+              fi
+              ;;
+          esac
+          echo "Using googlemaps/a2ui ref: $RESOLVED_REF"
+          echo "ref=$RESOLVED_REF" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout core SDK repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: googlemaps/a2ui
+          ref: ${{ steps.core_ref.outputs.ref }}
+          path: a2ui
           persist-credentials: false
 
       - name: Use Node.js
@@ -37,16 +79,16 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Build and link core Web SDK
+        run: npm run build-and-link
+        working-directory: a2ui/client/web
+
       - name: Install dependencies
-        run: npm install
-        working-directory: client/web/react
+        run: |
+          npm install
+          npm link @googlemaps/a2ui
+        working-directory: a2ui-samples/client/web/react
 
-      - name: Type check
-        run: npx tsc --noEmit
-        working-directory: client/web/react
-        continue-on-error: true
-
-      - name: Build
+      - name: Type check and build
         run: npm run build
-        working-directory: client/web/react
-        continue-on-error: true
+        working-directory: a2ui-samples/client/web/react

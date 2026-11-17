@@ -1,0 +1,114 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Android CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Cancel superseded pull_request runs when a newer commit is pushed to the same
+# PR. Other events get a per-commit group, so they are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Android CI / build
+    # zizmor: ignore[unpinned-images]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout samples repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          path: a2ui-samples
+          persist-credentials: false
+
+      - name: Resolve core SDK branch
+        id: core_ref
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          RESOLVED_REF="main"
+          case "$HEAD_REF" in
+            test_*)
+              # Poll up to 80s for the parallel Copybara-Review-a2ui-core export to push test_<OCL>.
+              for ATTEMPT in $(seq 1 9); do
+                if git ls-remote --exit-code --heads https://github.com/googlemaps/a2ui.git "refs/heads/$HEAD_REF" >/dev/null 2>&1; then
+                  RESOLVED_REF="$HEAD_REF"
+                  break
+                fi
+                if [ "$ATTEMPT" -lt 9 ]; then
+                  echo "Waiting 10s for Copybara to push $HEAD_REF to googlemaps/a2ui (attempt $ATTEMPT/9)..."
+                  sleep 10
+                fi
+              done
+              if [ "$RESOLVED_REF" = "main" ]; then
+                echo "::warning::Branch $HEAD_REF not found on googlemaps/a2ui after 80s; falling back to main."
+              fi
+              ;;
+          esac
+          echo "Using googlemaps/a2ui ref: $RESOLVED_REF"
+          echo "ref=$RESOLVED_REF" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout core SDK repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: googlemaps/a2ui
+          ref: ${{ steps.core_ref.outputs.ref }}
+          path: a2ui
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+          cache-dependency-path: |
+            a2ui/client/android/GoogleMapsA2UI/**/*.gradle*
+            a2ui-samples/client/android/**/*.gradle*
+
+      - name: Publish core SDK to Maven Local
+        run: |
+          chmod +x ./gradlew
+          ./gradlew publishToMavenLocal --no-daemon
+        working-directory: a2ui/client/android/GoogleMapsA2UI
+
+      - name: Build and test sample app
+        run: |
+          # app/build.gradle explicitly configures ~/.android/debug.keystore in signingConfigs.debug.
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkey -v \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storepass android -alias androiddebugkey -keypass android \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          cat << 'EOF' > local.properties
+          MAPS_API_KEY=AIzaSyDummyKeyForCITestingOnly00000000
+          GATEWAY_API_KEY=AIzaSyDummyKeyForCITestingOnly00000000
+          GATEWAY_URL=http://10.0.2.2:10002
+          EOF
+          chmod +x ./gradlew
+          ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest --no-daemon
+        working-directory: a2ui-samples/client/android
