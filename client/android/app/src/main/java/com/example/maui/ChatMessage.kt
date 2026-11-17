@@ -16,6 +16,7 @@
 
 package com.example.maui
 
+import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEventMetadata
 import java.util.UUID
 
 sealed class ChatMessage {
@@ -31,6 +32,7 @@ sealed class ChatMessage {
     val a2uiJsonString: String,
     val startTime: Long? = null,
     override val id: String = UUID.randomUUID().toString(),
+    val metadata: ParsedA2AEventMetadata? = null,
   ) : ChatMessage()
 
   object Loading : ChatMessage() {

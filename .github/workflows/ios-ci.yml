@@ -1,0 +1,96 @@
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: iOS CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Cancel superseded pull_request runs when a newer commit is pushed to the same
+# PR. Other events get a per-commit group, so they are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: iOS CI / build
+    # Pinned to macos-15 so the bundled Xcode and iOS Simulator lineup stay stable.
+    # zizmor: ignore[unpinned-images]
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout samples repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          path: a2ui-samples
+          persist-credentials: false
+
+      - name: Resolve core SDK branch
+        id: core_ref
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          RESOLVED_REF="main"
+          case "$HEAD_REF" in
+            test_*)
+              # Poll up to 80s for the parallel Copybara-Review-a2ui-core export to push test_<OCL>.
+              for ATTEMPT in $(seq 1 9); do
+                if git ls-remote --exit-code --heads https://github.com/googlemaps/a2ui.git "refs/heads/$HEAD_REF" >/dev/null 2>&1; then
+                  RESOLVED_REF="$HEAD_REF"
+                  break
+                fi
+                if [ "$ATTEMPT" -lt 9 ]; then
+                  echo "Waiting 10s for Copybara to push $HEAD_REF to googlemaps/a2ui (attempt $ATTEMPT/9)..."
+                  sleep 10
+                fi
+              done
+              if [ "$RESOLVED_REF" = "main" ]; then
+                echo "::warning::Branch $HEAD_REF not found on googlemaps/a2ui after 80s; falling back to main."
+              fi
+              ;;
+          esac
+          echo "Using googlemaps/a2ui ref: $RESOLVED_REF"
+          echo "ref=$RESOLVED_REF" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout core SDK repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: googlemaps/a2ui
+          ref: ${{ steps.core_ref.outputs.ref }}
+          path: a2ui
+          persist-credentials: false
+
+      - name: Build and test sample app
+        run: |
+          xcodebuild build-for-testing \
+            -project A2UI-Example.xcodeproj \
+            -scheme A2UI-Example \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO
+          xcodebuild test-without-building \
+            -project A2UI-Example.xcodeproj \
+            -scheme A2UI-Example \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:A2UI-ExampleTests \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO
+        working-directory: a2ui-samples/client/ios
