@@ -16,6 +16,7 @@
 
 package com.example.maui.ui
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,7 @@ import com.example.maui.ChatMessage
 import com.example.maui.data.ChatRepository
 import com.example.maui.telemetry.ResourceLogger
 import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEvent
+import com.google.android.libraries.mapsplatform.a2ui.ParsedA2AEventMetadata
 import java.util.UUID
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,18 +67,13 @@ class ChatViewModel(
 
   fun sendMessage(
     text: String,
-    agentType: AgentType = AgentType.TEMPLATE,
+    agentType: AgentType = AgentType.LITE,
     bypassCanned: Boolean = false,
     useStreaming: Boolean = ChatRepository.DEFAULT_USE_STREAMING,
   ) {
     resetStreamingStateAndCancelJob()
     lastUseStreaming = useStreaming
-    val serverMessageText =
-      when (agentType) {
-        AgentType.VERTEX -> "[GROUNDING] $text"
-        AgentType.TEMPLATE -> "[TEMPLATE] $text"
-        AgentType.LITE -> "[MCP] $text"
-      }
+    val serverMessageText = "${agentType.serverPrefix}$text"
 
     addMessage(ChatMessage.Text(text = text, isUser = true))
     val jsonObject =
@@ -137,10 +134,11 @@ class ChatViewModel(
     }
   }
 
-  private fun handleParsedEvents(events: List<ParsedA2AEvent>) {
+  @VisibleForTesting
+  internal fun handleParsedEvents(events: List<ParsedA2AEvent>) {
     var foundRealContent = false
     var updatedTextMessage: ChatMessage.Text? = null
-    var updatedMapSpec: Pair<String, String>? = null
+    var updatedMapSpec: Triple<String, String, ParsedA2AEventMetadata?>? = null
     val deletedMapMessageIds = mutableSetOf<String>()
     val fallbackStartTime = System.currentTimeMillis()
 
@@ -224,7 +222,7 @@ class ChatViewModel(
           if (currentStreamingMessageId == null) {
             currentStreamingMessageId = UUID.randomUUID().toString()
           }
-          updatedMapSpec = Pair(currentStreamingMessageId!!, accumulatedJson)
+          updatedMapSpec = Triple(currentStreamingMessageId!!, accumulatedJson, part.metadata)
         }
       }
     }
@@ -254,7 +252,7 @@ class ChatViewModel(
       }
 
       if (updatedMapSpec != null) {
-        val (messageId, accumulatedJson) = updatedMapSpec
+        val (messageId, accumulatedJson, metadata) = updatedMapSpec
         val targetIndex = mutableList.indexOfFirst {
           (it as? ChatMessage.GmpA2UIView)?.id == messageId
         }
@@ -268,6 +266,7 @@ class ChatViewModel(
             a2uiJsonString = accumulatedJson,
             startTime = existingStartTime ?: fallbackStartTime,
             id = messageId,
+            metadata = metadata,
           )
 
         if (targetIndex != -1) {

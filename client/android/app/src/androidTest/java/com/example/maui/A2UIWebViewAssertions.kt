@@ -187,7 +187,7 @@ internal object A2UIWebViewAssertions {
   }
 
   /** Returns the most recently attached [WebView], i.e. the surface for the newest reply. */
-  private fun findLastWebView(view: View): WebView? {
+  internal fun findLastWebView(view: View): WebView? {
     // WebView extends AbsoluteLayout, so this check must precede the ViewGroup one.
     if (view is WebView) return view
     if (view is ViewGroup) {
